@@ -8,15 +8,15 @@ public class StateHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.STATE;
 
-    private enum StateHandlerMode : byte
+    private static class StateHandlerMode
     {
-        Jump = 0x0,
-        Land = 0x1
+        public const byte Jump = 0x0;
+        public const byte Land = 0x1;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        StateHandlerMode mode = (StateHandlerMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {

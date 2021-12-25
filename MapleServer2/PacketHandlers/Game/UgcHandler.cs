@@ -14,17 +14,17 @@ public class UgcHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.UGC;
 
-    private enum UgcMode : byte
+    private static class UgcMode
     {
-        CreateUgcItem = 0x01,
-        AddUgcItem = 0x03,
-        ProfilePicture = 0x0B
+        public const byte CreateUgcItem = 0x01;
+        public const byte AddUgcItem = 0x03;
+        public const byte ProfilePicture = 0x0B;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        UgcMode function = (UgcMode) packet.ReadByte();
-        switch (function)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
             case UgcMode.CreateUgcItem:
                 HandleCreateUGCItem(session, packet);
@@ -36,7 +36,7 @@ public class UgcHandler : GamePacketHandler
                 HandleProfilePicture(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(function);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

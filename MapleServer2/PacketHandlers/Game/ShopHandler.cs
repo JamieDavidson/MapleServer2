@@ -15,17 +15,17 @@ public class ShopHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.SHOP;
 
-    private enum ShopMode : byte
+    private static class ShopMode
     {
-        Buy = 0x4,
-        Sell = 0x5,
-        Close = 0x6,
-        OpenViaItem = 0x0A
+        public const byte Buy = 0x4;
+        public const byte Sell = 0x5;
+        public const byte Close = 0x6;
+        public const byte OpenViaItem = 0x0A;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ShopMode mode = (ShopMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
@@ -42,7 +42,7 @@ public class ShopHandler : GamePacketHandler
                 HandleOpenViaItem(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

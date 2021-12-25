@@ -19,8 +19,8 @@ public class BonusGameHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        var mode = packet.ReadByte();
-        switch (mode)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
             case BonusGameOperations.Open:
                 HandleOpen(session, packet);
@@ -31,7 +31,7 @@ public class BonusGameHandler : GamePacketHandler
             case BonusGameOperations.Close:
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(typeof(BonusGameHandler), mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

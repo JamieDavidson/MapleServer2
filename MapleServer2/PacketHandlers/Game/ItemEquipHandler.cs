@@ -11,22 +11,22 @@ public class ItemEquipHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ITEM_EQUIP;
 
-    private enum ItemEquipMode : byte
+    private class ItemEquipOperations
     {
-        Equip = 0,
-        Unequip = 1
+        public const byte Equip = 0;
+        public const byte Unequip = 1;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ItemEquipMode function = (ItemEquipMode) packet.ReadByte();
+        var function = packet.ReadByte();
 
         switch (function)
         {
-            case ItemEquipMode.Equip:
+            case ItemEquipOperations.Equip:
                 HandleEquipItem(session, packet);
                 break;
-            case ItemEquipMode.Unequip:
+            case ItemEquipOperations.Unequip:
                 HandleUnequipItem(session, packet);
                 break;
         }

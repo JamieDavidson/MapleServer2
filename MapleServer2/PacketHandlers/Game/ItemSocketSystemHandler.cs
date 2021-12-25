@@ -12,50 +12,50 @@ public class ItemSocketSystemHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ITEM_SOCKET_SYSTEM;
 
-    private enum ItemSocketSystemMode : byte
+    private static class ItemSocketSystemOperations
     {
-        UnlockSocket = 0x0,
-        SelectUnlockSocketEquip = 0x2,
-        UpgradeGem = 0x4,
-        SelectGemUpgrade = 0x6,
-        MountGem = 0x8,
-        ExtractGem = 0xA
+        public const byte UnlockSocket = 0x0;
+        public const byte SelectUnlockSocketEquip = 0x2;
+        public const byte UpgradeGem = 0x4;
+        public const byte SelectGemUpgrade = 0x6;
+        public const byte MountGem = 0x8;
+        public const byte ExtractGem = 0xA;
     }
 
-    private enum ItemSocketSystemNotice
+    private static class ItemSocketSystemNotice
     {
-        TargetIsNotInYourInventory = 0x1,
-        ItemIsNotInYourInventory = 0x2,
-        CannotBeUsedAsMaterial = 0x3,
-        ConfirmCatalystAmount = 0x4
+        public const byte TargetIsNotInYourInventory = 0x1;
+        public const byte ItemIsNotInYourInventory = 0x2;
+        public const byte CannotBeUsedAsMaterial = 0x3;
+        public const byte ConfirmCatalystAmount = 0x4;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ItemSocketSystemMode mode = (ItemSocketSystemMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case ItemSocketSystemMode.UnlockSocket:
+            case ItemSocketSystemOperations.UnlockSocket:
                 HandleUnlockSocket(session, packet);
                 break;
-            case ItemSocketSystemMode.SelectUnlockSocketEquip:
+            case ItemSocketSystemOperations.SelectUnlockSocketEquip:
                 HandleSelectUnlockSocketEquip(session, packet);
                 break;
-            case ItemSocketSystemMode.SelectGemUpgrade:
+            case ItemSocketSystemOperations.SelectGemUpgrade:
                 HandleSelectGemUpgrade(session, packet);
                 break;
-            case ItemSocketSystemMode.UpgradeGem:
+            case ItemSocketSystemOperations.UpgradeGem:
                 HandleUpgradeGem(session, packet);
                 break;
-            case ItemSocketSystemMode.MountGem:
+            case ItemSocketSystemOperations.MountGem:
                 HandleMountGem(session, packet);
                 break;
-            case ItemSocketSystemMode.ExtractGem:
+            case ItemSocketSystemOperations.ExtractGem:
                 HandleExtractGem(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

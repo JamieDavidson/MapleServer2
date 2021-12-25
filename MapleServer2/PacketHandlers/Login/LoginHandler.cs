@@ -21,10 +21,10 @@ public class LoginHandler : LoginPacketHandler
     private readonly ImmutableList<IPEndPoint> ServerIPs;
     private readonly string ServerName;
 
-    private enum LoginMode : byte
+    private static class LoginMode
     {
-        Banners = 0x01,
-        SendCharacters = 0x02
+        public const byte Banners = 0x01;
+        public const byte SendCharacters = 0x02;
     }
 
     public LoginHandler()
@@ -40,7 +40,7 @@ public class LoginHandler : LoginPacketHandler
 
     public override void Handle(LoginSession session, PacketReader packet)
     {
-        LoginMode mode = (LoginMode) packet.ReadByte();
+        var mode = packet.ReadByte();
         string username = packet.ReadUnicodeString();
         string password = packet.ReadUnicodeString();
 

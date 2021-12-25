@@ -10,15 +10,15 @@ public class RequestHomeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_HOME;
 
-    private enum RequestHomeMode : byte
+    private static class RequestHomeMode
     {
-        InviteToHome = 0x01,
-        MoveToHome = 0x03
+        public const byte InviteToHome = 0x01;
+        public const byte MoveToHome = 0x03;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        RequestHomeMode mode = (RequestHomeMode) packet.ReadByte();
+        var mode = packet.ReadByte();
         switch (mode)
         {
             case RequestHomeMode.InviteToHome:
@@ -28,7 +28,7 @@ public class RequestHomeHandler : GamePacketHandler
                 HandleMoveToHome(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

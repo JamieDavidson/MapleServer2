@@ -14,67 +14,67 @@ public class MailHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.MAIL;
 
-    private enum MailMode : byte
+    private static class MailOperations
     {
-        Open = 0x0,
-        Send = 0x1,
-        Read = 0x2,
-        Collect = 0xB,
-        Delete = 0xD,
-        ReadBatch = 0x12,
-        CollectBatch = 0x13
+        public const byte Open = 0x0;
+        public const byte Send = 0x1;
+        public const byte Read = 0x2;
+        public const byte Collect = 0xB;
+        public const byte Delete = 0xD;
+        public const byte ReadBatch = 0x12;
+        public const byte CollectBatch = 0x13;
     }
 
-    private enum MailErrorCode : byte
+    private static class MailErrorCode
     {
-        CharacterNotFound = 0x01,
-        ItemAmountMismatch = 0x02,
-        ItemCannotBeSent = 0x03,
-        MailNotSent = 0x0C,
-        MailAlreadyRead = 0x10,
-        ItemAlreadyRetrieved = 0x11,
-        FullInventory = 0x14,
-        MailItemExpired = 0x15,
-        SaleEnded = 0x17,
-        MailCreationFailed = 0x18,
-        CannotMailYourself = 0x19,
-        NotEnouhgMeso = 0x1A,
-        PlayerIsBlocked = 0x1B,
-        PlayerBlockedYou = 0x1C,
-        GMCannotSendMail = 0x1D,
-        ContainsForbiddenWord = 0x1F,
-        MailPrivilegeSuspended = 0x20
+        public const byte CharacterNotFound = 0x01;
+        public const byte ItemAmountMismatch = 0x02;
+        public const byte ItemCannotBeSent = 0x03;
+        public const byte MailNotSent = 0x0C;
+        public const byte MailAlreadyRead = 0x10;
+        public const byte ItemAlreadyRetrieved = 0x11;
+        public const byte FullInventory = 0x14;
+        public const byte MailItemExpired = 0x15;
+        public const byte SaleEnded = 0x17;
+        public const byte MailCreationFailed = 0x18;
+        public const byte CannotMailYourself = 0x19;
+        public const byte NotEnouhgMeso = 0x1A;
+        public const byte PlayerIsBlocked = 0x1B;
+        public const byte PlayerBlockedYou = 0x1C;
+        public const byte GMCannotSendMail = 0x1D;
+        public const byte ContainsForbiddenWord = 0x1F;
+        public const byte MailPrivilegeSuspended = 0x20;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        MailMode mode = (MailMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
-            case MailMode.Open:
+            case MailOperations.Open:
                 HandleOpen(session);
                 break;
-            case MailMode.Send:
+            case MailOperations.Send:
                 HandleSend(session, packet);
                 break;
-            case MailMode.Read:
+            case MailOperations.Read:
                 HandleRead(session, packet);
                 break;
-            case MailMode.Collect:
+            case MailOperations.Collect:
                 HandleCollect(session, packet);
                 break;
-            case MailMode.Delete:
+            case MailOperations.Delete:
                 HandleDelete(session, packet);
                 break;
-            case MailMode.ReadBatch:
+            case MailOperations.ReadBatch:
                 HandleReadBatch(session, packet);
                 break;
-            case MailMode.CollectBatch:
+            case MailOperations.CollectBatch:
                 HandleCollectBatch(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }
@@ -101,13 +101,13 @@ public class MailHandler : GamePacketHandler
 
         if (recipientName == session.Player.Name)
         {
-            session.Send(MailPacket.Error((byte) MailErrorCode.CannotMailYourself));
+            session.Send(MailPacket.Error(MailErrorCode.CannotMailYourself));
             return;
         }
 
         if (!DatabaseManager.Characters.NameExists(recipientName))
         {
-            session.Send(MailPacket.Error((byte) MailErrorCode.CharacterNotFound));
+            session.Send(MailPacket.Error(MailErrorCode.CharacterNotFound));
             return;
         }
 

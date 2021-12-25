@@ -9,15 +9,15 @@ public class RequestUserEnvHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_USER_ENV;
 
-    private enum UserEnvMode : byte
+    private static class UserEnvMode
     {
-        Change = 0x1,
-        Trophy = 0x3
+        public const byte Change = 0x1;
+        public const byte Trophy = 0x3;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        UserEnvMode mode = (UserEnvMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
@@ -28,7 +28,7 @@ public class RequestUserEnvHandler : GamePacketHandler
                 HandleTrophy(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

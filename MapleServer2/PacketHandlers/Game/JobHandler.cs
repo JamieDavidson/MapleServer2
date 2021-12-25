@@ -11,33 +11,33 @@ public class JobHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.JOB;
 
-    private enum JobMode : byte
+    private static class JobOperations
     {
-        Close = 0x08,
-        Save = 0x09,
-        Reset = 0x0A,
-        Preset = 0x0B
+        public const byte Close = 0x08;
+        public const byte Save = 0x09;
+        public const byte Reset = 0x0A;
+        public const byte Preset = 0x0B;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        JobMode mode = (JobMode) packet.ReadByte();
-        switch (mode)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
-            case JobMode.Close:
+            case JobOperations.Close:
                 HandleCloseSkillTree(session);
                 break;
-            case JobMode.Save:
+            case JobOperations.Save:
                 HandleSaveSkillTree(session, packet);
                 break;
-            case JobMode.Reset:
+            case JobOperations.Reset:
                 HandleResetSkillTree(session, packet);
                 break;
-            case JobMode.Preset:
+            case JobOperations.Preset:
                 HandlePresetSkillTree(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

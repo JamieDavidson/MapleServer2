@@ -20,140 +20,140 @@ public class RequestCubeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_CUBE;
 
-    private enum RequestCubeMode : byte
+    private static class RequestCubeOperations
     {
-        LoadFurnishingItem = 0x1,
-        BuyPlot = 0x2,
-        ForfeitPlot = 0x6,
-        HandleAddFurnishing = 0xA,
-        RemoveCube = 0xC,
-        RotateCube = 0xE,
-        ReplaceCube = 0xF,
-        Pickup = 0x11,
-        Drop = 0x12,
-        HomeName = 0x15,
-        HomePassword = 0x18,
-        NominateHouse = 0x19,
-        HomeDescription = 0x1D,
-        ClearInterior = 0x1F,
-        RequestLayout = 0x23,
-        IncreaseSize = 0x25,
-        DecreaseSize = 0x26,
-        DecorationReward = 0x28,
-        InteriorDesingReward = 0x29,
-        EnablePermission = 0x2A,
-        SetPermission = 0x2B,
-        IncreaseHeight = 0x2C,
-        DecreaseHeight = 0x2D,
-        SaveLayout = 0x2E,
-        DecorPlannerLoadLayout = 0x2F,
-        LoadLayout = 0x30,
-        KickEveryone = 0x31,
-        ChangeBackground = 0x33,
-        ChangeLighting = 0x34,
-        ChangeCamera = 0x36,
-        UpdateBudget = 0x38,
-        GiveBuildingPermission = 0x39,
-        RemoveBuildingPermission = 0x3A
+        public const byte LoadFurnishingItem = 0x1;
+        public const byte BuyPlot = 0x2;
+        public const byte ForfeitPlot = 0x6;
+        public const byte HandleAddFurnishing = 0xA;
+        public const byte RemoveCube = 0xC;
+        public const byte RotateCube = 0xE;
+        public const byte ReplaceCube = 0xF;
+        public const byte Pickup = 0x11;
+        public const byte Drop = 0x12;
+        public const byte HomeName = 0x15;
+        public const byte HomePassword = 0x18;
+        public const byte NominateHouse = 0x19;
+        public const byte HomeDescription = 0x1D;
+        public const byte ClearInterior = 0x1F;
+        public const byte RequestLayout = 0x23;
+        public const byte IncreaseSize = 0x25;
+        public const byte DecreaseSize = 0x26;
+        public const byte DecorationReward = 0x28;
+        public const byte InteriorDesingReward = 0x29;
+        public const byte EnablePermission = 0x2A;
+        public const byte SetPermission = 0x2B;
+        public const byte IncreaseHeight = 0x2C;
+        public const byte DecreaseHeight = 0x2D;
+        public const byte SaveLayout = 0x2E;
+        public const byte DecorPlannerLoadLayout = 0x2F;
+        public const byte LoadLayout = 0x30;
+        public const byte KickEveryone = 0x31;
+        public const byte ChangeBackground = 0x33;
+        public const byte ChangeLighting = 0x34;
+        public const byte ChangeCamera = 0x36;
+        public const byte UpdateBudget = 0x38;
+        public const byte GiveBuildingPermission = 0x39;
+        public const byte RemoveBuildingPermission = 0x3A;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        RequestCubeMode mode = (RequestCubeMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case RequestCubeMode.LoadFurnishingItem:
+            case RequestCubeOperations.LoadFurnishingItem:
                 HandleLoadFurnishingItem(session, packet);
                 break;
-            case RequestCubeMode.BuyPlot:
+            case RequestCubeOperations.BuyPlot:
                 HandleBuyPlot(session, packet);
                 break;
-            case RequestCubeMode.ForfeitPlot:
+            case RequestCubeOperations.ForfeitPlot:
                 HandleForfeitPlot(session);
                 break;
-            case RequestCubeMode.HandleAddFurnishing:
+            case RequestCubeOperations.HandleAddFurnishing:
                 HandleAddFurnishing(session, packet);
                 break;
-            case RequestCubeMode.RemoveCube:
+            case RequestCubeOperations.RemoveCube:
                 HandleRemoveCube(session, packet);
                 break;
-            case RequestCubeMode.RotateCube:
+            case RequestCubeOperations.RotateCube:
                 HandleRotateCube(session, packet);
                 break;
-            case RequestCubeMode.ReplaceCube:
+            case RequestCubeOperations.ReplaceCube:
                 HandleReplaceCube(session, packet);
                 break;
-            case RequestCubeMode.Pickup:
+            case RequestCubeOperations.Pickup:
                 HandlePickup(session, packet);
                 break;
-            case RequestCubeMode.Drop:
+            case RequestCubeOperations.Drop:
                 HandleDrop(session);
                 break;
-            case RequestCubeMode.HomeName:
+            case RequestCubeOperations.HomeName:
                 HandleHomeName(session, packet);
                 break;
-            case RequestCubeMode.HomePassword:
+            case RequestCubeOperations.HomePassword:
                 HandleHomePassword(session, packet);
                 break;
-            case RequestCubeMode.NominateHouse:
+            case RequestCubeOperations.NominateHouse:
                 HandleNominateHouse(session);
                 break;
-            case RequestCubeMode.HomeDescription:
+            case RequestCubeOperations.HomeDescription:
                 HandleHomeDescription(session, packet);
                 break;
-            case RequestCubeMode.ClearInterior:
+            case RequestCubeOperations.ClearInterior:
                 HandleClearInterior(session);
                 break;
-            case RequestCubeMode.RequestLayout:
+            case RequestCubeOperations.RequestLayout:
                 HandleRequestLayout(session, packet);
                 break;
-            case RequestCubeMode.IncreaseSize:
-            case RequestCubeMode.DecreaseSize:
-            case RequestCubeMode.IncreaseHeight:
-            case RequestCubeMode.DecreaseHeight:
-                HandleModifySize(session, mode);
+            case RequestCubeOperations.IncreaseSize:
+            case RequestCubeOperations.DecreaseSize:
+            case RequestCubeOperations.IncreaseHeight:
+            case RequestCubeOperations.DecreaseHeight:
+                HandleModifySize(session, operation);
                 break;
-            case RequestCubeMode.DecorationReward:
+            case RequestCubeOperations.DecorationReward:
                 HandleDecorationReward(session);
                 break;
-            case RequestCubeMode.InteriorDesingReward:
+            case RequestCubeOperations.InteriorDesingReward:
                 HandleInteriorDesingReward(session, packet);
                 break;
-            case RequestCubeMode.SaveLayout:
+            case RequestCubeOperations.SaveLayout:
                 HandleSaveLayout(session, packet);
                 break;
-            case RequestCubeMode.DecorPlannerLoadLayout:
+            case RequestCubeOperations.DecorPlannerLoadLayout:
                 HandleDecorPlannerLoadLayout(session, packet);
                 break;
-            case RequestCubeMode.LoadLayout:
+            case RequestCubeOperations.LoadLayout:
                 HandleLoadLayout(session, packet);
                 break;
-            case RequestCubeMode.KickEveryone:
+            case RequestCubeOperations.KickEveryone:
                 HandleKickEveryone(session);
                 break;
-            case RequestCubeMode.ChangeLighting:
-            case RequestCubeMode.ChangeBackground:
-            case RequestCubeMode.ChangeCamera:
-                HandleModifyInteriorSettings(session, mode, packet);
+            case RequestCubeOperations.ChangeLighting:
+            case RequestCubeOperations.ChangeBackground:
+            case RequestCubeOperations.ChangeCamera:
+                HandleModifyInteriorSettings(session, operation, packet);
                 break;
-            case RequestCubeMode.EnablePermission:
+            case RequestCubeOperations.EnablePermission:
                 HandleEnablePermission(session, packet);
                 break;
-            case RequestCubeMode.SetPermission:
+            case RequestCubeOperations.SetPermission:
                 HandleSetPermission(session, packet);
                 break;
-            case RequestCubeMode.UpdateBudget:
+            case RequestCubeOperations.UpdateBudget:
                 HandleUpdateBudget(session, packet);
                 break;
-            case RequestCubeMode.GiveBuildingPermission:
+            case RequestCubeOperations.GiveBuildingPermission:
                 HandleGiveBuildingPermission(session, packet);
                 break;
-            case RequestCubeMode.RemoveBuildingPermission:
+            case RequestCubeOperations.RemoveBuildingPermission:
                 HandleRemoveBuildingPermission(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }
@@ -827,7 +827,7 @@ public class RequestCubeHandler : GamePacketHandler
         session.SendNotice("Layout loaded succesfully!"); // TODO: Use notice packet
     }
 
-    private static void HandleModifySize(GameSession session, RequestCubeMode mode)
+    private static void HandleModifySize(GameSession session, byte operation)
     {
         Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
         if (session.Player.AccountId != home.AccountId)
@@ -835,57 +835,57 @@ public class RequestCubeHandler : GamePacketHandler
             return;
         }
 
-        if (mode == RequestCubeMode.IncreaseSize && home.Size + 1 > 25 || mode == RequestCubeMode.IncreaseHeight && home.Height + 1 > 15)
+        if (operation == RequestCubeOperations.IncreaseSize && home.Size + 1 > 25 || operation == RequestCubeOperations.IncreaseHeight && home.Height + 1 > 15)
         {
             return;
         }
 
-        if (mode == RequestCubeMode.DecreaseSize && home.Size - 1 < 4 || mode == RequestCubeMode.DecreaseHeight && home.Height - 1 < 3)
+        if (operation == RequestCubeOperations.DecreaseSize && home.Size - 1 < 4 || operation == RequestCubeOperations.DecreaseHeight && home.Height - 1 < 3)
         {
             return;
         }
 
-        RemoveBlocks(session, mode, home);
+        RemoveBlocks(session, operation, home);
 
         if (session.Player.IsInDecorPlanner)
         {
-            switch (mode)
+            switch (operation)
             {
-                case RequestCubeMode.IncreaseSize:
+                case RequestCubeOperations.IncreaseSize:
                     session.FieldManager.BroadcastPacket(ResponseCubePacket.IncreaseSize(++home.DecorPlannerSize));
                     break;
-                case RequestCubeMode.DecreaseSize:
+                case RequestCubeOperations.DecreaseSize:
                     session.FieldManager.BroadcastPacket(ResponseCubePacket.DecreaseSize(--home.DecorPlannerSize));
                     break;
-                case RequestCubeMode.IncreaseHeight:
+                case RequestCubeOperations.IncreaseHeight:
                     session.FieldManager.BroadcastPacket(ResponseCubePacket.IncreaseHeight(++home.DecorPlannerHeight));
                     break;
-                case RequestCubeMode.DecreaseHeight:
+                case RequestCubeOperations.DecreaseHeight:
                     session.FieldManager.BroadcastPacket(ResponseCubePacket.DecreaseHeight(--home.DecorPlannerHeight));
                     break;
             }
         }
         else
         {
-            switch (mode)
+            switch (operation)
             {
-                case RequestCubeMode.IncreaseSize:
+                case RequestCubeOperations.IncreaseSize:
                     session.FieldManager.BroadcastPacket(ResponseCubePacket.IncreaseSize(++home.Size));
                     break;
-                case RequestCubeMode.DecreaseSize:
+                case RequestCubeOperations.DecreaseSize:
                     session.FieldManager.BroadcastPacket(ResponseCubePacket.DecreaseSize(--home.Size));
                     break;
-                case RequestCubeMode.IncreaseHeight:
+                case RequestCubeOperations.IncreaseHeight:
                     session.FieldManager.BroadcastPacket(ResponseCubePacket.IncreaseHeight(++home.Height));
                     break;
-                case RequestCubeMode.DecreaseHeight:
+                case RequestCubeOperations.DecreaseHeight:
                     session.FieldManager.BroadcastPacket(ResponseCubePacket.DecreaseHeight(--home.Height));
                     break;
             }
         }
 
         // move players to safe coord
-        if (mode == RequestCubeMode.DecreaseHeight || mode == RequestCubeMode.DecreaseSize)
+        if (operation == RequestCubeOperations.DecreaseHeight || operation == RequestCubeOperations.DecreaseSize)
         {
             int x;
             if (session.Player.IsInDecorPlanner)
@@ -1134,22 +1134,22 @@ public class RequestCubeHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(ResponseCubePacket.UpdateBudget(home));
     }
 
-    private static void HandleModifyInteriorSettings(GameSession session, RequestCubeMode mode, PacketReader packet)
+    private static void HandleModifyInteriorSettings(GameSession session, byte operation, PacketReader packet)
     {
         byte value = packet.ReadByte();
 
         Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
-        switch (mode)
+        switch (operation)
         {
-            case RequestCubeMode.ChangeBackground:
+            case RequestCubeOperations.ChangeBackground:
                 home.Background = value;
                 session.FieldManager.BroadcastPacket(ResponseCubePacket.ChangeLighting(value));
                 break;
-            case RequestCubeMode.ChangeLighting:
+            case RequestCubeOperations.ChangeLighting:
                 home.Lighting = value;
                 session.FieldManager.BroadcastPacket(ResponseCubePacket.ChangeBackground(value));
                 break;
-            case RequestCubeMode.ChangeCamera:
+            case RequestCubeOperations.ChangeCamera:
                 home.Camera = value;
                 session.FieldManager.BroadcastPacket(ResponseCubePacket.ChangeCamera(value));
                 break;
@@ -1317,9 +1317,9 @@ public class RequestCubeHandler : GamePacketHandler
         return null;
     }
 
-    private static void RemoveBlocks(GameSession session, RequestCubeMode mode, Home home)
+    private static void RemoveBlocks(GameSession session, byte operation, Home home)
     {
-        if (mode == RequestCubeMode.DecreaseSize)
+        if (operation == RequestCubeOperations.DecreaseSize)
         {
             int maxSize = (home.Size - 1) * Block.BLOCK_SIZE * -1;
             for (int i = 0; i < home.Size; i++)
@@ -1349,7 +1349,7 @@ public class RequestCubeHandler : GamePacketHandler
             }
         }
 
-        if (mode == RequestCubeMode.DecreaseHeight)
+        if (operation == RequestCubeOperations.DecreaseHeight)
         {
             for (int i = 0; i < home.Size; i++)
             {

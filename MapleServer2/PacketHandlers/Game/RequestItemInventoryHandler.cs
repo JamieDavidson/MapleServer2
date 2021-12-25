@@ -9,18 +9,18 @@ public class RequestItemInventoryHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_INVENTORY;
 
-    private enum RequestItemInventoryMode : byte
+    private static class RequestItemInventoryMode
     {
-        Move = 0x3,
-        Drop = 0x4,
-        DropBound = 0x5,
-        Sort = 0xA,
-        Expand = 0xB
+        public const byte Move = 0x3;
+        public const byte Drop = 0x4;
+        public const byte DropBound = 0x5;
+        public const byte Sort = 0xA;
+        public const byte Expand = 0xB;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        RequestItemInventoryMode mode = (RequestItemInventoryMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
@@ -40,7 +40,7 @@ public class RequestItemInventoryHandler : GamePacketHandler
                 HandleExpand(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

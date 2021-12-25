@@ -16,7 +16,7 @@ public class BlackMarketHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.BLACK_MARKET;
 
-    private static class BlackMarketOperation
+    private static class BlackMarketOperations
     {
         public const byte Open = 0x1;
         public const byte CreateListing = 0x2;
@@ -42,30 +42,30 @@ public class BlackMarketHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        var mode = packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case BlackMarketOperation.Open:
+            case BlackMarketOperations.Open:
                 HandleOpen(session);
                 break;
-            case BlackMarketOperation.CreateListing:
+            case BlackMarketOperations.CreateListing:
                 HandleCreateListing(session, packet);
                 break;
-            case BlackMarketOperation.CancelListing:
+            case BlackMarketOperations.CancelListing:
                 HandleCancelListing(session, packet);
                 break;
-            case BlackMarketOperation.Search:
+            case BlackMarketOperations.Search:
                 HandleSearch(session, packet);
                 break;
-            case BlackMarketOperation.Purchase:
+            case BlackMarketOperations.Purchase:
                 HandlePurchase(session, packet);
                 break;
-            case BlackMarketOperation.PrepareListing:
+            case BlackMarketOperations.PrepareListing:
                 HandlePrepareListing(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(typeof(BlackMarketHandler), mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

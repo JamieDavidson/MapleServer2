@@ -16,16 +16,16 @@ public class CharacterManagementHandler : LoginPacketHandler
 {
     public override RecvOp OpCode => RecvOp.CHARACTER_MANAGEMENT;
 
-    private enum CharacterManagementMode : byte
+    private static class CharacterManagementMode
     {
-        Login = 0x0,
-        Create = 0x1,
-        Delete = 0x2
+        public const byte Login = 0x0;
+        public const byte Create = 0x1;
+        public const byte Delete = 0x2;
     }
 
     public override void Handle(LoginSession session, PacketReader packet)
     {
-        CharacterManagementMode mode = (CharacterManagementMode) packet.ReadByte();
+        var mode = packet.ReadByte();
         switch (mode)
         {
             case CharacterManagementMode.Login:
@@ -38,7 +38,7 @@ public class CharacterManagementHandler : LoginPacketHandler
                 HandleDelete(session, packet);
                 break;
             default:
-                IPacketHandler<LoginSession>.LogUnknownMode(mode);
+                IPacketHandler<LoginSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

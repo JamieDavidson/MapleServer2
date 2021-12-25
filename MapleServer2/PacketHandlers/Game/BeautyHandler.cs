@@ -35,9 +35,9 @@ public class BeautyHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        var mode = packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
             case BeautyOperations.LoadShop:
                 HandleLoadShop(session, packet);
@@ -76,7 +76,7 @@ public class BeautyHandler : GamePacketHandler
                 HandleBeautyVoucher(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(typeof(BeautyHandler), mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

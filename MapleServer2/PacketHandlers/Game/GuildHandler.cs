@@ -164,7 +164,7 @@ public class GuildHandler : GamePacketHandler
                 HandleServices(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(typeof(GuildHandler), mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

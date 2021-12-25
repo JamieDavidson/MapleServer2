@@ -11,17 +11,17 @@ public class SkillBookTreeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_SKILL_BOOK_TREE;
 
-    private enum SkillBookMode : byte
+    private static class SkillBookMode
     {
-        Open = 0x00,
-        Save = 0x01,
-        Rename = 0x02,
-        AddTab = 0x04
+        public const byte Open = 0x00;
+        public const byte Save = 0x01;
+        public const byte Rename = 0x02;
+        public const byte AddTab = 0x04;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        SkillBookMode mode = (SkillBookMode) packet.ReadByte();
+        var mode = packet.ReadByte();
         switch (mode)
         {
             case SkillBookMode.Open:
@@ -37,7 +37,7 @@ public class SkillBookTreeHandler : GamePacketHandler
                 HandleAddTab(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

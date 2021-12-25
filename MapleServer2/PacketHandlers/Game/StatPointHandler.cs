@@ -10,15 +10,15 @@ public class StatPointHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.STAT_POINT;
 
-    private enum StatPointMode : byte
+    private static class StatPointMode
     {
-        Increment = 0x2,
-        Reset = 0x3
+        public const byte Increment = 0x2;
+        public const byte Reset = 0x3;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        StatPointMode mode = (StatPointMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
@@ -29,7 +29,7 @@ public class StatPointHandler : GamePacketHandler
                 HandleResetStatDistribution(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

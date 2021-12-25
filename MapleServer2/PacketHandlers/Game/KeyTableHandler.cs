@@ -10,38 +10,38 @@ public class KeyTableHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.KEY_TABLE;
 
-    private enum KeyTableEnum : byte
+    private static class KeyTableOperations
     {
-        SetKeyBind = 0x02,
-        MoveQuickSlot = 0x03,
-        AddToFirstSlot = 0x04,
-        RemoveQuickSlot = 0x05,
-        SetActiveHotbar = 0x08
+        public const byte SetKeyBind = 0x02;
+        public const byte MoveQuickSlot = 0x03;
+        public const byte AddToFirstSlot = 0x04;
+        public const byte RemoveQuickSlot = 0x05;
+        public const byte SetActiveHotbar = 0x08;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        KeyTableEnum requestType = (KeyTableEnum) packet.ReadByte();
+        var requestType = packet.ReadByte();
 
         switch (requestType)
         {
-            case KeyTableEnum.SetKeyBind:
+            case KeyTableOperations.SetKeyBind:
                 SetKeyBinds(session, packet);
                 break;
-            case KeyTableEnum.MoveQuickSlot:
+            case KeyTableOperations.MoveQuickSlot:
                 MoveQuickSlot(session, packet);
                 break;
-            case KeyTableEnum.AddToFirstSlot:
+            case KeyTableOperations.AddToFirstSlot:
                 AddToQuickSlot(session, packet);
                 break;
-            case KeyTableEnum.RemoveQuickSlot:
+            case KeyTableOperations.RemoveQuickSlot:
                 RemoveQuickSlot(session, packet);
                 break;
-            case KeyTableEnum.SetActiveHotbar:
+            case KeyTableOperations.SetActiveHotbar:
                 SetActiveHotbar(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(requestType);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), requestType);
                 break;
         }
     }

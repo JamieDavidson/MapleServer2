@@ -13,34 +13,34 @@ public class PremiumClubHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.PREMIUM_CLUB;
 
-    private enum PremiumClubMode : byte
+    private static class PremiumClubOperations
     {
-        Open = 0x1,
-        ClaimItems = 0x2,
-        OpenPurchaseWindow = 0x3,
-        PurchaseMembership = 0x4
+        public const byte Open = 0x1;
+        public const byte ClaimItems = 0x2;
+        public const byte OpenPurchaseWindow = 0x3;
+        public const byte PurchaseMembership = 0x4;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        PremiumClubMode mode = (PremiumClubMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
-            case PremiumClubMode.Open:
+            case PremiumClubOperations.Open:
                 HandleOpen(session);
                 break;
-            case PremiumClubMode.ClaimItems:
+            case PremiumClubOperations.ClaimItems:
                 HandleClaimItems(session, packet);
                 break;
-            case PremiumClubMode.OpenPurchaseWindow:
+            case PremiumClubOperations.OpenPurchaseWindow:
                 HandleOpenPurchaseWindow(session);
                 break;
-            case PremiumClubMode.PurchaseMembership:
+            case PremiumClubOperations.PurchaseMembership:
                 HandlePurchaseMembership(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

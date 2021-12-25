@@ -16,12 +16,12 @@ public class NpcTalkHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.NPC_TALK;
 
-    private enum NpcTalkMode : byte
+    private static class NpcTalkOperations
     {
-        Close = 0,
-        Respond = 1,
-        Continue = 2,
-        NextQuest = 7
+        public const byte Close = 0;
+        public const byte Respond = 1;
+        public const byte Continue = 2;
+        public const byte NextQuest = 7;
     }
 
     private enum ScriptIdType : byte
@@ -33,22 +33,22 @@ public class NpcTalkHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        NpcTalkMode function = (NpcTalkMode) packet.ReadByte();
-        switch (function)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
-            case NpcTalkMode.Close:
+            case NpcTalkOperations.Close:
                 return;
-            case NpcTalkMode.Respond:
+            case NpcTalkOperations.Respond:
                 HandleRespond(session, packet);
                 break;
-            case NpcTalkMode.Continue:
+            case NpcTalkOperations.Continue:
                 HandleContinue(session, packet.ReadInt());
                 break;
-            case NpcTalkMode.NextQuest:
+            case NpcTalkOperations.NextQuest:
                 HandleNextQuest(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(function);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

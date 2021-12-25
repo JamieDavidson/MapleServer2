@@ -15,39 +15,39 @@ public class HomeActionHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.HOME_ACTION;
 
-    private enum HomeActionMode : byte
+    private static class HomeActionOperations
     {
-        Smite = 0x01,
-        Kick = 0x02,
-        Survey = 0x05,
-        ChangePortalSettings = 0x06,
-        UpdateBallCoord = 0x07,
-        SendPortalSettings = 0x0D
+        public const byte Smite = 0x01;
+        public const byte Kick = 0x02;
+        public const byte Survey = 0x05;
+        public const byte ChangePortalSettings = 0x06;
+        public const byte UpdateBallCoord = 0x07;
+        public const byte SendPortalSettings = 0x0D;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        HomeActionMode mode = (HomeActionMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case HomeActionMode.Kick:
+            case HomeActionOperations.Kick:
                 HandleKick(packet);
                 break;
-            case HomeActionMode.Survey:
+            case HomeActionOperations.Survey:
                 HandleRespondSurvey(session, packet);
                 break;
-            case HomeActionMode.ChangePortalSettings:
+            case HomeActionOperations.ChangePortalSettings:
                 HandleChangePortalSettings(session, packet);
                 break;
-            case HomeActionMode.UpdateBallCoord:
+            case HomeActionOperations.UpdateBallCoord:
                 HandleUpdateBallCoord(session, packet);
                 break;
-            case HomeActionMode.SendPortalSettings:
+            case HomeActionOperations.SendPortalSettings:
                 HandleSendPortalSettings(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

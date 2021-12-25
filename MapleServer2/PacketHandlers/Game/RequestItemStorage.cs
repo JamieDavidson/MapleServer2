@@ -10,21 +10,21 @@ public class RequestItemStorage : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_STORAGE;
 
-    private enum ItemStorageMode : byte
+    private static class ItemStorageMode
     {
-        Add = 0x00,
-        Remove = 0x01,
-        Move = 0x02,
-        Mesos = 0x03,
-        Expand = 0x06,
-        Sort = 0x08,
-        LoadBank = 0x0C,
-        Close = 0x0F
+        public const byte Add = 0x00;
+        public const byte Remove = 0x01;
+        public const byte Move = 0x02;
+        public const byte Mesos = 0x03;
+        public const byte Expand = 0x06;
+        public const byte Sort = 0x08;
+        public const byte LoadBank = 0x0C;
+        public const byte Close = 0x0F;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ItemStorageMode mode = (ItemStorageMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
@@ -53,7 +53,7 @@ public class RequestItemStorage : GamePacketHandler
                 HandleClose(session.Player.Account.BankInventory);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

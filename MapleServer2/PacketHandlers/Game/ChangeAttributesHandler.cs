@@ -12,23 +12,26 @@ public class ChangeAttributesHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CHANGE_ATTRIBUTES;
 
-    private enum ChangeAttributesMode : byte
+    private static class ChangeAttributesMode
     {
-        ChangeAttributes = 0,
-        SelectNewAttributes = 2
+        public const byte ChangeAttributes = 0x0;
+        public const byte SelectNewAttributes = 0x02;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ChangeAttributesMode function = (ChangeAttributesMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (function)
+        switch (operation)
         {
             case ChangeAttributesMode.ChangeAttributes:
                 HandleChangeAttributes(session, packet);
                 break;
             case ChangeAttributesMode.SelectNewAttributes:
                 HandleSelectNewAttributes(session, packet);
+                break;
+            default:
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

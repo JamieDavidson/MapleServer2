@@ -18,26 +18,26 @@ public class SkillHandler : GamePacketHandler
 
     public override RecvOp OpCode => RecvOp.SKILL;
 
-    private enum SkillHandlerMode : byte
+    private static class SkillHandlerMode
     {
-        Cast = 0x0,
-        Damage = 0x1,
-        Sync = 0x2,
-        SyncTick = 0x3,
-        Cancel = 0x4
+        public const byte Cast = 0x0;
+        public const byte Damage = 0x1;
+        public const byte Sync = 0x2;
+        public const byte SyncTick = 0x3;
+        public const byte Cancel = 0x4;
     }
 
-    private enum DamagingMode : byte
+    private static class DamagingMode
     {
-        SyncDamage = 0x0,
-        Damage = 0x1,
-        RegionSkill = 0x2
+        public const byte SyncDamage = 0x0;
+        public const byte Damage = 0x1;
+        public const byte RegionSkill = 0x2;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        SkillHandlerMode mode = (SkillHandlerMode) packet.ReadByte();
-        switch (mode)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
             case SkillHandlerMode.Cast:
                 HandleCast(session, packet);
@@ -55,15 +55,15 @@ public class SkillHandler : GamePacketHandler
                 HandleCancelSkill(packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }
 
-    private static void HandleDamageMode(GameSession session, PacketReader packet)
+    private void HandleDamageMode(GameSession session, PacketReader packet)
     {
-        DamagingMode mode = (DamagingMode) packet.ReadByte();
-        switch (mode)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
             case DamagingMode.SyncDamage:
                 HandleSyncDamage(session, packet);
@@ -75,7 +75,7 @@ public class SkillHandler : GamePacketHandler
                 HandleRegionSkills(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

@@ -10,21 +10,21 @@ public class LoginUgcHandler : LoginPacketHandler
 {
     public override RecvOp OpCode => RecvOp.UGC;
 
-    private enum UgcMode : byte
+    private static class UgcMode
     {
-        ProfilePicture = 0x0B
+        public const byte ProfilePicture = 0x0B;
     }
 
     public override void Handle(LoginSession session, PacketReader packet)
     {
-        UgcMode function = (UgcMode) packet.ReadByte();
+        var function = packet.ReadByte();
         switch (function)
         {
             case UgcMode.ProfilePicture:
                 HandleProfilePicture(session, packet);
                 break;
             default:
-                IPacketHandler<LoginSession>.LogUnknownMode(function);
+                IPacketHandler<LoginSession>.LogUnknownMode(GetType(), function);
                 break;
         }
     }

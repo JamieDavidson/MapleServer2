@@ -11,7 +11,7 @@ public class BuildModeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_SET_BUILD_MODE;
 
-    private static class BuildModeOperation
+    private static class BuildModeOperations
     {
         public const byte Stop = 0x0;
         public const byte Start = 0x1;
@@ -30,14 +30,14 @@ public class BuildModeHandler : GamePacketHandler
 
         switch (mode)
         {
-            case BuildModeOperation.Stop:
+            case BuildModeOperations.Stop:
                 HandleStop(session);
                 break;
-            case BuildModeOperation.Start:
+            case BuildModeOperations.Start:
                 HandleStart(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(typeof(BuildModeHandler), mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

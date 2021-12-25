@@ -11,8 +11,8 @@ public class StateSkillHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        byte function = packet.ReadByte();
-        if (function == 0)
+        byte operation = packet.ReadByte();
+        if (operation == 0)
         {
             // This count seems to increase for each skill used
             int counter = packet.ReadInt();

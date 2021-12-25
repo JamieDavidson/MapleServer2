@@ -22,9 +22,9 @@ public class BuddyEmoteHandler : GamePacketHandler
     }
     public override void Handle(GameSession session, PacketReader packet)
     {
-        var mode = packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
             case BuddyEmoteOperations.InviteBuddyEmote:
                 HandleInviteBuddyEmote(session, packet);
@@ -45,7 +45,7 @@ public class BuddyEmoteHandler : GamePacketHandler
                 HandleStopEmote(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(typeof(BuddyEmoteHandler), mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

@@ -41,9 +41,9 @@ public class BuddyHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        var mode = packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
             case BuddyOperations.SendRequest:
                 HandleSendRequest(session, packet);
@@ -70,7 +70,7 @@ public class BuddyHandler : GamePacketHandler
                 HandleCancelRequest(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(typeof(BuddyHandler), mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

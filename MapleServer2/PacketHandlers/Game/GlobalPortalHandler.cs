@@ -11,22 +11,22 @@ public class GlobalPortalHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.GLOBAL_PORTAL;
 
-    private enum GlobalPortalMode : byte
+    private static class GlobalPortalOperations
     {
-        Enter = 0x2
+        public const byte Enter = 0x2;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        GlobalPortalMode mode = (GlobalPortalMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case GlobalPortalMode.Enter:
+            case GlobalPortalOperations.Enter:
                 HandleEnter(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

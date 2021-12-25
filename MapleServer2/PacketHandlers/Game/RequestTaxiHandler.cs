@@ -13,42 +13,42 @@ internal class RequestTaxiHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_TAXI;
 
-    private enum RequestTaxiMode : byte
+    private static class RequestTaxiOperation
     {
-        Car = 0x1,
-        RotorsMeso = 0x3,
-        RotorsMeret = 0x4,
-        DiscoverTaxi = 0x5
+        public const byte Car = 0x1;
+        public const byte RotorsMeso = 0x3;
+        public const byte RotorsMeret = 0x4;
+        public const byte DiscoverTaxi = 0x5;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        RequestTaxiMode mode = (RequestTaxiMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
         int mapId = 0;
         long meretPrice = 15;
 
-        if (mode != RequestTaxiMode.DiscoverTaxi)
+        if (operation != RequestTaxiOperation.DiscoverTaxi)
         {
             mapId = packet.ReadInt();
         }
 
-        switch (mode)
+        switch (operation)
         {
-            case RequestTaxiMode.Car:
+            case RequestTaxiOperation.Car:
                 HandleCarTaxi(session, mapId);
                 break;
-            case RequestTaxiMode.RotorsMeso:
+            case RequestTaxiOperation.RotorsMeso:
                 HandleRotorMeso(session, mapId);
                 break;
-            case RequestTaxiMode.RotorsMeret:
+            case RequestTaxiOperation.RotorsMeret:
                 HandleRotorMeret(session, mapId, meretPrice);
                 break;
-            case RequestTaxiMode.DiscoverTaxi:
+            case RequestTaxiOperation.DiscoverTaxi:
                 HandleDiscoverTaxi(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

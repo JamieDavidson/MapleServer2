@@ -14,34 +14,34 @@ public class MasteryHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CONSTRUCT_RECIPE;
 
-    private enum MasteryMode : byte
+    private static class MasteryOperations
     {
-        RewardBox = 0x01,
-        CraftItem = 0x02
+        public const byte RewardBox = 0x01;
+        public const byte CraftItem = 0x02;
     }
 
-    private enum MasteryNotice : byte
+    private static class MasteryNotice
     {
-        NotEnoughMastery = 0x01,
-        NotEnoughMesos = 0x02,
-        RequiredQuestIsNotCompleted = 0x03,
-        NotEnoughItems = 0x04,
-        InsufficientLevel = 0x07
+        public const byte NotEnoughMastery = 0x01;
+        public const byte NotEnoughMesos = 0x02;
+        public const byte RequiredQuestIsNotCompleted = 0x03;
+        public const byte NotEnoughItems = 0x04;
+        public const byte InsufficientLevel = 0x07;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        MasteryMode mode = (MasteryMode) packet.ReadByte();
-        switch (mode)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
-            case MasteryMode.RewardBox:
+            case MasteryOperations.RewardBox:
                 HandleRewardBox(session, packet);
                 break;
-            case MasteryMode.CraftItem:
+            case MasteryOperations.CraftItem:
                 HandleCraftItem(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }
@@ -144,7 +144,7 @@ public class MasteryHandler : GamePacketHandler
 
         return true;
     }
-
+    
     private static void AddRewardItemsToInventory(GameSession session, RecipeMetadata recipe)
     {
         // award items

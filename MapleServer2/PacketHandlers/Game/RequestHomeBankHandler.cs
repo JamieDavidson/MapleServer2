@@ -10,15 +10,15 @@ public class RequestHomeBankHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_HOME_BANK;
 
-    private enum BankMode : byte
+    private static class BankMode
     {
-        House = 0x01,
-        Inventory = 0x02
+        public const byte House = 0x01;
+        public const byte Inventory = 0x02;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        BankMode mode = (BankMode) packet.ReadByte();
+        var mode = packet.ReadByte();
         switch (mode)
         {
             case BankMode.House:
@@ -28,7 +28,7 @@ public class RequestHomeBankHandler : GamePacketHandler
                 HandleOpen(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

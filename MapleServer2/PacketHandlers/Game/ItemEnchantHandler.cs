@@ -12,9 +12,9 @@ public class ItemEnchantHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        byte function = packet.ReadByte();
+        byte operation = packet.ReadByte();
 
-        switch (function)
+        switch (operation)
         {
             case 0: // Sent when opening up enchant ui
                 break;

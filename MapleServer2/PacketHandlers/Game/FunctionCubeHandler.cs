@@ -14,21 +14,21 @@ public class FunctionCubeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.FUNCTION_CUBE;
 
-    private enum FunctionCubeMode : byte
+    private static class FunctionCubeMode
     {
-        Use = 0x04
+        public const byte Use = 0x04;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        FunctionCubeMode mode = (FunctionCubeMode) packet.ReadByte();
+        var mode = packet.ReadByte();
         switch (mode)
         {
             case FunctionCubeMode.Use:
                 HandleUseCube(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

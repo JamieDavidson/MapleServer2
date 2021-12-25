@@ -9,18 +9,18 @@ public class RequestItemBreakHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_BREAK;
 
-    private enum ItemBreakMode : byte
+    private static class ItemBreakMode
     {
-        Open = 0x00,
-        Add = 0x01,
-        Remove = 0x02,
-        Dismantle = 0x03,
-        AutoAdd = 0x06
+        public const byte Open = 0x00;
+        public const byte Add = 0x01;
+        public const byte Remove = 0x02;
+        public const byte Dismantle = 0x03;
+        public const byte AutoAdd = 0x06;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ItemBreakMode mode = (ItemBreakMode) packet.ReadByte();
+        var mode = packet.ReadByte();
         switch (mode)
         {
             case ItemBreakMode.Open:
@@ -40,7 +40,7 @@ public class RequestItemBreakHandler : GamePacketHandler
                 HandleAutoAdd(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }
