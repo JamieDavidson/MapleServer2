@@ -8,11 +8,11 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class PrestigeHandler : GamePacketHandler
+internal sealed class PrestigeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.PRESTIGE;
 
-    private static class PrestigeOperation
+    private static class PrestigeOperations
     {
         public const byte Reward = 0x03;
     }
@@ -22,7 +22,7 @@ public class PrestigeHandler : GamePacketHandler
         var operation = packet.ReadByte();
         switch (operation)
         {
-            case PrestigeOperation.Reward: // Receive reward
+            case PrestigeOperations.Reward: // Receive reward
                 HandleReward(session, packet);
                 break;
         }

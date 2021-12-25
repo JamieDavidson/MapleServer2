@@ -5,7 +5,7 @@ using NLog;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public abstract class GamePacketHandler : IPacketHandler<GameSession>
+internal abstract class GamePacketHandler : IPacketHandler<GameSession>
 {
     public abstract RecvOp OpCode { get; }
 

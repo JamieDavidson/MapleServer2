@@ -5,7 +5,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game.Helpers;
 
-public class MailHelper
+internal static class MailHelper
 {
     public static void SendMail(MailType type, long recipientCharacterId, long senderCharacterId, string senderName, string title, string body, string addParameter1, string addParameter2, List<Item> items, long mesos, long merets, out Mail mail)
     {

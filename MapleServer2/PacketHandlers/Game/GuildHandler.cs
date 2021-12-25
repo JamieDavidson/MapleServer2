@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class GuildHandler : GamePacketHandler
+internal sealed class GuildHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.GUILD;
 

@@ -10,7 +10,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Login;
 
-public class ServerEnterPacketHandler : LoginPacketHandler
+internal sealed class ServerEnterPacketHandler : LoginPacketHandler
 {
     public override RecvOp OpCode => RecvOp.RESPONSE_SERVER_ENTER;
 

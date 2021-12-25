@@ -7,7 +7,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ClubHandler : GamePacketHandler
+internal sealed class ClubHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CLUB;
 

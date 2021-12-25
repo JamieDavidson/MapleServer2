@@ -7,7 +7,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class JobHandler : GamePacketHandler
+internal sealed class JobHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.JOB;
 

@@ -6,7 +6,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class KeyTableHandler : GamePacketHandler
+internal sealed class KeyTableHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.KEY_TABLE;
 

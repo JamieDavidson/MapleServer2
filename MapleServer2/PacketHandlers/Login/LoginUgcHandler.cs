@@ -6,25 +6,25 @@ using MapleServer2.Servers.Login;
 
 namespace MapleServer2.PacketHandlers.Login;
 
-public class LoginUgcHandler : LoginPacketHandler
+internal sealed class LoginUgcHandler : LoginPacketHandler
 {
     public override RecvOp OpCode => RecvOp.UGC;
 
-    private static class UgcMode
+    private static class UgcOperations
     {
         public const byte ProfilePicture = 0x0B;
     }
 
     public override void Handle(LoginSession session, PacketReader packet)
     {
-        var function = packet.ReadByte();
-        switch (function)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
-            case UgcMode.ProfilePicture:
+            case UgcOperations.ProfilePicture:
                 HandleProfilePicture(session, packet);
                 break;
             default:
-                IPacketHandler<LoginSession>.LogUnknownMode(GetType(), function);
+                IPacketHandler<LoginSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

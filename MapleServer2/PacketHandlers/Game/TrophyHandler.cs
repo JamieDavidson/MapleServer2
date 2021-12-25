@@ -10,11 +10,11 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class TrophyHandler : GamePacketHandler
+internal sealed class TrophyHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.TROPHY;
 
-    private static class TrophyHandlerMode
+    private static class TrophyHandlerOperations
     {
         public const byte ClaimReward = 0x03;
         public const byte Favorite = 0x04;
@@ -26,10 +26,10 @@ public class TrophyHandler : GamePacketHandler
 
         switch (mode)
         {
-            case TrophyHandlerMode.ClaimReward:
+            case TrophyHandlerOperations.ClaimReward:
                 HandleClaimReward(session, packet);
                 break;
-            case TrophyHandlerMode.Favorite:
+            case TrophyHandlerOperations.Favorite:
                 HandleFavorite(session, packet);
                 break;
             default:

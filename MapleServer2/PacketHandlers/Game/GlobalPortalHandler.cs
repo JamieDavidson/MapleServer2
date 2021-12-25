@@ -7,7 +7,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class GlobalPortalHandler : GamePacketHandler
+internal sealed class GlobalPortalHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.GLOBAL_PORTAL;
 

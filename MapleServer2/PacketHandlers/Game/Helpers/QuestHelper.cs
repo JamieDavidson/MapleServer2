@@ -8,7 +8,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game.Helpers;
 
-public static class QuestHelper
+internal static class QuestHelper
 {
     public static void UpdateExplorationQuest(GameSession session, string code, string type)
     {

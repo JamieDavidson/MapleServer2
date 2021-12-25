@@ -16,7 +16,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestCubeHandler : GamePacketHandler
+internal sealed class RequestCubeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_CUBE;
 
@@ -387,7 +387,7 @@ public class RequestCubeHandler : GamePacketHandler
 
         fieldManager.BroadcastPacket(LiftablePacket.Drop(liftable));
         fieldManager.BroadcastPacket(ResponseCubePacket.PlaceLiftable(liftable, player.FieldPlayer.ObjectId));
-        fieldManager.BroadcastPacket(BuildModePacket.Use(player.FieldPlayer, BuildModeHandler.BuildModeType.Stop));
+        fieldManager.BroadcastPacket(BuildModePacket.Use(player.FieldPlayer, BuildModeHandler.BuildModeTypes.Stop));
         fieldManager.BroadcastPacket(LiftablePacket.UpdateEntityByCoord(liftable));
     }
 

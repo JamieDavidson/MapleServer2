@@ -13,7 +13,7 @@ using MapleServer2.Types;
 namespace MapleServer2.PacketHandlers.Login;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public class LoginHandler : LoginPacketHandler
+internal sealed class LoginHandler : LoginPacketHandler
 {
     public override RecvOp OpCode => RecvOp.RESPONSE_LOGIN;
 
@@ -21,7 +21,7 @@ public class LoginHandler : LoginPacketHandler
     private readonly ImmutableList<IPEndPoint> ServerIPs;
     private readonly string ServerName;
 
-    private static class LoginMode
+    private static class LoginOperations
     {
         public const byte Banners = 0x01;
         public const byte SendCharacters = 0x02;
@@ -81,10 +81,10 @@ public class LoginHandler : LoginPacketHandler
 
         switch (mode)
         {
-            case LoginMode.Banners:
+            case LoginOperations.Banners:
                 SendBanners(session, account);
                 break;
-            case LoginMode.SendCharacters:
+            case LoginOperations.SendCharacters:
                 SendCharacters(session, account);
                 break;
         }

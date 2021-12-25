@@ -6,11 +6,11 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class SuperChatHandler : GamePacketHandler
+internal sealed class SuperChatHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.SUPER_WORLDCHAT;
 
-    private static class SuperChatMode
+    private static class SuperChatOperations
     {
         public const byte Select = 0x0;
         public const byte Deselect = 0x1;
@@ -22,10 +22,10 @@ public class SuperChatHandler : GamePacketHandler
 
         switch (mode)
         {
-            case SuperChatMode.Select:
+            case SuperChatOperations.Select:
                 HandleSelect(session, packet);
                 break;
-            case SuperChatMode.Deselect:
+            case SuperChatOperations.Deselect:
                 HandleDeselect(session);
                 break;
             default:

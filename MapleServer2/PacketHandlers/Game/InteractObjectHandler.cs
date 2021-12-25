@@ -11,7 +11,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-internal class InteractObjectHandler : GamePacketHandler
+internal sealed class InteractObjectHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.INTERACT_OBJECT;
 

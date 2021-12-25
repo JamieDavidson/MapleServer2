@@ -4,11 +4,11 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class StateHandler : GamePacketHandler
+internal sealed class StateHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.STATE;
 
-    private static class StateHandlerMode
+    private static class StateHandlerOperations
     {
         public const byte Jump = 0x0;
         public const byte Land = 0x1;
@@ -20,10 +20,10 @@ public class StateHandler : GamePacketHandler
 
         switch (mode)
         {
-            case StateHandlerMode.Jump:
+            case StateHandlerOperations.Jump:
                 HandleJump(session);
                 break;
-            case StateHandlerMode.Land:
+            case StateHandlerOperations.Land:
                 break;
         }
     }

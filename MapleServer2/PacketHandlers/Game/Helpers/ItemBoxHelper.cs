@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game.Helpers;
 
-public static class ItemBoxHelper
+internal static class ItemBoxHelper
 {
     public static List<Item> GetItemsFromDropGroup(DropGroupContent dropContent, Gender playerGender, Job job)
     {

@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class BuddyHandler : GamePacketHandler
+internal sealed class BuddyHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.BUDDY;
 
@@ -25,7 +25,7 @@ public class BuddyHandler : GamePacketHandler
         public const byte CancelRequest = 0x11;
     }
 
-    private static class BuddyNotice
+    private static class BuddyNotices
     {
         public const byte RequestSent = 0x0;
         public const byte CharacterNotFound = 0x1;
@@ -82,7 +82,7 @@ public class BuddyHandler : GamePacketHandler
 
         if (!DatabaseManager.Characters.NameExists(otherPlayerName))
         {
-            session.Send(BuddyPacket.Notice(BuddyNotice.CharacterNotFound, otherPlayerName));
+            session.Send(BuddyPacket.Notice(BuddyNotices.CharacterNotFound, otherPlayerName));
             return;
         }
 
@@ -95,31 +95,31 @@ public class BuddyHandler : GamePacketHandler
 
         if (targetPlayer.CharacterId == session.Player.CharacterId)
         {
-            session.Send(BuddyPacket.Notice(BuddyNotice.CannotAddSelf, targetPlayer.Name));
+            session.Send(BuddyPacket.Notice(BuddyNotices.CannotAddSelf, targetPlayer.Name));
             return;
         }
 
         if (session.Player.BuddyList.Count(b => !b.Blocked) >= 100) // 100 is friend limit
         {
-            session.Send(BuddyPacket.Notice(BuddyNotice.CannotAddFriends, targetPlayer.Name));
+            session.Send(BuddyPacket.Notice(BuddyNotices.CannotAddFriends, targetPlayer.Name));
             return;
         }
 
         if (targetPlayer.BuddyList.Count(b => !b.Blocked) >= 100)
         {
-            session.Send(BuddyPacket.Notice(BuddyNotice.OtherUserCannotAddFriends, targetPlayer.Name));
+            session.Send(BuddyPacket.Notice(BuddyNotices.OtherUserCannotAddFriends, targetPlayer.Name));
             return;
         }
 
         if (BuddyManager.IsBlocked(session.Player, targetPlayer))
         {
-            session.Send(BuddyPacket.Notice(BuddyNotice.DeclinedRequest, targetPlayer.Name));
+            session.Send(BuddyPacket.Notice(BuddyNotices.DeclinedRequest, targetPlayer.Name));
             return;
         }
 
         if (BuddyManager.IsFriend(session.Player, targetPlayer))
         {
-            session.Send(BuddyPacket.Notice(BuddyNotice.AlreadyFriends, targetPlayer.Name));
+            session.Send(BuddyPacket.Notice(BuddyNotices.AlreadyFriends, targetPlayer.Name));
             return;
         }
 
@@ -130,7 +130,7 @@ public class BuddyHandler : GamePacketHandler
         GameServer.BuddyManager.AddBuddy(buddyTargetPlayer);
         session.Player.BuddyList.Add(buddy);
 
-        session.Send(BuddyPacket.Notice(BuddyNotice.RequestSent, targetPlayer.Name));
+        session.Send(BuddyPacket.Notice(BuddyNotices.RequestSent, targetPlayer.Name));
         session.Send(BuddyPacket.AddToList(buddy));
 
         if (targetPlayer.Session != null && targetPlayer.Session.Connected())
@@ -235,13 +235,13 @@ public class BuddyHandler : GamePacketHandler
 
         if (session.Player.BuddyList.Count(b => b.Blocked) >= 100) // 100 is block limit
         {
-            session.Send(BuddyPacket.Notice(BuddyNotice.CannotBlock, targetName));
+            session.Send(BuddyPacket.Notice(BuddyNotices.CannotBlock, targetName));
             return;
         }
 
         if (!DatabaseManager.Characters.NameExists(targetName))
         {
-            session.Send(BuddyPacket.Notice(BuddyNotice.CharacterNotFound, targetName));
+            session.Send(BuddyPacket.Notice(BuddyNotices.CharacterNotFound, targetName));
             return;
         }
 

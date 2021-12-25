@@ -7,7 +7,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class PartyHandler : GamePacketHandler
+internal sealed class PartyHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.PARTY;
 

@@ -8,7 +8,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ChangeAttributesHandler : GamePacketHandler
+internal sealed class ChangeAttributesHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CHANGE_ATTRIBUTES;
 

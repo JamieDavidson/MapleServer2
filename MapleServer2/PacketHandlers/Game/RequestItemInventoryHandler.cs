@@ -5,11 +5,11 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestItemInventoryHandler : GamePacketHandler
+internal sealed class RequestItemInventoryHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_INVENTORY;
 
-    private static class RequestItemInventoryMode
+    private static class RequestItemInventoryOperations
     {
         public const byte Move = 0x3;
         public const byte Drop = 0x4;
@@ -20,27 +20,27 @@ public class RequestItemInventoryHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        var mode = packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case RequestItemInventoryMode.Move:
+            case RequestItemInventoryOperations.Move:
                 HandleMove(session, packet);
                 break;
-            case RequestItemInventoryMode.Drop:
+            case RequestItemInventoryOperations.Drop:
                 HandleDrop(session, packet);
                 break;
-            case RequestItemInventoryMode.DropBound:
+            case RequestItemInventoryOperations.DropBound:
                 HandleDropBound(session, packet);
                 break;
-            case RequestItemInventoryMode.Sort:
+            case RequestItemInventoryOperations.Sort:
                 HandleSort(session, packet);
                 break;
-            case RequestItemInventoryMode.Expand:
+            case RequestItemInventoryOperations.Expand:
                 HandleExpand(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

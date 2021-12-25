@@ -7,11 +7,11 @@ using static MapleServer2.Packets.TriggerPacket;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class TriggerHandler : GamePacketHandler
+internal sealed class TriggerHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.TRIGGER;
 
-    private static class TriggerMode
+    private static class TriggerOperations
     {
         public const byte SkipCutscene = 0x7;
         public const byte UpdateWidget = 0x8;
@@ -19,18 +19,18 @@ public class TriggerHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        var mode = packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case TriggerMode.SkipCutscene:
+            case TriggerOperations.SkipCutscene:
                 HandleSkipCutscene(session);
                 break;
-            case TriggerMode.UpdateWidget:
+            case TriggerOperations.UpdateWidget:
                 HandleUpdateWidget(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

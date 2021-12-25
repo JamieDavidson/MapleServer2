@@ -12,13 +12,13 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class SkillHandler : GamePacketHandler
+internal sealed class SkillHandler : GamePacketHandler
 {
     private static readonly Random Rand = RandomProvider.Get();
 
     public override RecvOp OpCode => RecvOp.SKILL;
 
-    private static class SkillHandlerMode
+    private static class SkillHandlerOperations
     {
         public const byte Cast = 0x0;
         public const byte Damage = 0x1;
@@ -27,7 +27,7 @@ public class SkillHandler : GamePacketHandler
         public const byte Cancel = 0x4;
     }
 
-    private static class DamagingMode
+    private static class DamagingOperation
     {
         public const byte SyncDamage = 0x0;
         public const byte Damage = 0x1;
@@ -39,19 +39,19 @@ public class SkillHandler : GamePacketHandler
         var operation = packet.ReadByte();
         switch (operation)
         {
-            case SkillHandlerMode.Cast:
+            case SkillHandlerOperations.Cast:
                 HandleCast(session, packet);
                 break;
-            case SkillHandlerMode.Damage:
+            case SkillHandlerOperations.Damage:
                 HandleDamageMode(session, packet);
                 break;
-            case SkillHandlerMode.Sync:
+            case SkillHandlerOperations.Sync:
                 HandleSyncSkills(session, packet);
                 break;
-            case SkillHandlerMode.SyncTick:
+            case SkillHandlerOperations.SyncTick:
                 HandleSyncTick(packet);
                 break;
-            case SkillHandlerMode.Cancel:
+            case SkillHandlerOperations.Cancel:
                 HandleCancelSkill(packet);
                 break;
             default:
@@ -65,13 +65,13 @@ public class SkillHandler : GamePacketHandler
         var operation = packet.ReadByte();
         switch (operation)
         {
-            case DamagingMode.SyncDamage:
+            case DamagingOperation.SyncDamage:
                 HandleSyncDamage(session, packet);
                 break;
-            case DamagingMode.Damage:
+            case DamagingOperation.Damage:
                 HandleDamage(session, packet);
                 break;
-            case DamagingMode.RegionSkill:
+            case DamagingOperation.RegionSkill:
                 HandleRegionSkills(session, packet);
                 break;
             default:

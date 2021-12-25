@@ -6,11 +6,11 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class GroupChatHandler : GamePacketHandler
+internal sealed class GroupChatHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.GROUP_CHAT;
 
-    private static class GroupChatMode
+    private static class GroupChatOperations
     {
         public const byte Create = 0x1;
         public const byte Invite = 0x2;
@@ -20,24 +20,24 @@ public class GroupChatHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        var mode = packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case GroupChatMode.Create:
+            case GroupChatOperations.Create:
                 HandleCreate(session);
                 break;
-            case GroupChatMode.Invite:
+            case GroupChatOperations.Invite:
                 HandleInvite(session, packet);
                 break;
-            case GroupChatMode.Leave:
+            case GroupChatOperations.Leave:
                 HandleLeave(session, packet);
                 break;
-            case GroupChatMode.Chat:
+            case GroupChatOperations.Chat:
                 HandleChat(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

@@ -12,7 +12,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MeretMarketHandler : GamePacketHandler
+internal sealed class MeretMarketHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.MERET_MARKET;
 

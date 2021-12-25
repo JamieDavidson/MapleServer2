@@ -11,11 +11,11 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ShopHandler : GamePacketHandler
+internal sealed class ShopHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.SHOP;
 
-    private static class ShopMode
+    private static class ShopOperations
     {
         public const byte Buy = 0x4;
         public const byte Sell = 0x5;
@@ -25,24 +25,24 @@ public class ShopHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        var mode = packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case ShopMode.Close:
+            case ShopOperations.Close:
                 HandleClose(session);
                 break;
-            case ShopMode.Buy:
+            case ShopOperations.Buy:
                 HandleBuy(session, packet);
                 break;
-            case ShopMode.Sell:
+            case ShopOperations.Sell:
                 HandleSell(session, packet);
                 break;
-            case ShopMode.OpenViaItem:
+            case ShopOperations.OpenViaItem:
                 HandleOpenViaItem(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

@@ -10,7 +10,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class QuestHandler : GamePacketHandler
+internal sealed class QuestHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.QUEST;
 

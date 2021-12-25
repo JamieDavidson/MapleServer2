@@ -10,7 +10,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MailHandler : GamePacketHandler
+internal sealed class MailHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.MAIL;
 
@@ -25,7 +25,7 @@ public class MailHandler : GamePacketHandler
         public const byte CollectBatch = 0x13;
     }
 
-    private static class MailErrorCode
+    private static class MailErrors
     {
         public const byte CharacterNotFound = 0x01;
         public const byte ItemAmountMismatch = 0x02;
@@ -48,9 +48,9 @@ public class MailHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        var mode = packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
             case MailOperations.Open:
                 HandleOpen(session);
@@ -74,7 +74,7 @@ public class MailHandler : GamePacketHandler
                 HandleCollectBatch(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }
@@ -101,13 +101,13 @@ public class MailHandler : GamePacketHandler
 
         if (recipientName == session.Player.Name)
         {
-            session.Send(MailPacket.Error(MailErrorCode.CannotMailYourself));
+            session.Send(MailPacket.Error(MailErrors.CannotMailYourself));
             return;
         }
 
         if (!DatabaseManager.Characters.NameExists(recipientName))
         {
-            session.Send(MailPacket.Error(MailErrorCode.CharacterNotFound));
+            session.Send(MailPacket.Error(MailErrors.CharacterNotFound));
             return;
         }
 

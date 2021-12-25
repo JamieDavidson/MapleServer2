@@ -6,7 +6,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ChatStickerHandler : GamePacketHandler
+internal sealed class ChatStickerHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CHAT_STICKER;
 

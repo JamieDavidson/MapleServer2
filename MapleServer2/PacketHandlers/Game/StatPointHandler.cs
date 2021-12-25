@@ -6,11 +6,11 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class StatPointHandler : GamePacketHandler
+internal sealed class StatPointHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.STAT_POINT;
 
-    private static class StatPointMode
+    private static class StatPointOperations
     {
         public const byte Increment = 0x2;
         public const byte Reset = 0x3;
@@ -18,18 +18,18 @@ public class StatPointHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        var mode = packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case StatPointMode.Increment:
+            case StatPointOperations.Increment:
                 HandleStatIncrement(session, packet);
                 break;
-            case StatPointMode.Reset:
+            case StatPointOperations.Reset:
                 HandleResetStatDistribution(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

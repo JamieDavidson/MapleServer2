@@ -11,7 +11,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class HomeActionHandler : GamePacketHandler
+internal sealed class HomeActionHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.HOME_ACTION;
 

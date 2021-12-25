@@ -8,11 +8,11 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RideHandler : GamePacketHandler
+internal sealed class RideHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_RIDE;
 
-    private static class RideMode
+    private static class RideOperations
     {
         public const byte StartRide = 0x0;
         public const byte StopRide = 0x1;
@@ -23,27 +23,27 @@ public class RideHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        var mode = packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case RideMode.StartRide:
+            case RideOperations.StartRide:
                 HandleStartRide(session, packet);
                 break;
-            case RideMode.StopRide:
+            case RideOperations.StopRide:
                 HandleStopRide(session, packet);
                 break;
-            case RideMode.ChangeRide:
+            case RideOperations.ChangeRide:
                 HandleChangeRide(session, packet);
                 break;
-            case RideMode.StartMultiPersonRide:
+            case RideOperations.StartMultiPersonRide:
                 HandleStartMultiPersonRide(session, packet);
                 break;
-            case RideMode.StopMultiPersonRide:
+            case RideOperations.StopMultiPersonRide:
                 HandleStopMultiPersonRide(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

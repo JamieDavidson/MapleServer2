@@ -5,7 +5,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class NewsNotificationHandler : GamePacketHandler
+internal sealed class NewsNotificationHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.NEWS_NOTIFICATION;
 

@@ -8,11 +8,11 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class DungeonHandler : GamePacketHandler
+internal sealed class DungeonHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ROOM_DUNGEON;
 
-    private static class DungeonMode
+    private static class DungeonOperations
     {
         public const byte ResetDungeon = 0x01;
         public const byte CreateDungeon = 0x02;
@@ -26,33 +26,33 @@ public class DungeonHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        var mode = packet.ReadByte();
+        var operations = packet.ReadByte();
 
-        switch (mode)
+        switch (operations)
         {
-            case DungeonMode.EnterDungeonPortal:
+            case DungeonOperations.EnterDungeonPortal:
                 HandleEnterDungeonPortal(session);
                 break;
-            case DungeonMode.CreateDungeon:
+            case DungeonOperations.CreateDungeon:
                 HandleCreateDungeon(session, packet);
                 break;
-            case DungeonMode.EnterDungeonButton:
+            case DungeonOperations.EnterDungeonButton:
                 HandleEnterDungeonButton(session);
                 break;
-            case DungeonMode.AddRewards:
+            case DungeonOperations.AddRewards:
                 HandleAddRewards(session, packet);
                 break;
-            case DungeonMode.GetHelp:
+            case DungeonOperations.GetHelp:
                 HandleGetHelp(session, packet);
                 break;
-            case DungeonMode.Veteran:
+            case DungeonOperations.Veteran:
                 HandleVeteran(session, packet);
                 break;
-            case DungeonMode.Favorite:
+            case DungeonOperations.Favorite:
                 HandleFavorite(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operations);
                 break;
         }
     }

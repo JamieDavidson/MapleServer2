@@ -10,7 +10,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MasteryHandler : GamePacketHandler
+internal sealed class MasteryHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CONSTRUCT_RECIPE;
 
@@ -20,7 +20,7 @@ public class MasteryHandler : GamePacketHandler
         public const byte CraftItem = 0x02;
     }
 
-    private static class MasteryNotice
+    private static class MasteryNotices
     {
         public const byte NotEnoughMastery = 0x01;
         public const byte NotEnoughMesos = 0x02;
@@ -89,7 +89,7 @@ public class MasteryHandler : GamePacketHandler
         {
             if (session.Player.Levels.MasteryExp.First(x => x.Type == (MasteryType) recipe.MasteryType).CurrentExp < recipe.RequireMastery)
             {
-                session.Send(MasteryPacket.MasteryNotice((short) MasteryNotice.NotEnoughMastery));
+                session.Send(MasteryPacket.MasteryNotice(MasteryNotices.NotEnoughMastery));
                 return;
             }
         }
@@ -100,7 +100,7 @@ public class MasteryHandler : GamePacketHandler
             {
                 if (session.Player.QuestData.TryGetValue(questId, out QuestStatus quest) && quest.State is not QuestState.Finished)
                 {
-                    session.Send(MasteryPacket.MasteryNotice((short) MasteryNotice.RequiredQuestIsNotCompleted));
+                    session.Send(MasteryPacket.MasteryNotice(MasteryNotices.RequiredQuestIsNotCompleted));
                     return;
                 }
             }
@@ -109,14 +109,14 @@ public class MasteryHandler : GamePacketHandler
         // does the play have enough mesos for this recipe?
         if (!session.Player.Wallet.Meso.Modify(-recipe.RequireMeso))
         {
-            session.Send(MasteryPacket.MasteryNotice((short) MasteryNotice.NotEnoughMesos));
+            session.Send(MasteryPacket.MasteryNotice(MasteryNotices.NotEnoughMesos));
             return;
         }
 
         // does the player have all the required ingredients for this recipe?
         if (!PlayerHasAllIngredients(session, recipe))
         {
-            session.Send(MasteryPacket.MasteryNotice((short) MasteryNotice.NotEnoughItems));
+            session.Send(MasteryPacket.MasteryNotice(MasteryNotices.NotEnoughItems));
             return;
         }
 

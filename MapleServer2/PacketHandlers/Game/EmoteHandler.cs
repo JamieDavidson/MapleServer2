@@ -6,11 +6,11 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class EmoteHandler : GamePacketHandler
+internal sealed class EmoteHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.EMOTION;
 
-    private static class EmoteMode
+    private static class EmoteOperations
     {
         public const byte LearnEmote = 0x1;
         public const byte UseEmote = 0x2;
@@ -22,10 +22,10 @@ public class EmoteHandler : GamePacketHandler
 
         switch (mode)
         {
-            case EmoteMode.LearnEmote:
+            case EmoteOperations.LearnEmote:
                 HandleLearnEmote(session, packet);
                 break;
-            case EmoteMode.UseEmote:
+            case EmoteOperations.UseEmote:
                 HandleUseEmote(packet);
                 break;
             default:

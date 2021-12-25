@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MapleopolyHandler : GamePacketHandler
+internal sealed class MapleopolyHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.MAPLEOPOLY;
 
@@ -20,7 +20,7 @@ public class MapleopolyHandler : GamePacketHandler
         public const byte ProcessTile = 0x3;
     }
 
-    private static class MapleopolyNotice
+    private static class MapleopolyNotices
     {
         public const byte NotEnoughTokens = 0x1;
         public const byte DiceAlreadyRolled = 0x4;
@@ -29,9 +29,9 @@ public class MapleopolyHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        var mode = packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
             case MapleopolyOperations.Open:
                 HandleOpen(session);
@@ -43,7 +43,7 @@ public class MapleopolyHandler : GamePacketHandler
                 HandleProcessTile(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }
@@ -76,7 +76,7 @@ public class MapleopolyHandler : GamePacketHandler
         }
         else
         {
-            session.Send(MapleopolyPacket.Notice((byte) MapleopolyNotice.NotEnoughTokens));
+            session.Send(MapleopolyPacket.Notice((byte) MapleopolyNotices.NotEnoughTokens));
             return;
         }
 

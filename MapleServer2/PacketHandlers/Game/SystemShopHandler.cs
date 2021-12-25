@@ -8,11 +8,11 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class SystemShopHandler : GamePacketHandler
+internal sealed class SystemShopHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.SYSTEM_SHOP;
 
-    private static class ShopMode
+    private static class ShopOperations
     {
         public const byte Arena = 0x03;
         public const byte Fishing = 0x04;
@@ -25,13 +25,13 @@ public class SystemShopHandler : GamePacketHandler
 
         switch (mode)
         {
-            case ShopMode.ViaItem:
+            case ShopOperations.ViaItem:
                 HandleViaItem(session, packet);
                 break;
-            case ShopMode.Fishing:
+            case ShopOperations.Fishing:
                 HandleFishingShop(session, packet);
                 break;
-            case ShopMode.Arena:
+            case ShopOperations.Arena:
                 HandleMapleArenaShop(session, packet);
                 break;
             default:

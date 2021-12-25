@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class InstrumentHandler : GamePacketHandler
+internal sealed class InstrumentHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.PLAY_INSTRUMENT;
 

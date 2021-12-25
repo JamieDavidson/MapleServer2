@@ -8,7 +8,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class LapenshardHandler : GamePacketHandler
+internal sealed class LapenshardHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ITEM_LAPENSHARD;
 

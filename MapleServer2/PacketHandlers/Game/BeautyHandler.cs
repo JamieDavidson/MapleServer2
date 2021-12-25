@@ -13,7 +13,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class BeautyHandler : GamePacketHandler
+internal sealed class BeautyHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.BEAUTY;
 

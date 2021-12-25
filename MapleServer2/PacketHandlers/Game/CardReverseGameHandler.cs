@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class CardReverseGameHandler : GamePacketHandler
+internal sealed class CardReverseGameHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CARD_REVERSE_GAME;
 

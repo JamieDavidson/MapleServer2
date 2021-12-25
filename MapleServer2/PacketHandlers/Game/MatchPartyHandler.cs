@@ -7,7 +7,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MatchPartyHandler : GamePacketHandler
+internal sealed class MatchPartyHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.MATCH_PARTY;
 
@@ -18,7 +18,7 @@ public class MatchPartyHandler : GamePacketHandler
         public const byte Refresh = 0x2;
     }
 
-    private static class SearchFilter
+    private static class SearchFilters
     {
         public const byte MostMembers = 0xC;
         public const byte LeastMembers = 0xB;
@@ -114,16 +114,16 @@ public class MatchPartyHandler : GamePacketHandler
         //Filter
         switch (filterMode)
         {
-            case SearchFilter.MostMembers:
+            case SearchFilters.MostMembers:
                 partyList = partyList.OrderByDescending(p => p.Members.Count).ToList();
                 break;
-            case SearchFilter.LeastMembers:
+            case SearchFilters.LeastMembers:
                 partyList = partyList.OrderBy(p => p.Members.Count).ToList();
                 break;
-            case SearchFilter.OldestFirst:
+            case SearchFilters.OldestFirst:
                 partyList = partyList.OrderBy(p => p.CreationTimestamp).ToList();
                 break;
-            case SearchFilter.NewestFirst:
+            case SearchFilters.NewestFirst:
                 partyList = partyList.OrderByDescending(p => p.CreationTimestamp).ToList();
                 break;
         }

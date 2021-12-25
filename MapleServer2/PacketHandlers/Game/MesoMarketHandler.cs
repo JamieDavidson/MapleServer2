@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MesoMarketHandler : GamePacketHandler
+internal sealed class MesoMarketHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.MESO_MARKET;
 
@@ -22,7 +22,7 @@ public class MesoMarketHandler : GamePacketHandler
         public const byte Purchase = 0x8;
     }
 
-    private enum MesoMarketError
+    private enum MesoMarketErrors
     {
         TryAgain = 0x2,
         TradingUnavailable = 0x3,
@@ -41,9 +41,9 @@ public class MesoMarketHandler : GamePacketHandler
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        var mode = packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
             case MesoMarketOperations.Load:
                 HandleLoad(session);
@@ -61,7 +61,7 @@ public class MesoMarketHandler : GamePacketHandler
                 HandlePurchase(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }
@@ -82,13 +82,13 @@ public class MesoMarketHandler : GamePacketHandler
 
         if (session.Player.Account.MesoMarketDailyListings >= int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketDailyListingsLimit")))
         {
-            session.Send(MesoMarketPacket.Error((int) MesoMarketError.ReachedListingLimit));
+            session.Send(MesoMarketPacket.Error((int) MesoMarketErrors.ReachedListingLimit));
             return;
         }
 
         if (!session.Player.Wallet.Meso.Modify(-mesos))
         {
-            session.Send(MesoMarketPacket.Error((int) MesoMarketError.NotEnoughMesosToList));
+            session.Send(MesoMarketPacket.Error((int) MesoMarketErrors.NotEnoughMesosToList));
             return;
         }
 
@@ -107,7 +107,7 @@ public class MesoMarketHandler : GamePacketHandler
         MesoMarketListing listing = GameServer.MesoMarketManager.GetListingById(listingId);
         if (listing is null)
         {
-            session.Send(MesoMarketPacket.Error((int) MesoMarketError.TryAgain));
+            session.Send(MesoMarketPacket.Error((int) MesoMarketErrors.TryAgain));
             return;
         }
 
@@ -139,19 +139,19 @@ public class MesoMarketHandler : GamePacketHandler
         MesoMarketListing listing = GameServer.MesoMarketManager.GetListingById(listingId);
         if (listing is null)
         {
-            session.Send(MesoMarketPacket.Error((int) MesoMarketError.ItemSoldOut));
+            session.Send(MesoMarketPacket.Error((int) MesoMarketErrors.ItemSoldOut));
             return;
         }
 
         if (!session.Player.Account.MesoToken.Modify(-listing.Price))
         {
-            session.Send(MesoMarketPacket.Error((int) MesoMarketError.NotEnoughMesos));
+            session.Send(MesoMarketPacket.Error((int) MesoMarketErrors.NotEnoughMesos));
             return;
         }
 
         if (listing.OwnerAccountId == session.Player.AccountId)
         {
-            session.Send(MesoMarketPacket.Error((int) MesoMarketError.CantPurchaseOwnMeso));
+            session.Send(MesoMarketPacket.Error((int) MesoMarketErrors.CantPurchaseOwnMeso));
             return;
         }
 

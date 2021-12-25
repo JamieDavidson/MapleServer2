@@ -6,13 +6,12 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class InsigniaHandler : GamePacketHandler
+internal sealed class InsigniaHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.INSIGNIA;
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-
         short insigniaId = packet.ReadShort();
 
         if (insigniaId < 0 && !InsigniaMetadataStorage.IsValid(insigniaId))

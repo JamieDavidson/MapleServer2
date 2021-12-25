@@ -7,7 +7,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class BuildModeHandler : GamePacketHandler
+internal sealed class BuildModeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_SET_BUILD_MODE;
 
@@ -17,7 +17,7 @@ public class BuildModeHandler : GamePacketHandler
         public const byte Start = 0x1;
     }
 
-    public static class BuildModeType
+    public static class BuildModeTypes
     {
         public const byte Stop = 0x0;
         public const byte House = 0x1;
@@ -48,7 +48,7 @@ public class BuildModeHandler : GamePacketHandler
         {
             return;
         }
-        session.FieldManager.BroadcastPacket(BuildModePacket.Use(session.Player.FieldPlayer, BuildModeType.Stop));
+        session.FieldManager.BroadcastPacket(BuildModePacket.Use(session.Player.FieldPlayer, BuildModeTypes.Stop));
         session.FieldManager.BroadcastPacket(GuideObjectPacket.Remove(session.Player.Guide));
         session.FieldManager.RemoveGuide(session.Player.Guide);
         session.Player.Guide = null; // remove guide from player
@@ -75,6 +75,6 @@ public class BuildModeHandler : GamePacketHandler
         session.FieldManager.AddGuide(fieldGuide);
 
         session.FieldManager.BroadcastPacket(GuideObjectPacket.Add(fieldGuide));
-        session.FieldManager.BroadcastPacket(BuildModePacket.Use(session.Player.FieldPlayer, BuildModeType.House, furnishingItemId, furnishingItemUid));
+        session.FieldManager.BroadcastPacket(BuildModePacket.Use(session.Player.FieldPlayer, BuildModeTypes.House, furnishingItemId, furnishingItemUid));
     }
 }

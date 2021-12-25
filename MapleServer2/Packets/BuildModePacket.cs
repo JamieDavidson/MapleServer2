@@ -15,7 +15,7 @@ public static class BuildModePacket
 
         switch (type)
         {
-            case BuildModeHandler.BuildModeType.House:
+            case BuildModeHandler.BuildModeTypes.House:
                 pWriter.WriteInt(itemId);
                 pWriter.WriteLong(itemUid);
                 pWriter.WriteLong();
@@ -23,7 +23,7 @@ public static class BuildModePacket
                 pWriter.WriteInt();
                 break;
             
-            case BuildModeHandler.BuildModeType.Liftables:
+            case BuildModeHandler.BuildModeTypes.Liftables:
                 pWriter.WriteInt(itemId);
                 pWriter.WriteLong();
                 pWriter.WriteLong();

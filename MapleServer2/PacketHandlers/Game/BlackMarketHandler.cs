@@ -12,7 +12,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class BlackMarketHandler : GamePacketHandler
+internal sealed class BlackMarketHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.BLACK_MARKET;
 
@@ -26,7 +26,7 @@ public class BlackMarketHandler : GamePacketHandler
         public const byte PrepareListing = 0x8;
     }
 
-    private static class BlackMarketError
+    private static class BlackMarketErrors
     {
         public const byte FailedToListItem = 0x05;
         public const byte ItemNotInInventory = 0x0E;
@@ -105,7 +105,7 @@ public class BlackMarketHandler : GamePacketHandler
 
         if (!session.Player.Inventory.Items.ContainsKey(itemUid))
         {
-            session.Send(BlackMarketPacket.Error(BlackMarketError.ItemNotInInventory));
+            session.Send(BlackMarketPacket.Error(BlackMarketErrors.ItemNotInInventory));
             return;
         }
 
@@ -222,13 +222,13 @@ public class BlackMarketHandler : GamePacketHandler
 
         if (listing.OwnerAccountId == session.Player.AccountId)
         {
-            session.Send(BlackMarketPacket.Error(BlackMarketError.CannotPurchaseOwnItems));
+            session.Send(BlackMarketPacket.Error(BlackMarketErrors.CannotPurchaseOwnItems));
             return;
         }
 
         if (listing.Item.Amount < amount)
         {
-            session.Send(BlackMarketPacket.Error(BlackMarketError.QuantityNotAvailable));
+            session.Send(BlackMarketPacket.Error(BlackMarketErrors.QuantityNotAvailable));
             return;
         }
 
