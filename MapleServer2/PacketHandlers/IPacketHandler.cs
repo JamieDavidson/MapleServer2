@@ -17,4 +17,9 @@ public interface IPacketHandler<in T> where T : Session
     {
         LogManager.GetCurrentClassLogger().Warn("New Unknown " + mode.GetType().Name + ": 0x" + mode.ToString("X"));
     }
+
+    public static void LogUnknownMode(Type packetHandlerType, byte mode)
+    {
+        LogManager.GetCurrentClassLogger().Warn($"Unknown mode in {packetHandlerType}: 0x{mode.ToString("X")}");
+    }
 }
