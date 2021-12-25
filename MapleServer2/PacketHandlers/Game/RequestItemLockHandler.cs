@@ -56,8 +56,8 @@ internal sealed class RequestItemLockHandler : GamePacketHandler
 
     private static void HandleUpdateItem(GameSession session, PacketReader packet)
     {
-        byte mode = packet.ReadByte();
+        byte operation = packet.ReadByte();
 
-        session.Player.LockInventory.Update(session, mode);
+        session.Player.LockInventory.Update(session, operation);
     }
 }

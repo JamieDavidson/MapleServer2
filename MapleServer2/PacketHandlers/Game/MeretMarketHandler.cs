@@ -120,12 +120,13 @@ internal sealed class MeretMarketHandler : GamePacketHandler
         long listingFee = packet.ReadLong();
 
         // TODO: Check if item is a ugc block and not an item. Find item from their block inventory
-        if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+        var inventory = session.Player.Inventory;
+        if (!inventory.HasItemWithUid(itemUid))
         {
             return;
         }
 
-        Item item = session.Player.Inventory.Items[itemUid];
+        Item item = inventory.GetItemByUid(itemUid);
 
         if (item.UGC is null || item.UGC.CharacterId != session.Player.CharacterId)
         {

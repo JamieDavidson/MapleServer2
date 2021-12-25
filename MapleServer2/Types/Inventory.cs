@@ -14,7 +14,7 @@ public class Inventory
     public readonly long Id;
 
     // This contains ALL inventory Items regardless of tab
-    public readonly Dictionary<long, Item> Items;
+    private readonly Dictionary<long, Item> Items;
     public readonly Dictionary<ItemSlot, Item> Equips;
     public readonly Dictionary<ItemSlot, Item> Cosmetics;
     public readonly Item[] Badges;
@@ -63,8 +63,6 @@ public class Inventory
 
     // Only use to share information between handler functions. Should always be empty
     public readonly Dictionary<long, Item> TemporaryStorage = new();
-
-    #region Constructors
 
     public Inventory(bool addToDatabase)
     {
@@ -119,10 +117,6 @@ public class Inventory
             Add(item);
         }
     }
-
-    #endregion
-
-    #region Public Methods
 
     public void AddItem(GameSession session, Item item, bool isNew)
     {
@@ -198,6 +192,17 @@ public class Inventory
         }
     }
 
+    public bool CanHold(Item item, int amount = -1)
+    {
+        int remaining = amount > 0 ? amount : item.Amount;
+        return CanHold(item.Id, remaining, item.InventoryTab);
+    }
+
+    public bool CanHold(int itemId, int amount)
+    {
+        return CanHold(itemId, amount, ItemMetadataStorage.GetTab(itemId));
+    }
+
     public void ConsumeItem(GameSession session, long uid, int amount)
     {
         if (!Items.TryGetValue(uid, out Item item) || amount > item.Amount)
@@ -213,17 +218,6 @@ public class Inventory
 
         item.Amount -= amount;
         session.Send(ItemInventoryPacket.Update(uid, item.Amount));
-    }
-
-    public bool RemoveItem(GameSession session, long uid, out Item item)
-    {
-        if (Remove(uid, out item) == -1)
-        {
-            return false;
-        }
-
-        session.Send(ItemInventoryPacket.Remove(uid));
-        return true;
     }
 
     public void DropItem(GameSession session, long uid, int amount, bool isBound)
@@ -257,6 +251,125 @@ public class Inventory
 
         session.Send(ItemInventoryPacket.Remove(uid));
         DatabaseManager.Items.Delete(removedItem.Uid);
+    }
+
+    public void ExpandInventory(GameSession session, InventoryTab tab)
+    {
+        long meretPrice = long.Parse(ConstantsMetadataStorage.GetConstant("InventoryExpandPrice1Row"));
+        const short ExpansionAmount = 6;
+
+        if (!session.Player.Account.RemoveMerets(meretPrice))
+        {
+            return;
+        }
+
+        ExtraSize[tab] += ExpansionAmount;
+        session.Send(ItemInventoryPacket.LoadTab(tab, ExtraSize[tab]));
+        session.Send(ItemInventoryPacket.Expand());
+    }
+
+    public int GetFreeSlots(InventoryTab tab)
+    {
+        return DefaultSize[tab] + ExtraSize[tab] - GetSlots(tab).Count;
+    }
+
+    public int GetItemAmount(int itemId)
+    {
+        return Items.Values.Where(x => x.Id == itemId).Sum(x => x.Amount);
+    }
+
+    public Item GetItemByFunctionId(int functionId)
+    {
+        return Items.Values
+            .FirstOrDefault(i => i.Function.Id == functionId);
+    }
+
+    public Item GetItemByItemId(int itemId)
+    {
+        return Items.Values.FirstOrDefault(i => i.Id == itemId);
+    }
+
+    public Item GetItemByItemIdAndRarity(int itemId, int rarity)
+    {
+        return Items.Values.FirstOrDefault(i => i.Id == itemId && i.Rarity == rarity);
+    }
+
+    public Item GetItemByTag(string itemTag)
+    {
+        return Items.Values.FirstOrDefault(i => i.Tag == itemTag);
+    }
+
+    public Item GetItemByTagAndRarity(string tag, int rarity)
+    {
+        return Items.Values.FirstOrDefault(i => i.Tag == tag && i.Rarity == rarity);
+    }
+
+    public Item GetItemByUid(long uid)
+    {
+        return Items.ContainsKey(uid) ? Items[uid] : null;
+    }
+
+    public int GetItemCount(int itemId)
+    {
+        return Items.Values.Count(i => i.Id == itemId);
+    }
+
+    public IEnumerable<Item> GetItemsByItemId(int itemId)
+    {
+        return Items.Values.Where(i => i.Id == itemId);
+    }
+
+    public IEnumerable<KeyValuePair<long, Item>> GetItemsByTag(string itemTag)
+    {
+        return Items.Where(i => i.Value.Tag == itemTag);
+    }
+
+    public IEnumerable<Item> GetItemsNotNull()
+    {
+        return Items.Values.Where(i => i != null);
+    }
+
+    public IEnumerable<Item> GetItemsToDismantle(InventoryTab inventoryTab, int rarity)
+    {
+        return Items.Values
+            .Where(i => i.EnableBreak && i.Rarity <= rarity && i.InventoryTab == inventoryTab)
+            .ToList();
+    }
+
+    public bool HasItemWithRarity(int itemId, int rarity)
+    {
+        return Items.Values.Any(i => i.Id == itemId && i.Rarity == rarity);
+    }
+
+    public bool HasItemWithUid(long uid)
+    {
+        return Items.ContainsKey(uid);
+    }
+
+    public void LoadInventoryTab(GameSession session, InventoryTab tab)
+    {
+        session.Send(ItemInventoryPacket.ResetTab(tab));
+        session.Send(ItemInventoryPacket.LoadTab(tab, ExtraSize[tab]));
+        session.Send(ItemInventoryPacket.LoadItem(GetItems(tab)));
+    }
+
+    public IEnumerable<Item> LockItems(IEnumerable<long> itemIdsToUpdate, byte operation)
+    {
+        var items = new List<Item>();
+        
+        foreach (long uid in itemIdsToUpdate)
+        {
+            if (!Items.ContainsKey(uid))
+            {
+                continue;
+            }
+
+            Items[uid].IsLocked = operation == 0;
+            Items[uid].UnlockTime = operation == 1 ? TimeInfo.AddDays(3) : 0;
+            items.Add(Items[uid]);
+        }
+
+        return items;
     }
 
     public void MoveItem(GameSession session, long uid, short dstSlot)
@@ -311,7 +424,19 @@ public class Inventory
         session.Send(ItemInventoryPacket.Move(dstUid, srcSlot, uid, dstSlot));
     }
 
+    public bool RemoveItem(GameSession session, long uid, out Item item)
+    {
+        if (Remove(uid, out item) == -1)
+        {
+            return false;
+        }
+
+        session.Send(ItemInventoryPacket.Remove(uid));
+        return true;
+    }
+
     // Replaces an existing item with an updated copy of itself
+
     public bool Replace(Item item)
     {
         if (!Items.ContainsKey(item.Uid))
@@ -410,60 +535,6 @@ public class Inventory
         session.Send(ItemInventoryPacket.LoadItemsToTab(tab, GetItems(tab)));
     }
 
-    public void LoadInventoryTab(GameSession session, InventoryTab tab)
-    {
-        session.Send(ItemInventoryPacket.ResetTab(tab));
-        session.Send(ItemInventoryPacket.LoadTab(tab, ExtraSize[tab]));
-        session.Send(ItemInventoryPacket.LoadItem(GetItems(tab)));
-    }
-
-    public void ExpandInventory(GameSession session, InventoryTab tab)
-    {
-        long meretPrice = long.Parse(ConstantsMetadataStorage.GetConstant("InventoryExpandPrice1Row"));
-        const short ExpansionAmount = 6;
-
-        if (!session.Player.Account.RemoveMerets(meretPrice))
-        {
-            return;
-        }
-
-        ExtraSize[tab] += ExpansionAmount;
-        session.Send(ItemInventoryPacket.LoadTab(tab, ExtraSize[tab]));
-        session.Send(ItemInventoryPacket.Expand());
-    }
-
-    public int GetFreeSlots(InventoryTab tab)
-    {
-        return DefaultSize[tab] + ExtraSize[tab] - GetSlots(tab).Count;
-    }
-
-    public bool CanHold(Item item, int amount = -1)
-    {
-        int remaining = amount > 0 ? amount : item.Amount;
-        return CanHold(item.Id, remaining, item.InventoryTab);
-    }
-
-    public bool CanHold(int itemId, int amount)
-    {
-        return CanHold(itemId, amount, ItemMetadataStorage.GetTab(itemId));
-    }
-
-    public bool SlotTaken(Item item, short slot = -1)
-    {
-        return GetSlots(item.InventoryTab).ContainsKey(slot < 0 ? item.Slot : slot);
-    }
-
-    public ICollection<Item> GetItems(InventoryTab tab)
-    {
-        return GetSlots(tab).Select(kvp => Items[kvp.Value]).ToImmutableList();
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    // TODO: precompute next free slot to avoid iteration on Add
-    // Returns false if inventory is full
     private bool Add(Item item)
     {
         // Item has a slot set, try to use that slot
@@ -495,31 +566,6 @@ public class Inventory
         return false;
     }
 
-    // Returns false if item doesn't exist or removing more than available
-    private int Remove(long uid, out Item removedItem, int amount = -1)
-    {
-        // Removing more than available
-        if (!Items.TryGetValue(uid, out Item item) || item.Amount < amount)
-        {
-            removedItem = null;
-            return -1;
-        }
-
-        if (amount >= 0 && item.Amount != amount)
-        {
-            return item.TrySplit(amount, out removedItem) ? item.Amount : -1;
-        }
-
-        // Remove All
-        if (!RemoveInternal(uid, out removedItem))
-        {
-            return -1;
-        }
-
-        return 0;
-    }
-
-    // This REQUIRES item.Slot to be set appropriately
     private void AddInternal(Item item)
     {
         Debug.Assert(!Items.ContainsKey(item.Uid), "Error adding an item that already exists");
@@ -527,67 +573,6 @@ public class Inventory
 
         Debug.Assert(!GetSlots(item.InventoryTab).ContainsKey(item.Slot), "Error adding item to slot that is already taken.");
         GetSlots(item.InventoryTab)[item.Slot] = item.Uid;
-    }
-
-    private bool RemoveInternal(long uid, out Item item)
-    {
-        return Items.Remove(uid, out item) && GetSlots(item.InventoryTab).Remove(item.Slot);
-    }
-
-    private Dictionary<short, long> GetSlots(InventoryTab tab)
-    {
-        return SlotMaps[(int) tab];
-    }
-
-    private bool CanHold(int itemId, int amount, InventoryTab tab)
-    {
-        if (GetFreeSlots(tab) > 0)
-        {
-            return true;
-        }
-
-        foreach (Item i in Items.Values.Where(x => x.InventoryTab == tab && x.Id == itemId && x.StackLimit > 0))
-        {
-            int available = i.StackLimit - i.Amount;
-            amount -= available;
-            if (amount <= 0)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private void AddNewItem(GameSession session, Item item, bool isNew)
-    {
-        if (!Add(item)) // Adds item into internal database
-        {
-            return;
-        }
-
-        session.Send(ItemInventoryPacket.Add(item)); // Sends packet to add item clientside
-        if (isNew)
-        {
-            session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount)); // Marks Item as New
-        }
-    }
-
-    private static void AddToWarehouse(GameSession session, Item item)
-    {
-        if (session.Player.Account.Home == null)
-        {
-            return;
-        }
-
-        Home home = GameServer.HomeManager.GetHomeById(session.Player.Account.Home.Id);
-        if (home == null)
-        {
-            return;
-        }
-
-        _ = home.AddWarehouseItem(session, item.Id, item.Amount, item);
-        session.Send(WarehouseInventoryPacket.GainItemMessage(item, item.Amount));
     }
 
     private static void AddMoney(GameSession session, Item item)
@@ -628,6 +613,97 @@ public class Inventory
         }
     }
 
-    #endregion
+    private void AddNewItem(GameSession session, Item item, bool isNew)
+    {
+        if (!Add(item)) // Adds item into internal database
+        {
+            return;
+        }
 
+        session.Send(ItemInventoryPacket.Add(item)); // Sends packet to add item clientside
+        if (isNew)
+        {
+            session.Send(ItemInventoryPacket.MarkItemNew(item, item.Amount)); // Marks Item as New
+        }
+    }
+
+    private static void AddToWarehouse(GameSession session, Item item)
+    {
+        if (session.Player.Account.Home == null)
+        {
+            return;
+        }
+
+        Home home = GameServer.HomeManager.GetHomeById(session.Player.Account.Home.Id);
+        if (home == null)
+        {
+            return;
+        }
+
+        _ = home.AddWarehouseItem(session, item.Id, item.Amount, item);
+        session.Send(WarehouseInventoryPacket.GainItemMessage(item, item.Amount));
+    }
+
+    private bool CanHold(int itemId, int amount, InventoryTab tab)
+    {
+        if (GetFreeSlots(tab) > 0)
+        {
+            return true;
+        }
+
+        foreach (Item i in Items.Values.Where(x => x.InventoryTab == tab && x.Id == itemId && x.StackLimit > 0))
+        {
+            int available = i.StackLimit - i.Amount;
+            amount -= available;
+            if (amount <= 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private ICollection<Item> GetItems(InventoryTab tab)
+    {
+        return GetSlots(tab).Select(kvp => Items[kvp.Value]).ToImmutableList();
+    }
+
+    private Dictionary<short, long> GetSlots(InventoryTab tab)
+    {
+        return SlotMaps[(int) tab];
+    }
+
+    private int Remove(long uid, out Item removedItem, int amount = -1)
+    {
+        // Removing more than available
+        if (!Items.TryGetValue(uid, out Item item) || item.Amount < amount)
+        {
+            removedItem = null;
+            return -1;
+        }
+
+        if (amount >= 0 && item.Amount != amount)
+        {
+            return item.TrySplit(amount, out removedItem) ? item.Amount : -1;
+        }
+
+        // Remove All
+        if (!RemoveInternal(uid, out removedItem))
+        {
+            return -1;
+        }
+
+        return 0;
+    }
+
+    private bool RemoveInternal(long uid, out Item item)
+    {
+        return Items.Remove(uid, out item) && GetSlots(item.InventoryTab).Remove(item.Slot);
+    }
+
+    private bool SlotTaken(Item item, short slot = -1)
+    {
+        return GetSlots(item.InventoryTab).ContainsKey(slot < 0 ? item.Slot : slot);
+    }
 }

@@ -35,7 +35,9 @@ internal sealed class ItemEnchantHandler : GamePacketHandler
         byte type = packet.ReadByte();
         long itemUid = packet.ReadLong();
 
-        if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
+        var inventory = session.Player.Inventory;
+        var item = inventory.GetItemByUid(itemUid);
+        if (item != null)
         {
             session.Send(ItemEnchantPacket.BeginEnchant(type, item));
         }
@@ -45,7 +47,9 @@ internal sealed class ItemEnchantHandler : GamePacketHandler
     {
         long itemUid = packet.ReadLong();
 
-        if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
+        var inventory = session.Player.Inventory;
+        var item = inventory.GetItemByUid(itemUid);
+        if (item != null)
         {
             item.Enchants += 5;
             item.Charges += 10;
@@ -57,7 +61,9 @@ internal sealed class ItemEnchantHandler : GamePacketHandler
     {
         long itemUid = packet.ReadLong();
 
-        if (session.Player.Inventory.Items.TryGetValue(itemUid, out Item item))
+        var inventory = session.Player.Inventory;
+        var item = inventory.GetItemByUid(itemUid);
+        if (item != null)
         {
             item.EnchantExp += 5000;
             if (item.EnchantExp >= 10000)

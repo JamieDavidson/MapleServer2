@@ -22,7 +22,7 @@ public class ScriptManager
 
     public int GetItemCount(int itemId)
     {
-        return Player.Inventory.Items.Values.Where(x => x.Id == itemId).Sum(x => x.Amount);
+        return Player.Inventory.GetItemAmount(itemId);
     }
 
     public bool CanHold(int itemId, int amount)

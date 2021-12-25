@@ -47,9 +47,9 @@ internal sealed class ChangeAttributesScrollHandler : GamePacketHandler
             lockStatId = packet.ReadShort();
         }
 
-        Inventory inventory = session.Player.Inventory;
-        Item scroll = inventory.Items.FirstOrDefault(x => x.Key == scrollUid).Value;
-        Item gear = inventory.Items.FirstOrDefault(x => x.Key == gearUid).Value;
+        var inventory = session.Player.Inventory;
+        Item scroll = inventory.GetItemByUid(scrollUid);
+        Item gear = inventory.GetItemByUid(gearUid);
         Item scrollLock = null;
 
         // Check if gear and scroll exists in inventory
@@ -78,7 +78,7 @@ internal sealed class ChangeAttributesScrollHandler : GamePacketHandler
 
         if (useLock)
         {
-            scrollLock = inventory.Items.FirstOrDefault(x => x.Value.Tag == tag && x.Value.Rarity == gear.Rarity).Value;
+            scrollLock = inventory.GetItemByTagAndRarity(tag, gear.Rarity);
             // Check if scroll lock exists in inventory
             if (scrollLock == null)
             {

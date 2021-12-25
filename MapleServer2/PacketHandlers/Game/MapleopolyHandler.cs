@@ -53,7 +53,8 @@ internal sealed class MapleopolyHandler : GamePacketHandler
         List<MapleopolyTile> tiles = DatabaseManager.Mapleopoly.FindAllTiles();
 
         int tokenAmount = 0;
-        Item token = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == Mapleopoly.TOKEN_ITEM_ID).Value;
+        var inventory = session.Player.Inventory;
+        var token = inventory.GetItemByItemId(Mapleopoly.TOKEN_ITEM_ID);
         if (token != null)
         {
             tokenAmount = token.Amount;
@@ -64,19 +65,21 @@ internal sealed class MapleopolyHandler : GamePacketHandler
     private static void HandleRoll(GameSession session)
     {
         // Check if player can roll
-        Item token = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == Mapleopoly.TOKEN_ITEM_ID).Value;
+        var inventory = session.Player.Inventory;
+        var token = inventory.GetItemByItemId(Mapleopoly.TOKEN_ITEM_ID);
 
-        if (session.Player.Mapleopoly.FreeRollAmount > 0)
+        var mapleopoly = session.Player.Mapleopoly;
+        if (mapleopoly.FreeRollAmount > 0)
         {
-            session.Player.Mapleopoly.FreeRollAmount--;
+            mapleopoly.FreeRollAmount--;
         }
         else if (token != null && token.Amount >= Mapleopoly.TOKEN_COST)
         {
-            session.Player.Inventory.ConsumeItem(session, token.Uid, Mapleopoly.TOKEN_COST);
+            inventory.ConsumeItem(session, token.Uid, Mapleopoly.TOKEN_COST);
         }
         else
         {
-            session.Send(MapleopolyPacket.Notice((byte) MapleopolyNotices.NotEnoughTokens));
+            session.Send(MapleopolyPacket.Notice(MapleopolyNotices.NotEnoughTokens));
             return;
         }
 
@@ -87,12 +90,12 @@ internal sealed class MapleopolyHandler : GamePacketHandler
         int roll2 = rnd.Next(1, 6);
         int totalRoll = roll1 + roll2;
 
-        session.Player.Mapleopoly.TotalTileCount += totalRoll;
+        mapleopoly.TotalTileCount += totalRoll;
         if (roll1 == roll2)
         {
-            session.Player.Mapleopoly.FreeRollAmount++;
+            mapleopoly.FreeRollAmount++;
         }
-        session.Send(MapleopolyPacket.Roll(session.Player.Mapleopoly.TotalTileCount, roll1, roll2));
+        session.Send(MapleopolyPacket.Roll(mapleopoly.TotalTileCount, roll1, roll2));
     }
 
     private static void HandleProcessTile(GameSession session)

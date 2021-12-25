@@ -44,19 +44,13 @@ public class LockInventory
         session.Send(ItemLockPacket.Remove(uid));
     }
 
-    public void Update(GameSession session, byte mode)
+    public void Update(GameSession session, byte operation)
     {
-        Dictionary<long, Item> inventory = session.Player.Inventory.Items;
-        List<Item> changedItems = new();
-        foreach (long uid in Items[mode].Where(x => x != 0))
-        {
-            if (inventory.ContainsKey(uid))
-            {
-                inventory[uid].IsLocked = mode == 0;
-                inventory[uid].UnlockTime = mode == 1 ? TimeInfo.AddDays(3) : 0;
-                changedItems.Add(inventory[uid]);
-            }
-        }
+        var inventory = session.Player.Inventory;
+
+        var itemIdsToUpdate = Items[operation].Where(x => x != 0);
+        var changedItems = inventory.LockItems(itemIdsToUpdate, operation);
+        
         session.Send(ItemLockPacket.UpdateItems(changedItems));
     }
 }

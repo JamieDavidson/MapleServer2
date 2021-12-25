@@ -32,8 +32,9 @@ internal sealed class RequestItemUseMultipleHandler : GamePacketHandler
             return;
         }
 
-        Dictionary<long, Item> items = new(session.Player.Inventory.Items.Where(x => x.Value.Id == itemId)); // Make copy of items in-case new item is added
-        if (items.Count == 0)
+        var inventory = session.Player.Inventory;
+        var items = inventory.GetItemsByItemId(itemId).ToArray();
+        if (items.Length == 0)
         {
             return;
         }
@@ -55,14 +56,12 @@ internal sealed class RequestItemUseMultipleHandler : GamePacketHandler
         HandleOpenBox(session, items, /*openBox,*/ amount);
     }
 
-    private static void HandleSelectBox(GameSession session, Dictionary<long, Item> items, SelectItemBox box, int index, int amount)
+    private static void HandleSelectBox(GameSession session, IEnumerable<Item> items, SelectItemBox box, int index, int amount)
     {
         ItemDropMetadata metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
         int opened = 0;
-        foreach (KeyValuePair<long, Item> kvp in items)
+        foreach (var item in items)
         {
-            Item item = kvp.Value;
-
             for (int i = opened; i < amount; i++)
             {
                 if (item.Amount <= 0)
@@ -75,16 +74,14 @@ internal sealed class RequestItemUseMultipleHandler : GamePacketHandler
             }
         }
 
-        session.Send(ItemUsePacket.Use(items.FirstOrDefault().Value.Id, amount));
+        session.Send(ItemUsePacket.Use(items.FirstOrDefault().Id, amount));
     }
 
-    private static void HandleOpenBox(GameSession session, Dictionary<long, Item> items, /*OpenItemBox box,*/ int amount)
+    private static void HandleOpenBox(GameSession session, IEnumerable<Item> items, /*OpenItemBox box,*/ int amount)
     {
         int opened = 0;
-        foreach (KeyValuePair<long, Item> kvp in items)
+        foreach (var item in items)
         {
-            Item item = kvp.Value;
-
             for (int i = opened; i < amount; i++)
             {
                 if (item.Amount <= 0)
@@ -97,6 +94,6 @@ internal sealed class RequestItemUseMultipleHandler : GamePacketHandler
             }
         }
 
-        session.Send(ItemUsePacket.Use(items.FirstOrDefault().Value.Id, amount));
+        session.Send(ItemUsePacket.Use(items.FirstOrDefault().Id, amount));
     }
 }

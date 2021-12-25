@@ -68,22 +68,23 @@ internal sealed class FishingHandler : GamePacketHandler
 
         if (!FishingSpotMetadataStorage.CanFish(session.Player.MapId, masteryExp.CurrentExp))
         {
-            session.Send(FishingPacket.Notice((short) FishingNotices.MasteryTooLowForMap));
+            session.Send(FishingPacket.Notice(FishingNotices.MasteryTooLowForMap));
             return;
         }
 
-        if (!session.Player.Inventory.Items.ContainsKey(fishingRodUid))
+        var inventory = session.Player.Inventory;
+        if (!inventory.HasItemWithUid(fishingRodUid))
         {
-            session.Send(FishingPacket.Notice((short) FishingNotices.InvalidFishingRod));
+            session.Send(FishingPacket.Notice(FishingNotices.InvalidFishingRod));
             return;
         }
 
-        Item fishingRod = session.Player.Inventory.Items[fishingRodUid];
+        Item fishingRod = inventory.GetItemByUid(fishingRodUid);
         FishingRodMetadata rodMetadata = FishingRodMetadataStorage.GetMetadata(fishingRod.Function.Id);
 
         if (rodMetadata.MasteryLimit < masteryExp.CurrentExp)
         {
-            session.Send(FishingPacket.Notice((short) FishingNotices.MasteryTooLowForRod));
+            session.Send(FishingPacket.Notice(FishingNotices.MasteryTooLowForRod));
         }
 
         int direction = Direction.GetClosestDirection(session.Player.FieldPlayer.Rotation);
@@ -92,7 +93,7 @@ internal sealed class FishingHandler : GamePacketHandler
         List<MapBlock> fishingBlocks = CollectFishingBlocks(startCoord, direction, session.Player.MapId);
         if (fishingBlocks.Count == 0)
         {
-            session.Send(FishingPacket.Notice((short) FishingNotices.CanOnlyFishNearWater));
+            session.Send(FishingPacket.Notice(FishingNotices.CanOnlyFishNearWater));
             return;
         }
         session.Player.FishingRod = fishingRod;

@@ -50,12 +50,13 @@ internal sealed class ItemExchangeHandler : GamePacketHandler
         long unk = packet.ReadLong();
         int quantity = packet.ReadInt();
 
-        if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+        var inventory = session.Player.Inventory;
+        if (!inventory.HasItemWithUid(itemUid))
         {
             return;
         }
 
-        Item item = session.Player.Inventory.Items[itemUid];
+        Item item = inventory.GetItemByUid(itemUid);
 
         ItemExchangeScrollMetadata exchange = ItemExchangeScrollMetadataStorage.GetMetadata(item.Function.Id);
 
@@ -87,16 +88,16 @@ internal sealed class ItemExchangeHandler : GamePacketHandler
 
     }
 
+    // TODO: This is surely a bug right? This isn't how checks for item presence work! Test once I can be bothered to run the server lol
     private static bool PlayerHasAllIngredients(GameSession session, ItemExchangeScrollMetadata exchange, int quantity)
     {
         // TODO: Check if rarity matches
 
-        List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
-
+        var inventory = session.Player.Inventory;
         for (int i = 0; i < exchange.ItemCost.Count; i++)
         {
             ItemRequirementMetadata exchangeItem = exchange.ItemCost.ElementAt(i);
-            Item item = playerInventoryItems.FirstOrDefault(x => x.Id == exchangeItem.Id);
+            Item item = inventory.GetItemByItemId(exchangeItem.Id);
 
             if (item == null)
             {
@@ -110,14 +111,13 @@ internal sealed class ItemExchangeHandler : GamePacketHandler
 
     private static bool RemoveRequiredItemsFromInventory(GameSession session, ItemExchangeScrollMetadata exchange, Item originItem, int quantity)
     {
-        List<Item> playerInventoryItems = new(session.Player.Inventory.Items.Values);
-
+        var inventory = session.Player.Inventory;
         if (exchange.ItemCost.Count != 0)
         {
             for (int i = 0; i < exchange.ItemCost.Count; i++)
             {
                 ItemRequirementMetadata exchangeItem = exchange.ItemCost.ElementAt(i);
-                Item item = playerInventoryItems.FirstOrDefault(x => x.Id == exchangeItem.Id);
+                Item item = inventory.GetItemByItemId(exchangeItem.Id);
                 if (item == null)
                 {
                     continue;
@@ -126,7 +126,7 @@ internal sealed class ItemExchangeHandler : GamePacketHandler
             }
         }
 
-        session.Player.Inventory.ConsumeItem(session, originItem.Uid, exchange.RecipeAmount * quantity);
+        inventory.ConsumeItem(session, originItem.Uid, exchange.RecipeAmount * quantity);
 
         return true;
     }

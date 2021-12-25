@@ -37,7 +37,8 @@ public class BankInventory
 
     public void Add(GameSession session, long uid, int amount, short slot)
     {
-        Item item = session.Player.Inventory.Items[uid];
+        var inventory = session.Player.Inventory;
+        Item item = inventory.GetItemByUid(uid);
 
         if (amount < item.Amount)
         {

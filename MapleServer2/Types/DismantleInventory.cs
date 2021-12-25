@@ -32,16 +32,15 @@ public class DismantleInventory
 
     public void AutoAdd(GameSession session, InventoryTab inventoryTab, int rarityType)
     {
-        Dictionary<long, Item> items = session.Player.Inventory.Items;
-
-        foreach (KeyValuePair<long, Item> item in items)
+        var itemsToDismantle = session.Player.Inventory.GetItemsToDismantle(inventoryTab, rarityType);
+        foreach (var item in itemsToDismantle)
         {
-            if (item.Value.InventoryTab != inventoryTab || item.Value.Rarity > rarityType
-                || !item.Value.EnableBreak || Slots.Any(x => x != null && x.Item1 == item.Key))
+            if (Slots.Any(x => x != null && x.Item1 == item.Uid))
             {
                 continue;
             }
-            DismantleAdd(session, -1, item.Value.Uid, item.Value.Amount);
+            
+            DismantleAdd(session, -1, item.Uid, item.Amount);
         }
     }
 
@@ -95,7 +94,8 @@ public class DismantleInventory
         Rewards = new();
         foreach (Tuple<long, int> slot in Slots.Where(x => x != null))
         {
-            Item item = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Uid == slot.Item1).Value;
+            var inventory = session.Player.Inventory;
+            var item = inventory.GetItemByUid(slot.Item1);
             if (!ItemMetadataStorage.IsValid(item.Id))
             {
                 continue;

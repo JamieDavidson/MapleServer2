@@ -49,7 +49,8 @@ internal sealed class CardReverseGameHandler : GamePacketHandler
 
     private static void HandleMix(GameSession session)
     {
-        Item token = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == CardReverseGame.TOKEN_ITEM_ID).Value;
+        var inventory = session.Player.Inventory;
+        var token = inventory.GetItemByItemId(CardReverseGame.TOKEN_ITEM_ID);
         if (token == null || token.Amount < CardReverseGame.TOKEN_COST)
         {
             session.Send(CardReverseGamePacket.Notice());

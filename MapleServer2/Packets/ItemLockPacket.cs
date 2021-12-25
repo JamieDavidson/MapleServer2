@@ -33,12 +33,12 @@ public static class ItemLockPacket
         return pWriter;
     }
 
-    public static PacketWriter UpdateItems(List<Item> items)
+    public static PacketWriter UpdateItems(IEnumerable<Item> items)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.ITEM_LOCK);
         pWriter.Write(ItemLockMode.Update);
-        pWriter.WriteByte((byte) items.Count);
-        foreach (Item item in items)
+        pWriter.WriteByte((byte) items.Count());
+        foreach (var item in items)
         {
             pWriter.WriteLong(item.Uid);
             pWriter.WriteItem(item);
