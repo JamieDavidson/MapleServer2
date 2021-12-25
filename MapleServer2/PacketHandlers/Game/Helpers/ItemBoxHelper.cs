@@ -109,7 +109,7 @@ internal static class ItemBoxHelper
         Inventory inventory = session.Player.Inventory;
         if (box.RequiredItemId > 0)
         {
-            Item requiredItem = inventory.Items[box.RequiredItemId];
+            var requiredItem = inventory.GetItemByItemId(box.RequiredItemId);
             if (requiredItem == null)
             {
                 return;

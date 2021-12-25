@@ -72,8 +72,9 @@ internal sealed class UserChatHandler : GamePacketHandler
 
     private static void HandleChannelChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
     {
-        Player player = session.Player;
-        Item voucher = player.Inventory.Items.Values.FirstOrDefault(x => x.Tag == "FreeChannelChatCoupon");
+        var player = session.Player;
+        var inventory = player.Inventory;
+        Item voucher = inventory.GetItemByTag("FreeChannelChatCoupon");
         if (voucher is not null)
         {
             session.Send(NoticePacket.Notice(SystemNotice.UsedChannelChatVoucher, NoticeType.ChatAndFastText));
@@ -103,7 +104,8 @@ internal sealed class UserChatHandler : GamePacketHandler
             return;
         }
 
-        Item superChatItem = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Function.Id == session.Player.SuperChat);
+        var inventory = session.Player.Inventory;
+        var superChatItem = inventory.GetItemByFunctionId(session.Player.SuperChat);
         if (superChatItem is null)
         {
             session.Player.SuperChat = 0;
@@ -124,7 +126,8 @@ internal sealed class UserChatHandler : GamePacketHandler
 
     private static void HandleWorldChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
     {
-        Item voucher = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Tag == "FreeWorldChatCoupon");
+        var inventory = session.Player.Inventory;
+        var voucher = inventory.GetItemByTag("FreeWorldChatCoupon");
         if (voucher is not null)
         {
             session.Send(NoticePacket.Notice(SystemNotice.UsedWorldChatVoucher, NoticeType.ChatAndFastText));

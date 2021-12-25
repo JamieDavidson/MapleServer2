@@ -51,21 +51,16 @@ internal sealed class ChangeAttributesHandler : GamePacketHandler
 
         Inventory inventory = session.Player.Inventory;
 
-        int greenCrystalTotalAmount = 0;
-        int metacellTotalAmount = 0;
-        int crystalFragmentTotalAmount = 0;
-
         // There are multiple ids for each type of material
-        List<KeyValuePair<long, Item>> greenCrystals = inventory.Items.Where(x => x.Value.Tag == "GreenCrystal").ToList();
-        greenCrystals.ForEach(x => greenCrystalTotalAmount += x.Value.Amount);
+        var greenCrystals = inventory.GetItemsByTag("GreenCrystal").ToArray();
+        var metaCells = inventory.GetItemsByTag("MetaCell").ToArray();
+        var crystalFragments = inventory.GetItemsByTag("CrystalPiece").ToArray();
 
-        List<KeyValuePair<long, Item>> metacells = inventory.Items.Where(x => x.Value.Tag == "MetaCell").ToList();
-        metacells.ForEach(x => metacellTotalAmount += x.Value.Amount);
-
-        List<KeyValuePair<long, Item>> crystalFragments = inventory.Items.Where(x => x.Value.Tag == "CrystalPiece").ToList();
-        crystalFragments.ForEach(x => crystalFragmentTotalAmount += x.Value.Amount);
-
-        Item gear = inventory.Items.FirstOrDefault(x => x.Key == itemUid).Value;
+        int greenCrystalTotalAmount = greenCrystals.Sum(i => i.Value.Amount);
+        int metacellTotalAmount = metaCells.Sum(i => i.Value.Amount);
+        int crystalFragmentTotalAmount = crystalFragments.Sum(i => i.Value.Amount);
+        
+        Item gear = inventory.GetItemByUid(itemUid);
         Item scrollLock = null;
 
         // Check if gear exist in inventory
@@ -94,7 +89,7 @@ internal sealed class ChangeAttributesHandler : GamePacketHandler
 
         if (useLock)
         {
-            scrollLock = inventory.Items.FirstOrDefault(x => x.Value.Tag == tag && x.Value.Rarity == gear.Rarity).Value;
+            scrollLock = inventory.GetItemByTagAndRarity(tag, gear.Rarity);
             // Check if scroll lock exist in inventory
             if (scrollLock == null)
             {
@@ -161,7 +156,7 @@ internal sealed class ChangeAttributesHandler : GamePacketHandler
         }
 
         // Consume materials from inventory
-        ConsumeMaterials(session, greenCrystalCost, metacellCosts, crystalFragmentsCosts, greenCrystals, metacells, crystalFragments);
+        ConsumeMaterials(session, greenCrystalCost, metacellCosts, crystalFragmentsCosts, greenCrystals, metaCells, crystalFragments);
 
         if (useLock)
         {
@@ -188,43 +183,43 @@ internal sealed class ChangeAttributesHandler : GamePacketHandler
         session.Send(ChangeAttributesPacket.AddNewItem(gear));
     }
 
-    private static void ConsumeMaterials(GameSession session, int greenCrystalCost, int metacellCosts, int crystalFragmentsCosts, List<KeyValuePair<long, Item>> greenCrystals, List<KeyValuePair<long, Item>> metacells, List<KeyValuePair<long, Item>> crystalFragments)
+    private static void ConsumeMaterials(GameSession session, int greenCrystalCost, int metacellCosts, int crystalFragmentsCosts, IEnumerable<KeyValuePair<long, Item>> greenCrystals, IEnumerable<KeyValuePair<long, Item>> metacells, IEnumerable<KeyValuePair<long, Item>> crystalFragments)
     {
         Inventory inventory = session.Player.Inventory;
-        foreach (KeyValuePair<long, Item> item in greenCrystals)
+        foreach ((long key, Item value) in greenCrystals)
         {
-            if (item.Value.Amount >= greenCrystalCost)
+            if (value.Amount >= greenCrystalCost)
             {
-                inventory.ConsumeItem(session, item.Key, greenCrystalCost);
+                inventory.ConsumeItem(session, key, greenCrystalCost);
                 break;
             }
 
-            greenCrystalCost -= item.Value.Amount;
-            inventory.ConsumeItem(session, item.Key, item.Value.Amount);
+            greenCrystalCost -= value.Amount;
+            inventory.ConsumeItem(session, key, value.Amount);
         }
 
-        foreach (KeyValuePair<long, Item> item in metacells)
+        foreach ((long key, Item value) in metacells)
         {
-            if (item.Value.Amount >= metacellCosts)
+            if (value.Amount >= metacellCosts)
             {
-                inventory.ConsumeItem(session, item.Key, metacellCosts);
+                inventory.ConsumeItem(session, key, metacellCosts);
                 break;
             }
 
-            metacellCosts -= item.Value.Amount;
-            inventory.ConsumeItem(session, item.Key, item.Value.Amount);
+            metacellCosts -= value.Amount;
+            inventory.ConsumeItem(session, key, value.Amount);
         }
 
-        foreach (KeyValuePair<long, Item> item in crystalFragments)
+        foreach ((long key, Item value) in crystalFragments)
         {
-            if (item.Value.Amount >= crystalFragmentsCosts)
+            if (value.Amount >= crystalFragmentsCosts)
             {
-                inventory.ConsumeItem(session, item.Key, crystalFragmentsCosts);
+                inventory.ConsumeItem(session, key, crystalFragmentsCosts);
                 break;
             }
 
-            crystalFragmentsCosts -= item.Value.Amount;
-            inventory.ConsumeItem(session, item.Key, item.Value.Amount);
+            crystalFragmentsCosts -= value.Amount;
+            inventory.ConsumeItem(session, key, value.Amount);
         }
     }
 }

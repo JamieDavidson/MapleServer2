@@ -452,7 +452,8 @@ internal sealed class BeautyHandler : GamePacketHandler
         long itemUid = packet.ReadLong();
 
         Player player = session.Player;
-        Item voucher = player.Inventory.Items[itemUid];
+        var inventory = player.Inventory;
+        Item voucher = inventory.GetItemByUid(itemUid);
         if (voucher == null || voucher.Function.Name != "ItemChangeBeauty")
         {
             return;
@@ -529,7 +530,7 @@ internal sealed class BeautyHandler : GamePacketHandler
 
     private static bool PayWithVoucher(GameSession session, BeautyMetadata shop)
     {
-        string voucherTag = ""; // using an Item's tag to search for any applicable voucher
+        string voucherTag; // using an Item's tag to search for any applicable voucher
         switch (shop.BeautyType)
         {
             case BeautyShopType.Hair:
@@ -557,7 +558,8 @@ internal sealed class BeautyHandler : GamePacketHandler
                 return false;
         }
 
-        Item voucher = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Tag == voucherTag).Value;
+        var inventory = session.Player.Inventory;
+        Item voucher = inventory.GetItemByTag(voucherTag);
         if (voucher == null)
         {
             session.Send(NoticePacket.Notice(SystemNotice.ItemNotFound, NoticeType.FastText));
@@ -606,7 +608,8 @@ internal sealed class BeautyHandler : GamePacketHandler
             case ShopCurrencyType.EventMeret:
                 return session.Player.Account.RemoveMerets(tokenCost);
             case ShopCurrencyType.Item:
-                Item itemCost = session.Player.Inventory.Items.FirstOrDefault(x => x.Value.Id == requiredItemId).Value;
+                var inventory = session.Player.Inventory;
+                Item itemCost = inventory.GetItemByItemId(requiredItemId);
                 if (itemCost == null)
                 {
                     return false;

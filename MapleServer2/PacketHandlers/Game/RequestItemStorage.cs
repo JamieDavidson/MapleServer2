@@ -65,7 +65,8 @@ internal sealed class RequestItemStorage : GamePacketHandler
         short slot = packet.ReadShort();
         int amount = packet.ReadInt();
 
-        if (!session.Player.Inventory.Items.ContainsKey(uid))
+        var inventory = session.Player.Inventory;
+        if (!inventory.HasItemWithUid(uid))
         {
             return;
         }

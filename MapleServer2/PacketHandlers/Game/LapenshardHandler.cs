@@ -59,7 +59,8 @@ internal sealed class LapenshardHandler : GamePacketHandler
         int slotId = packet.ReadInt();
         long itemUid = packet.ReadLong();
 
-        session.Player.Inventory.Items.TryGetValue(itemUid, out Item item);
+        var inventory = session.Player.Inventory;
+        var item = inventory.GetItemByUid(itemUid);
         if (item is null)
         {
             return;
@@ -70,7 +71,7 @@ internal sealed class LapenshardHandler : GamePacketHandler
             return;
         }
 
-        if (session.Player.Inventory.LapenshardStorage[slotId] is not null)
+        if (inventory.LapenshardStorage[slotId] is not null)
         {
             return;
         }
@@ -84,8 +85,8 @@ internal sealed class LapenshardHandler : GamePacketHandler
 
         newLapenshard.Uid = DatabaseManager.Items.Insert(newLapenshard);
 
-        session.Player.Inventory.LapenshardStorage[slotId] = newLapenshard;
-        session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
+        inventory.LapenshardStorage[slotId] = newLapenshard;
+        inventory.ConsumeItem(session, item.Uid, 1);
         session.Send(LapenshardPacket.Equip(slotId, item.Id));
     }
 
@@ -111,9 +112,9 @@ internal sealed class LapenshardHandler : GamePacketHandler
         long itemUid = packet.ReadLong();
         int itemId = packet.ReadInt();
         packet.ReadInt();
-        Inventory inventory = session.Player.Inventory;
+        var inventory = session.Player.Inventory;
 
-        if (!inventory.Items.TryGetValue(itemUid, out Item item))
+        if (!inventory.HasItemWithUid(itemUid))
         {
             return;
         }
@@ -127,9 +128,10 @@ internal sealed class LapenshardHandler : GamePacketHandler
         int itemId = packet.ReadInt();
         packet.ReadInt();
         int amount = packet.ReadInt();
-        Inventory inventory = session.Player.Inventory;
+        var inventory = session.Player.Inventory;
 
-        if (!inventory.Items.TryGetValue(itemUid, out Item item) || item.Amount < amount)
+        var item = inventory.GetItemByUid(itemUid);
+        if (item is null || item.Amount < amount)
         {
             return;
         }
@@ -158,7 +160,8 @@ internal sealed class LapenshardHandler : GamePacketHandler
         // Check if items are in inventory
         foreach ((long uid, int amount) in items)
         {
-            if (!inventory.Items.TryGetValue(uid, out Item item) || item.Amount < amount)
+            var item = inventory.GetItemByUid(uid);
+            if (item is null || item.Amount < amount)
             {
                 return;
             }
@@ -193,12 +196,10 @@ internal sealed class LapenshardHandler : GamePacketHandler
             { 9, new(50, 305, 6100000) },
         };
 
-        int crystalsTotalAmount = 0;
-
         // There are multiple ids for each type of material
         // Count all items with the same tag in inventory
-        List<KeyValuePair<long, Item>> crystals = inventory.Items.Where(x => x.Value.Tag == crystal).ToList();
-        crystals.ForEach(x => crystalsTotalAmount += x.Value.Amount);
+        List<KeyValuePair<long, Item>> crystals = inventory.GetItemsByTag(crystal).ToList();
+        int crystalsTotalAmount = crystals.Sum(i => i.Value.Amount);
         byte tier = (byte) (itemId % 10);
 
         if (costs[tier].CrystalsAmount > crystalsTotalAmount || !session.Player.Wallet.Meso.Modify(-costs[tier].Mesos))
@@ -209,15 +210,15 @@ internal sealed class LapenshardHandler : GamePacketHandler
         int crystalCost = costs[tier].CrystalsAmount;
 
         // Consume all Crystals
-        foreach (KeyValuePair<long, Item> item in crystals)
+        foreach ((long key, Item value) in crystals)
         {
-            if (item.Value.Amount >= crystalCost)
+            if (value.Amount >= crystalCost)
             {
-                session.Player.Inventory.ConsumeItem(session, item.Key, crystalCost);
+                session.Player.Inventory.ConsumeItem(session, key, crystalCost);
                 break;
             }
-            crystalCost -= item.Value.Amount;
-            session.Player.Inventory.ConsumeItem(session, item.Key, item.Value.Amount);
+            crystalCost -= value.Amount;
+            session.Player.Inventory.ConsumeItem(session, key, value.Amount);
         }
 
         // Consume all Lapenshards

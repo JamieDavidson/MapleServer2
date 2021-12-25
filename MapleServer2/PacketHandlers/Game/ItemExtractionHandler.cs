@@ -17,12 +17,13 @@ internal sealed class ItemExtractionHandler : GamePacketHandler
         long anvilItemUid = packet.ReadLong();
         long sourceItemUid = packet.ReadLong();
 
-        if (!session.Player.Inventory.Items.ContainsKey(sourceItemUid) || !session.Player.Inventory.Items.ContainsKey(anvilItemUid))
+        var inventory = session.Player.Inventory;
+        if (!inventory.HasItemWithUid(sourceItemUid) || !inventory.HasItemWithUid(anvilItemUid))
         {
             return;
         }
 
-        Item sourceItem = session.Player.Inventory.Items[sourceItemUid];
+        var sourceItem = inventory.GetItemByUid(sourceItemUid);
 
         ItemExtractionMetadata metadata = ItemExtractionMetadataStorage.GetMetadata(sourceItem.Id);
         if (metadata == null)
@@ -30,9 +31,8 @@ internal sealed class ItemExtractionHandler : GamePacketHandler
             return;
         }
 
-        int anvilAmount = 0;
-        List<KeyValuePair<long, Item>> anvils = session.Player.Inventory.Items.Where(x => x.Value.Tag == "ItemExtraction").ToList();
-        anvils.ForEach(x => anvilAmount += x.Value.Amount);
+        var anvils = inventory.GetItemsByTag("ItemExtraction").ToArray();
+        int anvilAmount = anvils.Sum(a => a.Value.Amount);
 
         if (anvilAmount < metadata.ScrollCount)
         {

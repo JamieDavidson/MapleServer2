@@ -81,7 +81,8 @@ internal sealed class BlackMarketHandler : GamePacketHandler
         int itemId = packet.ReadInt();
         int rarity = packet.ReadInt();
 
-        if (!session.Player.Inventory.Items.Any(x => x.Value.Id == itemId && x.Value.Rarity == rarity))
+        var inventory = session.Player.Inventory;
+        if (!inventory.HasItemWithRarity(itemId, rarity))
         {
             return;
         }
@@ -103,7 +104,8 @@ internal sealed class BlackMarketHandler : GamePacketHandler
         long price = packet.ReadLong();
         int quantity = packet.ReadInt();
 
-        if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+        var inventory = session.Player.Inventory;
+        if (!inventory.HasItemWithUid(itemUid))
         {
             session.Send(BlackMarketPacket.Error(BlackMarketErrors.ItemNotInInventory));
             return;
@@ -120,7 +122,7 @@ internal sealed class BlackMarketHandler : GamePacketHandler
             return;
         }
 
-        Item item = session.Player.Inventory.Items[itemUid];
+        var item = inventory.GetItemByUid(itemUid);
         if (item.Amount < quantity)
         {
             return;

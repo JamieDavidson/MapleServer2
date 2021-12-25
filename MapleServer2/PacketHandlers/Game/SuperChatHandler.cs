@@ -36,9 +36,10 @@ internal sealed class SuperChatHandler : GamePacketHandler
 
     private static void HandleSelect(GameSession session, PacketReader packet)
     {
-        int item = packet.ReadInt();
+        int itemId = packet.ReadInt();
 
-        Item superChatItem = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Id == item);
+        var inventory = session.Player.Inventory;
+        Item superChatItem = inventory.GetItemByItemId(itemId);
         if (superChatItem == null)
         {
             return;

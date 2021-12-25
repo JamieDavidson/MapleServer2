@@ -23,12 +23,13 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
     {
         long itemUid = packet.ReadLong();
 
-        if (!session.Player.Inventory.Items.ContainsKey(itemUid))
+        var inventory = session.Player.Inventory;
+        if (!inventory.HasItemWithUid(itemUid))
         {
             return;
         }
 
-        Item item = session.Player.Inventory.Items[itemUid];
+        Item item = inventory.GetItemByUid(itemUid);
 
         switch (item.Function.Name)
         {
@@ -347,12 +348,13 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
     public static void HandlePetExtraction(GameSession session, PacketReader packet, Item item)
     {
         long petUid = long.Parse(packet.ReadUnicodeString());
-        if (!session.Player.Inventory.Items.ContainsKey(petUid))
+        var inventory = session.Player.Inventory;
+        if (!inventory.HasItemWithUid(petUid))
         {
             return;
         }
 
-        Item pet = session.Player.Inventory.Items[petUid];
+        Item pet = inventory.GetItemByUid(petUid);
 
         Item badge = new(70100000)
         {

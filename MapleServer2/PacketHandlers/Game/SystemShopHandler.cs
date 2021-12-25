@@ -51,7 +51,8 @@ internal sealed class SystemShopHandler : GamePacketHandler
 
         int itemId = packet.ReadInt();
 
-        Item item = session.Player.Inventory.Items.Values.FirstOrDefault(x => x.Id == itemId);
+        var inventory = session.Player.Inventory;
+        var item = inventory.GetItemByItemId(itemId);
         if (item == null)
         {
             return;
