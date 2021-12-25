@@ -5,42 +5,42 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestItemBreakHandler : GamePacketHandler
+internal sealed class RequestItemBreakHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_BREAK;
 
-    private enum ItemBreakMode : byte
+    private static class ItemBreakOperations
     {
-        Open = 0x00,
-        Add = 0x01,
-        Remove = 0x02,
-        Dismantle = 0x03,
-        AutoAdd = 0x06
+        public const byte Open = 0x00;
+        public const byte Add = 0x01;
+        public const byte Remove = 0x02;
+        public const byte Dismantle = 0x03;
+        public const byte AutoAdd = 0x06;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ItemBreakMode mode = (ItemBreakMode) packet.ReadByte();
-        switch (mode)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
-            case ItemBreakMode.Open:
+            case ItemBreakOperations.Open:
                 session.Player.DismantleInventory.Slots = new Tuple<long, int>[100];
                 session.Player.DismantleInventory.Rewards = new();
                 break;
-            case ItemBreakMode.Add:
+            case ItemBreakOperations.Add:
                 HandleAdd(session, packet);
                 break;
-            case ItemBreakMode.Remove:
+            case ItemBreakOperations.Remove:
                 HandleRemove(session, packet);
                 break;
-            case ItemBreakMode.Dismantle:
+            case ItemBreakOperations.Dismantle:
                 HandleDismantle(session);
                 break;
-            case ItemBreakMode.AutoAdd:
+            case ItemBreakOperations.AutoAdd:
                 HandleAutoAdd(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

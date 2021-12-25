@@ -12,42 +12,42 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MoveFieldHandler : GamePacketHandler
+internal sealed class MoveFieldHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_MOVE_FIELD;
 
-    private enum RequestMoveFieldMode : byte
+    private static class RequestMoveFieldOperations
     {
-        Move = 0x0,
-        LeaveInstance = 0x1,
-        VisitHouse = 0x02,
-        ReturnMap = 0x03,
-        EnterDecorPlaner = 0x04
+        public const byte Move = 0x0;
+        public const byte LeaveInstance = 0x1;
+        public const byte VisitHouse = 0x02;
+        public const byte ReturnMap = 0x03;
+        public const byte EnterDecorPlaner = 0x04;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        RequestMoveFieldMode mode = (RequestMoveFieldMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
-            case RequestMoveFieldMode.Move:
+            case RequestMoveFieldOperations.Move:
                 HandleMove(session, packet);
                 break;
-            case RequestMoveFieldMode.LeaveInstance:
+            case RequestMoveFieldOperations.LeaveInstance:
                 HandleLeaveInstance(session);
                 break;
-            case RequestMoveFieldMode.VisitHouse:
+            case RequestMoveFieldOperations.VisitHouse:
                 HandleVisitHouse(session, packet);
                 break;
-            case RequestMoveFieldMode.ReturnMap:
+            case RequestMoveFieldOperations.ReturnMap:
                 HandleReturnMap(session);
                 break;
-            case RequestMoveFieldMode.EnterDecorPlaner:
+            case RequestMoveFieldOperations.EnterDecorPlaner:
                 HandleEnterDecorPlaner(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

@@ -11,7 +11,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Common;
 
-public class ResponseKeyHandler : CommonPacketHandler
+internal sealed class ResponseKeyHandler : CommonPacketHandler
 {
     public override RecvOp OpCode => RecvOp.RESPONSE_KEY;
 

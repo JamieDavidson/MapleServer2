@@ -8,54 +8,54 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ItemSocketSystemHandler : GamePacketHandler
+internal sealed class ItemSocketSystemHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ITEM_SOCKET_SYSTEM;
 
-    private enum ItemSocketSystemMode : byte
+    private static class ItemSocketSystemOperations
     {
-        UnlockSocket = 0x0,
-        SelectUnlockSocketEquip = 0x2,
-        UpgradeGem = 0x4,
-        SelectGemUpgrade = 0x6,
-        MountGem = 0x8,
-        ExtractGem = 0xA
+        public const byte UnlockSocket = 0x0;
+        public const byte SelectUnlockSocketEquip = 0x2;
+        public const byte UpgradeGem = 0x4;
+        public const byte SelectGemUpgrade = 0x6;
+        public const byte MountGem = 0x8;
+        public const byte ExtractGem = 0xA;
     }
 
-    private enum ItemSocketSystemNotice
+    private static class ItemSocketSystemNotices
     {
-        TargetIsNotInYourInventory = 0x1,
-        ItemIsNotInYourInventory = 0x2,
-        CannotBeUsedAsMaterial = 0x3,
-        ConfirmCatalystAmount = 0x4
+        public const byte TargetIsNotInYourInventory = 0x1;
+        public const byte ItemIsNotInYourInventory = 0x2;
+        public const byte CannotBeUsedAsMaterial = 0x3;
+        public const byte ConfirmCatalystAmount = 0x4;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ItemSocketSystemMode mode = (ItemSocketSystemMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case ItemSocketSystemMode.UnlockSocket:
+            case ItemSocketSystemOperations.UnlockSocket:
                 HandleUnlockSocket(session, packet);
                 break;
-            case ItemSocketSystemMode.SelectUnlockSocketEquip:
+            case ItemSocketSystemOperations.SelectUnlockSocketEquip:
                 HandleSelectUnlockSocketEquip(session, packet);
                 break;
-            case ItemSocketSystemMode.SelectGemUpgrade:
+            case ItemSocketSystemOperations.SelectGemUpgrade:
                 HandleSelectGemUpgrade(session, packet);
                 break;
-            case ItemSocketSystemMode.UpgradeGem:
+            case ItemSocketSystemOperations.UpgradeGem:
                 HandleUpgradeGem(session, packet);
                 break;
-            case ItemSocketSystemMode.MountGem:
+            case ItemSocketSystemOperations.MountGem:
                 HandleMountGem(session, packet);
                 break;
-            case ItemSocketSystemMode.ExtractGem:
+            case ItemSocketSystemOperations.ExtractGem:
                 HandleExtractGem(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }
@@ -74,7 +74,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         Inventory inventory = session.Player.Inventory;
         if (!inventory.Items.ContainsKey(itemUid))
         {
-            session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
+            session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotices.ItemIsNotInYourInventory));
             return;
         }
         Item equip = inventory.Items[itemUid];
@@ -84,7 +84,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         {
             if (!inventory.Items.ContainsKey(uid))
             {
-                session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
+                session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotices.ItemIsNotInYourInventory));
                 return;
             }
 
@@ -92,7 +92,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
             int fodderUnlockedSlotCount = fodder.Stats.GemSockets.Where(x => x.IsUnlocked).Count();
             if (equipUnlockedSlotCount != fodderUnlockedSlotCount)
             {
-                session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.CannotBeUsedAsMaterial));
+                session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotices.CannotBeUsedAsMaterial));
                 return;
             }
         }
@@ -154,7 +154,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
 
         if (!session.Player.Inventory.Items.ContainsKey(itemUid))
         {
-            session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
+            session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotices.ItemIsNotInYourInventory));
             return;
         }
 
@@ -174,7 +174,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         {
             if (!inventory.Items.ContainsKey(itemUid))
             {
-                session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
+                session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotices.ItemIsNotInYourInventory));
                 return;
             }
 
@@ -210,7 +210,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         // upgrade gem mounted on a equipment
         if (!inventory.Items.ContainsKey(equipUid))
         {
-            session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
+            session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotices.ItemIsNotInYourInventory));
             return;
         }
 
@@ -307,7 +307,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         {
             if (!session.Player.Inventory.Items.ContainsKey(itemUid))
             {
-                session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
+                session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotices.ItemIsNotInYourInventory));
                 return;
             }
 
@@ -318,7 +318,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
         // select gem mounted on a equipment
         if (!session.Player.Inventory.Items.ContainsKey(equipUid))
         {
-            session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
+            session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotices.ItemIsNotInYourInventory));
             return;
         }
 
@@ -339,13 +339,13 @@ public class ItemSocketSystemHandler : GamePacketHandler
 
         if (!session.Player.Inventory.Items.ContainsKey(equipItemUid))
         {
-            session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.TargetIsNotInYourInventory));
+            session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotices.TargetIsNotInYourInventory));
             return;
         }
 
         if (!session.Player.Inventory.Items.ContainsKey(gemItemUid))
         {
-            session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
+            session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotices.ItemIsNotInYourInventory));
             return;
         }
 
@@ -387,7 +387,7 @@ public class ItemSocketSystemHandler : GamePacketHandler
 
         if (!session.Player.Inventory.Items.ContainsKey(equipItemUid))
         {
-            session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotice.ItemIsNotInYourInventory));
+            session.Send(ItemSocketSystemPacket.Notice((int) ItemSocketSystemNotices.ItemIsNotInYourInventory));
             return;
         }
 

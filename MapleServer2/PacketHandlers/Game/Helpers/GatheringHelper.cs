@@ -6,7 +6,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game.Helpers;
 
-public static class GatheringHelper
+internal static class GatheringHelper
 {
     public static void HandleGathering(GameSession session, int recipeId, out int numDrop)
     {

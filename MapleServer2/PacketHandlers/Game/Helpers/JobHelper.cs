@@ -2,7 +2,7 @@
 
 namespace MapleServer2.PacketHandlers.Game.Helpers;
 
-public static class JobHelper
+internal static class JobHelper
 {
     public static bool CheckJobFlagForJob(List<Job> jobs, JobFlag jobFlag)
     {

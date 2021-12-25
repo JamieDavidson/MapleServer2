@@ -7,24 +7,24 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ClubHandler : GamePacketHandler
+internal sealed class ClubHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CLUB;
 
-    private enum ClubMode : byte
+    private static class ClubMode
     {
-        Create = 0x1,
-        Join = 0x3,
-        SendInvite = 0x6,
-        InviteResponse = 0x8,
-        Leave = 0xA,
-        Buff = 0xD,
-        Rename = 0xE
+        public const byte Create = 0x1;
+        public const byte Join = 0x3;
+        public const byte SendInvite = 0x6;
+        public const byte InviteResponse = 0x8;
+        public const byte Leave = 0xA;
+        public const byte Buff = 0xD;
+        public const byte Rename = 0xE;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ClubMode mode = (ClubMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
@@ -50,7 +50,7 @@ public class ClubHandler : GamePacketHandler
                 HandleRename(packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

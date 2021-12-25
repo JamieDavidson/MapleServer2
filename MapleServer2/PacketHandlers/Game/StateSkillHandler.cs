@@ -5,14 +5,14 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class StateSkillHandler : GamePacketHandler
+internal sealed class StateSkillHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.STATE_SKILL;
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        byte function = packet.ReadByte();
-        if (function == 0)
+        byte operation = packet.ReadByte();
+        if (operation == 0)
         {
             // This count seems to increase for each skill used
             int counter = packet.ReadInt();

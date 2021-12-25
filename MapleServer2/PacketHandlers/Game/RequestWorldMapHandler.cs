@@ -5,14 +5,14 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestWorldMapHandler : GamePacketHandler
+internal sealed class RequestWorldMapHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_WORLD_MAP;
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        byte mode = packet.ReadByte();
-        switch (mode)
+        byte operation = packet.ReadByte();
+        switch (operation)
         {
             case 0: // open
                 HandleOpen(session);

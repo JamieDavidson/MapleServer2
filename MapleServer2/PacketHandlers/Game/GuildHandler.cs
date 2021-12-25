@@ -9,161 +9,162 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class GuildHandler : GamePacketHandler
+internal sealed class GuildHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.GUILD;
 
-    private enum GuildMode : byte
+    private static class GuildOperations
     {
-        Create = 0x1,
-        Disband = 0x2,
-        Invite = 0x3,
-        InviteResponse = 0x5,
-        Leave = 0x7,
-        Kick = 0x8,
-        RankChange = 0xA,
-        PlayerMessage = 0xD,
-        CheckIn = 0xF,
-        TransferLeader = 0x3D,
-        GuildNotice = 0x3E,
-        UpdateRank = 0x41,
-        ListGuild = 0x42,
-        SubmitApplication = 0x50,
-        WithdrawApplication = 0x51,
-        ApplicationResponse = 0x52,
-        LoadApplications = 0x54,
-        LoadGuildList = 0x55,
-        SearchGuildByName = 0x56,
-        UseBuff = 0x59,
-        UpgradeBuff = 0x5A,
-        UpgradeHome = 0x62,
-        ChangeHomeTheme = 0x63,
-        EnterHouse = 0x64,
-        GuildDonate = 0x6E,
-        Services = 0x6F
+        public const byte Create = 0x1;
+        public const byte Disband = 0x2;
+        public const byte Invite = 0x3;
+        public const byte InviteResponse = 0x5;
+        public const byte Leave = 0x7;
+        public const byte Kick = 0x8;
+        public const byte RankChange = 0xA;
+        public const byte PlayerMessage = 0xD;
+        public const byte CheckIn = 0xF;
+        public const byte TransferLeader = 0x3D;
+        public const byte GuildNotice = 0x3E;
+        public const byte UpdateRank = 0x41;
+        public const byte ListGuild = 0x42;
+        public const byte SubmitApplication = 0x50;
+        public const byte WithdrawApplication = 0x51;
+        public const byte ApplicationResponse = 0x52;
+        public const byte LoadApplications = 0x54;
+        public const byte LoadGuildList = 0x55;
+        public const byte SearchGuildByName = 0x56;
+        public const byte UseBuff = 0x59;
+        public const byte UpgradeBuff = 0x5A;
+        public const byte UpgradeHome = 0x62;
+        public const byte ChangeHomeTheme = 0x63;
+        public const byte EnterHouse = 0x64;
+        public const byte GuildDonate = 0x6E;
+        public const byte Services = 0x6F;
     }
 
-    private enum GuildErrorNotice : byte
+    private static class GuildErrorNotice
     {
-        GuildNotFound = 0x3,
-        CharacterIsAlreadyInAGuild = 0x4,
-        UnableToSendInvite = 0x5,
-        InviteFailed = 0x6,
-        UserAlreadyJoinedAGuild = 0x7,
-        GuildNoLongerValid = 0x8,
-        UnableToInvitePlayer = 0xA,
-        GuildWithSameNameExists = 0xB,
-        NameContainsForbiddenWord = 0xC,
-        GuildMemberNotFound = 0xD,
-        CannotDisbandWithMembers = 0xE,
-        GuildIsAtCapacity = 0xF,
-        GuildMemberHasNotJoined = 0x10,
-        LeaderCannotLeaveGuild = 0x11,
-        CannotKickLeader = 0x12,
-        NotEnoughMesos = 0x14,
-        InsufficientPermissions = 0x15,
-        OnlyLeaderCanDoThis = 0x16,
-        RankCannotBeUsed = 0x17,
-        CannotChangeMaxCapacityToValue = 0x18,
-        IncorrectRank = 0x19,
-        RankCannotBeGranted = 0x1B,
-        RankSettingFailed = 0x1C,
-        CannotDoDuringGuildBattle = 0x21,
-        ApplicationNotFound = 0x27,
-        TargetIsInAnUninvitableLocation = 0x29,
-        GuildLevelNotHighEnough = 0x2A,
-        InsufficientGuildFunds = 0x2B,
-        CannotUseGuildSkillsRightNow = 0x2C,
-        YouAreAlreadyAtGloriousArena = 0x2E,
-        ApplicationsAreNotAccepted = 0x2F,
-        YouNeedAtLeastXPlayersOnline = 0x30
+        public const byte GuildNotFound = 0x3;
+        public const byte CharacterIsAlreadyInAGuild = 0x4;
+        public const byte UnableToSendInvite = 0x5;
+        public const byte InviteFailed = 0x6;
+        public const byte UserAlreadyJoinedAGuild = 0x7;
+        public const byte GuildNoLongerValid = 0x8;
+        public const byte UnableToInvitePlayer = 0xA;
+        public const byte GuildWithSameNameExists = 0xB;
+        public const byte NameContainsForbiddenWord = 0xC;
+        public const byte GuildMemberNotFound = 0xD;
+        public const byte CannotDisbandWithMembers = 0xE;
+        public const byte GuildIsAtCapacity = 0xF;
+        public const byte GuildMemberHasNotJoined = 0x10;
+        public const byte LeaderCannotLeaveGuild = 0x11;
+        public const byte CannotKickLeader = 0x12;
+        public const byte NotEnoughMesos = 0x14;
+        public const byte InsufficientPermissions = 0x15;
+        public const byte OnlyLeaderCanDoThis = 0x16;
+        public const byte RankCannotBeUsed = 0x17;
+        public const byte CannotChangeMaxCapacityToValue = 0x18;
+        public const byte IncorrectRank = 0x19;
+        public const byte RankCannotBeGranted = 0x1B;
+        public const byte RankSettingFailed = 0x1C;
+        public const byte CannotDoDuringGuildBattle = 0x21;
+        public const byte ApplicationNotFound = 0x27;
+        public const byte TargetIsInAnUninvitableLocation = 0x29;
+        public const byte GuildLevelNotHighEnough = 0x2A;
+        public const byte InsufficientGuildFunds = 0x2B;
+        public const byte CannotUseGuildSkillsRightNow = 0x2C;
+        public const byte YouAreAlreadyAtGloriousArena = 0x2E;
+        public const byte ApplicationsAreNotAccepted = 0x2F;
+        public const byte YouNeedAtLeastXPlayersOnline = 0x30;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        GuildMode mode = (GuildMode) packet.ReadByte();
+        byte mode = packet.ReadByte();
+
         switch (mode)
         {
-            case GuildMode.Create:
+            case GuildOperations.Create:
                 HandleCreate(session, packet);
                 break;
-            case GuildMode.Disband:
+            case GuildOperations.Disband:
                 HandleDisband(session);
                 break;
-            case GuildMode.Invite:
+            case GuildOperations.Invite:
                 HandleInvite(session, packet);
                 break;
-            case GuildMode.InviteResponse:
+            case GuildOperations.InviteResponse:
                 HandleInviteResponse(session, packet);
                 break;
-            case GuildMode.Leave:
+            case GuildOperations.Leave:
                 HandleLeave(session);
                 break;
-            case GuildMode.Kick:
+            case GuildOperations.Kick:
                 HandleKick(session, packet);
                 break;
-            case GuildMode.RankChange:
+            case GuildOperations.RankChange:
                 HandleRankChange(session, packet);
                 break;
-            case GuildMode.PlayerMessage:
+            case GuildOperations.PlayerMessage:
                 HandlePlayerMessage(session, packet);
                 break;
-            case GuildMode.CheckIn:
+            case GuildOperations.CheckIn:
                 HandleCheckIn(session);
                 break;
-            case GuildMode.TransferLeader:
+            case GuildOperations.TransferLeader:
                 HandleTransferLeader(session, packet);
                 break;
-            case GuildMode.GuildNotice:
+            case GuildOperations.GuildNotice:
                 HandleGuildNotice(session, packet);
                 break;
-            case GuildMode.UpdateRank:
+            case GuildOperations.UpdateRank:
                 HandleUpdateRank(session, packet);
                 break;
-            case GuildMode.ListGuild:
+            case GuildOperations.ListGuild:
                 HandleListGuild(session, packet);
                 break;
-            case GuildMode.SubmitApplication:
+            case GuildOperations.SubmitApplication:
                 HandleSubmitApplication(session, packet);
                 break;
-            case GuildMode.WithdrawApplication:
+            case GuildOperations.WithdrawApplication:
                 HandleWithdrawApplication(session, packet);
                 break;
-            case GuildMode.ApplicationResponse:
+            case GuildOperations.ApplicationResponse:
                 HandleApplicationResponse(session, packet);
                 break;
-            case GuildMode.LoadApplications:
+            case GuildOperations.LoadApplications:
                 HandleLoadApplications(session);
                 break;
-            case GuildMode.LoadGuildList:
+            case GuildOperations.LoadGuildList:
                 HandleLoadGuildList(session, packet);
                 break;
-            case GuildMode.SearchGuildByName:
+            case GuildOperations.SearchGuildByName:
                 HandleSearchGuildByName(session, packet);
                 break;
-            case GuildMode.UseBuff:
+            case GuildOperations.UseBuff:
                 HandleUseBuff(session, packet);
                 break;
-            case GuildMode.UpgradeBuff:
+            case GuildOperations.UpgradeBuff:
                 HandleUpgradeBuff(session, packet);
                 break;
-            case GuildMode.UpgradeHome:
+            case GuildOperations.UpgradeHome:
                 HandleUpgradeHome(session, packet);
                 break;
-            case GuildMode.ChangeHomeTheme:
+            case GuildOperations.ChangeHomeTheme:
                 HandleChangeHomeTheme(session, packet);
                 break;
-            case GuildMode.EnterHouse:
+            case GuildOperations.EnterHouse:
                 HandleEnterHouse(session);
                 break;
-            case GuildMode.GuildDonate:
+            case GuildOperations.GuildDonate:
                 HandleGuildDonate(session, packet);
                 break;
-            case GuildMode.Services:
+            case GuildOperations.Services:
                 HandleServices(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }
@@ -179,13 +180,13 @@ public class GuildHandler : GamePacketHandler
 
         if (!session.Player.Wallet.Meso.Modify(-2000))
         {
-            session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.NotEnoughMesos));
+            session.Send(GuildPacket.ErrorNotice(GuildErrorNotice.NotEnoughMesos));
             return;
         }
 
         if (DatabaseManager.Guilds.NameExists(guildName))
         {
-            session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.GuildWithSameNameExists));
+            session.Send(GuildPacket.ErrorNotice(GuildErrorNotice.GuildWithSameNameExists));
             return;
         }
         Guild newGuild = new(guildName, session.Player);
@@ -253,12 +254,12 @@ public class GuildHandler : GamePacketHandler
         Player playerInvited = GameServer.PlayerManager.GetPlayerByName(targetPlayer);
         if (playerInvited == null)
         {
-            session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.UnableToSendInvite));
+            session.Send(GuildPacket.ErrorNotice(GuildErrorNotice.UnableToSendInvite));
         }
 
         if (playerInvited.Guild != null)
         {
-            session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.CharacterIsAlreadyInAGuild));
+            session.Send(GuildPacket.ErrorNotice(GuildErrorNotice.CharacterIsAlreadyInAGuild));
             return;
         }
 
@@ -850,7 +851,7 @@ public class GuildHandler : GamePacketHandler
 
         if (!session.Player.Wallet.Meso.Modify(-donationAmount))
         {
-            session.Send(GuildPacket.ErrorNotice((byte) GuildErrorNotice.NotEnoughMesos));
+            session.Send(GuildPacket.ErrorNotice(GuildErrorNotice.NotEnoughMesos));
             return;
         }
 

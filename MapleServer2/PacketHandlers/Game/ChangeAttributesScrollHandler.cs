@@ -6,19 +6,19 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ChangeAttributesScrollHandler : GamePacketHandler
+internal sealed class ChangeAttributesScrollHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CHANGE_ATTRIBUTES_SCROLL;
 
-    private enum ChangeAttributeMode : byte
+    private static class ChangeAttributeMode
     {
-        ChangeAttributes = 1,
-        SelectNewAttributes = 3
+        public const byte ChangeAttributes = 1;
+        public const byte SelectNewAttributes = 3;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ChangeAttributeMode mode = (ChangeAttributeMode) packet.ReadByte();
+        var mode = packet.ReadByte();
         switch (mode)
         {
             case ChangeAttributeMode.ChangeAttributes:
@@ -28,7 +28,7 @@ public class ChangeAttributesScrollHandler : GamePacketHandler
                 HandleSelectNewAttributes(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

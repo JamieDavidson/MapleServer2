@@ -9,7 +9,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class FieldEnterHandler : GamePacketHandler
+internal sealed class FieldEnterHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.RESPONSE_FIELD_ENTER;
 

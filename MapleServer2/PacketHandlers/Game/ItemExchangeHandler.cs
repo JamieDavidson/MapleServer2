@@ -8,40 +8,40 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ItemExchangeHandler : GamePacketHandler
+internal sealed class ItemExchangeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ITEM_EXCHANGE;
 
-    private enum ItemExchangeMode : byte
+    private static class ItemExchangeOperations
     {
-        Use = 0x1
+        public const byte Use = 0x1;
+    }
+    
+    private static class ItemExchangeNotices
+    {
+        public const short Sucess = 0x0;
+        public const short Invalid = 0x1;
+        public const short CannotFuse = 0x2;
+        public const short InsufficientMeso = 0x3;
+        public const short InsufficientItems = 0x4;
+        public const short EnchantLevelTooHigh = 0x5;
+        public const short ItemIsLocked = 0x6;
+        public const short CheckFusionAmount = 0x7;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ItemExchangeMode mode = (ItemExchangeMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
-            case ItemExchangeMode.Use:
+            case ItemExchangeOperations.Use:
                 HandleUse(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
-    }
-
-    public enum ExchangeNotice : short
-    {
-        Sucess = 0x0,
-        Invalid = 0x1,
-        CannotFuse = 0x2,
-        InsufficientMeso = 0x3,
-        InsufficientItems = 0x4,
-        EnchantLevelTooHigh = 0x5,
-        ItemIsLocked = 0x6,
-        CheckFusionAmount = 0x7
     }
 
     private static void HandleUse(GameSession session, PacketReader packet)
@@ -61,13 +61,13 @@ public class ItemExchangeHandler : GamePacketHandler
 
         if (!session.Player.Wallet.Meso.Modify(-exchange.MesoCost * quantity))
         {
-            session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.InsufficientMeso));
+            session.Send(ItemExchangePacket.Notice(ItemExchangeNotices.InsufficientMeso));
             return;
         }
 
         if (exchange.ItemCost.Count != 0 && !PlayerHasAllIngredients(session, exchange, quantity))
         {
-            session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.InsufficientItems));
+            session.Send(ItemExchangePacket.Notice(ItemExchangeNotices.InsufficientItems));
             return;
         }
 
@@ -83,7 +83,7 @@ public class ItemExchangeHandler : GamePacketHandler
         };
 
         session.Player.Inventory.AddItem(session, exchangeRewardItem, true);
-        session.Send(ItemExchangePacket.Notice((short) ExchangeNotice.Sucess));
+        session.Send(ItemExchangePacket.Notice(ItemExchangeNotices.Sucess));
 
     }
 

@@ -12,43 +12,43 @@ using MoonSharp.Interpreter;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class NpcTalkHandler : GamePacketHandler
+internal sealed class NpcTalkHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.NPC_TALK;
 
-    private enum NpcTalkMode : byte
+    private static class NpcTalkOperations
     {
-        Close = 0,
-        Respond = 1,
-        Continue = 2,
-        NextQuest = 7
+        public const byte Close = 0;
+        public const byte Respond = 1;
+        public const byte Continue = 2;
+        public const byte NextQuest = 7;
     }
 
-    private enum ScriptIdType : byte
+    private static class ScriptIdTypes
     {
-        Start = 1,
-        Continue = 2,
-        End = 3
+        public const byte Start = 1;
+        public const byte Continue = 2;
+        public const byte End = 3;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        NpcTalkMode function = (NpcTalkMode) packet.ReadByte();
-        switch (function)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
-            case NpcTalkMode.Close:
+            case NpcTalkOperations.Close:
                 return;
-            case NpcTalkMode.Respond:
+            case NpcTalkOperations.Respond:
                 HandleRespond(session, packet);
                 break;
-            case NpcTalkMode.Continue:
+            case NpcTalkOperations.Continue:
                 HandleContinue(session, packet.ReadInt());
                 break;
-            case NpcTalkMode.NextQuest:
+            case NpcTalkOperations.NextQuest:
                 HandleNextQuest(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(function);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }
@@ -310,13 +310,13 @@ public class NpcTalkHandler : GamePacketHandler
         if (!hasNextScript)
         {
             // Get the correct dialog type for the last quest content
-            ScriptIdType type = (ScriptIdType) (npcTalk.ScriptId / 100);
+            var type = npcTalk.ScriptId / 100;
             if (npcTalk.IsQuest)
             {
                 return type switch
                 {
-                    ScriptIdType.Start => DialogType.AcceptDecline,
-                    ScriptIdType.End => DialogType.QuestReward,
+                    ScriptIdTypes.Start => DialogType.AcceptDecline,
+                    ScriptIdTypes.End => DialogType.QuestReward,
                     _ => DialogType.Close1
                 };
             }

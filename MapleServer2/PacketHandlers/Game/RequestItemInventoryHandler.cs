@@ -5,42 +5,42 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestItemInventoryHandler : GamePacketHandler
+internal sealed class RequestItemInventoryHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_INVENTORY;
 
-    private enum RequestItemInventoryMode : byte
+    private static class RequestItemInventoryOperations
     {
-        Move = 0x3,
-        Drop = 0x4,
-        DropBound = 0x5,
-        Sort = 0xA,
-        Expand = 0xB
+        public const byte Move = 0x3;
+        public const byte Drop = 0x4;
+        public const byte DropBound = 0x5;
+        public const byte Sort = 0xA;
+        public const byte Expand = 0xB;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        RequestItemInventoryMode mode = (RequestItemInventoryMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case RequestItemInventoryMode.Move:
+            case RequestItemInventoryOperations.Move:
                 HandleMove(session, packet);
                 break;
-            case RequestItemInventoryMode.Drop:
+            case RequestItemInventoryOperations.Drop:
                 HandleDrop(session, packet);
                 break;
-            case RequestItemInventoryMode.DropBound:
+            case RequestItemInventoryOperations.DropBound:
                 HandleDropBound(session, packet);
                 break;
-            case RequestItemInventoryMode.Sort:
+            case RequestItemInventoryOperations.Sort:
                 HandleSort(session, packet);
                 break;
-            case RequestItemInventoryMode.Expand:
+            case RequestItemInventoryOperations.Expand:
                 HandleExpand(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

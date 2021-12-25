@@ -5,21 +5,21 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestUserEnvHandler : GamePacketHandler
+internal sealed class RequestUserEnvHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_USER_ENV;
 
-    private enum UserEnvMode : byte
+    private static class UserEnvMode
     {
-        Change = 0x1,
-        Trophy = 0x3
+        public const byte Change = 0x1;
+        public const byte Trophy = 0x3;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        UserEnvMode mode = (UserEnvMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
             case UserEnvMode.Change:
                 HandleTitleChange(session, packet);
@@ -28,7 +28,7 @@ public class RequestUserEnvHandler : GamePacketHandler
                 HandleTrophy(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

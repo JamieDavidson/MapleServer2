@@ -9,62 +9,62 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class InstrumentHandler : GamePacketHandler
+internal sealed class InstrumentHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.PLAY_INSTRUMENT;
 
-    private enum InstrumentMode : byte
+    private static class InstrumentOperation
     {
-        StartImprovise = 0x0,
-        PlayNote = 0x1,
-        StopImprovise = 0x2,
-        PlayScore = 0x3,
-        StopScore = 0x4,
-        StartEnsemble = 0x5,
-        LeaveEnsemble = 0x6,
-        Compose = 0x8,
-        Fireworks = 0xE,
-        AudienceEmote = 0xF
+        public const byte StartImprovise = 0x0;
+        public const byte PlayNote = 0x1;
+        public const byte StopImprovise = 0x2;
+        public const byte PlayScore = 0x3;
+        public const byte StopScore = 0x4;
+        public const byte StartEnsemble = 0x5;
+        public const byte LeaveEnsemble = 0x6;
+        public const byte Compose = 0x8;
+        public const byte Fireworks = 0xE;
+        public const byte AudienceEmote = 0xF;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        InstrumentMode mode = (InstrumentMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case InstrumentMode.StartImprovise:
+            case InstrumentOperation.StartImprovise:
                 HandleStartImprovise(session, packet);
                 break;
-            case InstrumentMode.PlayNote:
+            case InstrumentOperation.PlayNote:
                 HandlePlayNote(session, packet);
                 break;
-            case InstrumentMode.StopImprovise:
+            case InstrumentOperation.StopImprovise:
                 HandleStopImprovise(session);
                 break;
-            case InstrumentMode.PlayScore:
+            case InstrumentOperation.PlayScore:
                 HandlePlayScore(session, packet);
                 break;
-            case InstrumentMode.StopScore:
+            case InstrumentOperation.StopScore:
                 HandleStopScore(session);
                 break;
-            case InstrumentMode.StartEnsemble:
+            case InstrumentOperation.StartEnsemble:
                 HandleStartEnsemble(session, packet);
                 break;
-            case InstrumentMode.LeaveEnsemble:
+            case InstrumentOperation.LeaveEnsemble:
                 HandleLeaveEnsemble(session);
                 break;
-            case InstrumentMode.Compose:
+            case InstrumentOperation.Compose:
                 HandleCompose(session, packet);
                 break;
-            case InstrumentMode.Fireworks:
+            case InstrumentOperation.Fireworks:
                 HandleFireworks(session);
                 break;
-            case InstrumentMode.AudienceEmote:
+            case InstrumentOperation.AudienceEmote:
                 HandleAudienceEmote(packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

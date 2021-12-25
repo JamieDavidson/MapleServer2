@@ -7,7 +7,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Common;
 
-public class QuitHandler : CommonPacketHandler
+internal sealed class QuitHandler : CommonPacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_QUIT;
     private readonly IPEndPoint LoginEndpoint;

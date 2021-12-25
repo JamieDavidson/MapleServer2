@@ -6,7 +6,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class GuideObjectSync : GamePacketHandler
+internal sealed class GuideObjectSync : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.GUIDE_OBJECT_SYNC;
 

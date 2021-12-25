@@ -12,78 +12,78 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MeretMarketHandler : GamePacketHandler
+internal sealed class MeretMarketHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.MERET_MARKET;
 
-    private enum MeretMarketMode : byte
+    private static class MeretMarketOperations
     {
-        LoadPersonalListings = 0xB,
-        LoadSales = 0xC,
-        ListItem = 0xD,
-        RemoveListing = 0xE,
-        UnlistItem = 0xF,
-        RelistItem = 0x12,
-        CollectProfit = 0x14,
-        Initialize = 0x16,
-        OpenShop = 0x1B,
-        SendMarketRequest = 0x1D,
-        Purchase = 0x1E,
-        Home = 0x65,
-        OpenDesignShop = 0x66,
-        LoadCart = 0x6B
+        public const byte LoadPersonalListings = 0xB;
+        public const byte LoadSales = 0xC;
+        public const byte ListItem = 0xD;
+        public const byte RemoveListing = 0xE;
+        public const byte UnlistItem = 0xF;
+        public const byte RelistItem = 0x12;
+        public const byte CollectProfit = 0x14;
+        public const byte Initialize = 0x16;
+        public const byte OpenShop = 0x1B;
+        public const byte SendMarketRequest = 0x1D;
+        public const byte Purchase = 0x1E;
+        public const byte Home = 0x65;
+        public const byte OpenDesignShop = 0x66;
+        public const byte LoadCart = 0x6B;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        MeretMarketMode mode = (MeretMarketMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case MeretMarketMode.LoadPersonalListings:
+            case MeretMarketOperations.LoadPersonalListings:
                 HandleLoadPersonalListings(session);
                 break;
-            case MeretMarketMode.LoadSales:
+            case MeretMarketOperations.LoadSales:
                 HandleLoadSales(session);
                 break;
-            case MeretMarketMode.ListItem:
+            case MeretMarketOperations.ListItem:
                 HandleListItem(session, packet);
                 break;
-            case MeretMarketMode.RemoveListing:
+            case MeretMarketOperations.RemoveListing:
                 HandleRemoveListing(session, packet);
                 break;
-            case MeretMarketMode.UnlistItem:
+            case MeretMarketOperations.UnlistItem:
                 HandleUnlistItem(session, packet);
                 break;
-            case MeretMarketMode.RelistItem:
+            case MeretMarketOperations.RelistItem:
                 HandleRelistItem(session, packet);
                 break;
-            case MeretMarketMode.CollectProfit:
+            case MeretMarketOperations.CollectProfit:
                 HandleCollectProfit(session, packet);
                 break;
-            case MeretMarketMode.Initialize:
+            case MeretMarketOperations.Initialize:
                 HandleInitialize(session);
                 break;
-            case MeretMarketMode.OpenShop:
+            case MeretMarketOperations.OpenShop:
                 HandleOpenShop(session, packet);
                 break;
-            case MeretMarketMode.Purchase:
+            case MeretMarketOperations.Purchase:
                 HandlePurchase(session, packet);
                 break;
-            case MeretMarketMode.Home:
+            case MeretMarketOperations.Home:
                 HandleHome(session);
                 break;
-            case MeretMarketMode.OpenDesignShop:
+            case MeretMarketOperations.OpenDesignShop:
                 HandleOpenDesignShop(session);
                 break;
-            case MeretMarketMode.LoadCart:
+            case MeretMarketOperations.LoadCart:
                 HandleLoadCart(session);
                 break;
-            case MeretMarketMode.SendMarketRequest:
+            case MeretMarketOperations.SendMarketRequest:
                 HandleSendMarketRequest(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

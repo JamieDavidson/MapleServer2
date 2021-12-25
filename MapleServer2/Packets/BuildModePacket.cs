@@ -7,7 +7,7 @@ namespace MapleServer2.Packets;
 
 public static class BuildModePacket
 {
-    public static PacketWriter Use(IFieldObject<Player> fieldPlayer, BuildModeHandler.BuildModeType type, int itemId = 0, long itemUid = 0)
+    public static PacketWriter Use(IFieldObject<Player> fieldPlayer, byte type, int itemId = 0, long itemUid = 0)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.SET_BUILD_MODE);
         pWriter.WriteInt(fieldPlayer.ObjectId);
@@ -15,14 +15,15 @@ public static class BuildModePacket
 
         switch (type)
         {
-            case BuildModeHandler.BuildModeType.House:
+            case BuildModeHandler.BuildModeTypes.House:
                 pWriter.WriteInt(itemId);
                 pWriter.WriteLong(itemUid);
                 pWriter.WriteLong();
                 pWriter.WriteByte();
                 pWriter.WriteInt();
                 break;
-            case BuildModeHandler.BuildModeType.Liftables:
+            
+            case BuildModeHandler.BuildModeTypes.Liftables:
                 pWriter.WriteInt(itemId);
                 pWriter.WriteLong();
                 pWriter.WriteLong();

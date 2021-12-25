@@ -7,26 +7,26 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class LiftableHandler : GamePacketHandler
+internal sealed class LiftableHandler : GamePacketHandler
 {
-    private enum LiftableMode : byte
+    private static class LiftableOperations
     {
-        PickUp = 1,
+        public const byte PickUp = 1;
     }
 
     public override RecvOp OpCode => RecvOp.LIFTABLE;
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        LiftableMode mode = (LiftableMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case LiftableMode.PickUp:
+            case LiftableOperations.PickUp:
                 HandlePickUp(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }
@@ -58,7 +58,7 @@ public class LiftableHandler : GamePacketHandler
 
             session.FieldManager.BroadcastPacket(ResponseCubePacket.RemoveCube(fieldPlayer.ObjectId, fieldPlayer.ObjectId, liftable.Position.ToByte()));
             session.FieldManager.BroadcastPacket(LiftablePacket.RemoveCube(liftable));
-            session.FieldManager.BroadcastPacket(BuildModePacket.Use(fieldPlayer, BuildModeHandler.BuildModeType.Liftables, liftable.ItemId));
+            session.FieldManager.BroadcastPacket(BuildModePacket.Use(fieldPlayer, BuildModeHandler.BuildModeTypes.Liftables, liftable.ItemId));
             return;
         }
 
@@ -71,7 +71,7 @@ public class LiftableHandler : GamePacketHandler
         liftable2.Enabled = false;
 
         session.FieldManager.BroadcastPacket(LiftablePacket.UpdateEntityById(liftable2));
-        session.FieldManager.BroadcastPacket(BuildModePacket.Use(fieldPlayer, BuildModeHandler.BuildModeType.Liftables, liftable2.ItemId));
+        session.FieldManager.BroadcastPacket(BuildModePacket.Use(fieldPlayer, BuildModeHandler.BuildModeTypes.Liftables, liftable2.ItemId));
         session.FieldManager.BroadcastPacket(LiftablePacket.UpdateEntityById(liftable2));
     }
 }

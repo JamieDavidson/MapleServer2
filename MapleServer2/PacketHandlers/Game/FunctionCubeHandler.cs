@@ -10,25 +10,25 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class FunctionCubeHandler : GamePacketHandler
+internal sealed class FunctionCubeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.FUNCTION_CUBE;
 
-    private enum FunctionCubeMode : byte
+    private static class FunctionCubeOperations
     {
-        Use = 0x04
+        public const byte Use = 0x04;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        FunctionCubeMode mode = (FunctionCubeMode) packet.ReadByte();
-        switch (mode)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
-            case FunctionCubeMode.Use:
+            case FunctionCubeOperations.Use:
                 HandleUseCube(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

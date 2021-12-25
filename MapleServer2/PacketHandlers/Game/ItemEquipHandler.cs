@@ -7,26 +7,26 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ItemEquipHandler : GamePacketHandler
+internal sealed class ItemEquipHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ITEM_EQUIP;
 
-    private enum ItemEquipMode : byte
+    private static class ItemEquipOperations
     {
-        Equip = 0,
-        Unequip = 1
+        public const byte Equip = 0;
+        public const byte Unequip = 1;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ItemEquipMode function = (ItemEquipMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (function)
+        switch (operation)
         {
-            case ItemEquipMode.Equip:
+            case ItemEquipOperations.Equip:
                 HandleEquipItem(session, packet);
                 break;
-            case ItemEquipMode.Unequip:
+            case ItemEquipOperations.Unequip:
                 HandleUnequipItem(session, packet);
                 break;
         }

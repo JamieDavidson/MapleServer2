@@ -9,41 +9,41 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MapleopolyHandler : GamePacketHandler
+internal sealed class MapleopolyHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.MAPLEOPOLY;
 
-    private enum MapleopolyMode : byte
+    private static class MapleopolyOperations
     {
-        Open = 0x0,
-        Roll = 0x1,
-        ProcessTile = 0x3
+        public const byte Open = 0x0;
+        public const byte Roll = 0x1;
+        public const byte ProcessTile = 0x3;
     }
 
-    private enum MapleopolyNotice : byte
+    private static class MapleopolyNotices
     {
-        NotEnoughTokens = 0x1,
-        DiceAlreadyRolled = 0x4,
-        YouCannotRollRightNow = 0x5
+        public const byte NotEnoughTokens = 0x1;
+        public const byte DiceAlreadyRolled = 0x4;
+        public const byte YouCannotRollRightNow = 0x5;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        MapleopolyMode mode = (MapleopolyMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case MapleopolyMode.Open:
+            case MapleopolyOperations.Open:
                 HandleOpen(session);
                 break;
-            case MapleopolyMode.Roll:
+            case MapleopolyOperations.Roll:
                 HandleRoll(session);
                 break;
-            case MapleopolyMode.ProcessTile:
+            case MapleopolyOperations.ProcessTile:
                 HandleProcessTile(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }
@@ -76,7 +76,7 @@ public class MapleopolyHandler : GamePacketHandler
         }
         else
         {
-            session.Send(MapleopolyPacket.Notice((byte) MapleopolyNotice.NotEnoughTokens));
+            session.Send(MapleopolyPacket.Notice((byte) MapleopolyNotices.NotEnoughTokens));
             return;
         }
 

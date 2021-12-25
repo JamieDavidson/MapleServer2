@@ -12,33 +12,33 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Login;
 
-public class CharacterManagementHandler : LoginPacketHandler
+internal sealed class CharacterManagementHandler : LoginPacketHandler
 {
     public override RecvOp OpCode => RecvOp.CHARACTER_MANAGEMENT;
 
-    private enum CharacterManagementMode : byte
+    private static class CharacterManagementOperations
     {
-        Login = 0x0,
-        Create = 0x1,
-        Delete = 0x2
+        public const byte Login = 0x0;
+        public const byte Create = 0x1;
+        public const byte Delete = 0x2;
     }
 
     public override void Handle(LoginSession session, PacketReader packet)
     {
-        CharacterManagementMode mode = (CharacterManagementMode) packet.ReadByte();
-        switch (mode)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
-            case CharacterManagementMode.Login:
+            case CharacterManagementOperations.Login:
                 HandleSelect(session, packet);
                 break;
-            case CharacterManagementMode.Create:
+            case CharacterManagementOperations.Create:
                 HandleCreate(session, packet);
                 break;
-            case CharacterManagementMode.Delete:
+            case CharacterManagementOperations.Delete:
                 HandleDelete(session, packet);
                 break;
             default:
-                IPacketHandler<LoginSession>.LogUnknownMode(mode);
+                IPacketHandler<LoginSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

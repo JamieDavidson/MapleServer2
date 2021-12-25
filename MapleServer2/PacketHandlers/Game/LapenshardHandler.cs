@@ -8,48 +8,48 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class LapenshardHandler : GamePacketHandler
+internal sealed class LapenshardHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ITEM_LAPENSHARD;
 
-    private enum LapenshardMode : byte
+    private static class LapenshardOperations
     {
-        Equip = 0x1,
-        Unequip = 0x2,
-        AddFusion = 0x3,
-        AddCatalyst = 0x4,
-        Fusion = 0x5,
+        public const byte Equip = 0x1;
+        public const byte Unequip = 0x2;
+        public const byte AddFusion = 0x3;
+        public const byte AddCatalyst = 0x4;
+        public const byte Fusion = 0x5;
     }
 
-    private enum LapenshardColor : byte
+    private static class LapenshardColor
     {
-        Red = 41,
-        Blue = 42,
-        Green = 43,
+        public const byte Red = 41;
+        public const byte Blue = 42;
+        public const byte Green = 43;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        LapenshardMode mode = (LapenshardMode) packet.ReadByte();
-        switch (mode)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
-            case LapenshardMode.Equip:
+            case LapenshardOperations.Equip:
                 HandleEquip(session, packet);
                 break;
-            case LapenshardMode.Unequip:
+            case LapenshardOperations.Unequip:
                 HandleUnequip(session, packet);
                 break;
-            case LapenshardMode.AddFusion:
+            case LapenshardOperations.AddFusion:
                 HandleAddFusion(session, packet);
                 break;
-            case LapenshardMode.AddCatalyst:
+            case LapenshardOperations.AddCatalyst:
                 HandleAddCatalyst(session, packet);
                 break;
-            case LapenshardMode.Fusion:
+            case LapenshardOperations.Fusion:
                 HandleFusion(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }
@@ -164,7 +164,7 @@ public class LapenshardHandler : GamePacketHandler
             }
         }
 
-        LapenshardColor itemType = (LapenshardColor) (itemId / 1000000);
+        var itemType = itemId / 1000000;
         string crystal = "";
         switch (itemType)
         {

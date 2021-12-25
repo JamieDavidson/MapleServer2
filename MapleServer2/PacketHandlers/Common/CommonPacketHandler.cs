@@ -7,7 +7,7 @@ using NLog;
 
 namespace MapleServer2.PacketHandlers.Common;
 
-public abstract class CommonPacketHandler : IPacketHandler<LoginSession>, IPacketHandler<GameSession>
+internal abstract class CommonPacketHandler : IPacketHandler<LoginSession>, IPacketHandler<GameSession>
 {
     public abstract RecvOp OpCode { get; }
 

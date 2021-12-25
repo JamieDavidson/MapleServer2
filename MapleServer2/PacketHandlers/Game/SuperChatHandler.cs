@@ -6,30 +6,30 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class SuperChatHandler : GamePacketHandler
+internal sealed class SuperChatHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.SUPER_WORLDCHAT;
 
-    private enum SuperChatMode : byte
+    private static class SuperChatOperations
     {
-        Select = 0x0,
-        Deselect = 0x1
+        public const byte Select = 0x0;
+        public const byte Deselect = 0x1;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        SuperChatMode mode = (SuperChatMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
-            case SuperChatMode.Select:
+            case SuperChatOperations.Select:
                 HandleSelect(session, packet);
                 break;
-            case SuperChatMode.Deselect:
+            case SuperChatOperations.Deselect:
                 HandleDeselect(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

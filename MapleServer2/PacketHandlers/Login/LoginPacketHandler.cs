@@ -5,7 +5,7 @@ using NLog;
 
 namespace MapleServer2.PacketHandlers.Login;
 
-public abstract class LoginPacketHandler : IPacketHandler<LoginSession>
+internal abstract class LoginPacketHandler : IPacketHandler<LoginSession>
 {
     public abstract RecvOp OpCode { get; }
 

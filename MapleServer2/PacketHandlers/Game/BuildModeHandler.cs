@@ -7,37 +7,37 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class BuildModeHandler : GamePacketHandler
+internal sealed class BuildModeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_SET_BUILD_MODE;
 
-    private enum BuildModeMode : byte
+    private static class BuildModeOperations
     {
-        Stop = 0x0,
-        Start = 0x1
+        public const byte Stop = 0x0;
+        public const byte Start = 0x1;
     }
 
-    public enum BuildModeType : byte
+    public static class BuildModeTypes
     {
-        Stop = 0x0,
-        House = 0x1,
-        Liftables = 0x2,
+        public const byte Stop = 0x0;
+        public const byte House = 0x1;
+        public const byte Liftables = 0x2;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        BuildModeMode mode = (BuildModeMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
-            case BuildModeMode.Stop:
+            case BuildModeOperations.Stop:
                 HandleStop(session);
                 break;
-            case BuildModeMode.Start:
+            case BuildModeOperations.Start:
                 HandleStart(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }
@@ -48,7 +48,7 @@ public class BuildModeHandler : GamePacketHandler
         {
             return;
         }
-        session.FieldManager.BroadcastPacket(BuildModePacket.Use(session.Player.FieldPlayer, BuildModeType.Stop));
+        session.FieldManager.BroadcastPacket(BuildModePacket.Use(session.Player.FieldPlayer, BuildModeTypes.Stop));
         session.FieldManager.BroadcastPacket(GuideObjectPacket.Remove(session.Player.Guide));
         session.FieldManager.RemoveGuide(session.Player.Guide);
         session.Player.Guide = null; // remove guide from player
@@ -75,6 +75,6 @@ public class BuildModeHandler : GamePacketHandler
         session.FieldManager.AddGuide(fieldGuide);
 
         session.FieldManager.BroadcastPacket(GuideObjectPacket.Add(fieldGuide));
-        session.FieldManager.BroadcastPacket(BuildModePacket.Use(session.Player.FieldPlayer, BuildModeType.House, furnishingItemId, furnishingItemUid));
+        session.FieldManager.BroadcastPacket(BuildModePacket.Use(session.Player.FieldPlayer, BuildModeTypes.House, furnishingItemId, furnishingItemUid));
     }
 }

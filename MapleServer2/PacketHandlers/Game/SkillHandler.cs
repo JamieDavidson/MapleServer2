@@ -12,70 +12,70 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class SkillHandler : GamePacketHandler
+internal sealed class SkillHandler : GamePacketHandler
 {
     private static readonly Random Rand = RandomProvider.Get();
 
     public override RecvOp OpCode => RecvOp.SKILL;
 
-    private enum SkillHandlerMode : byte
+    private static class SkillHandlerOperations
     {
-        Cast = 0x0,
-        Damage = 0x1,
-        Sync = 0x2,
-        SyncTick = 0x3,
-        Cancel = 0x4
+        public const byte Cast = 0x0;
+        public const byte Damage = 0x1;
+        public const byte Sync = 0x2;
+        public const byte SyncTick = 0x3;
+        public const byte Cancel = 0x4;
     }
 
-    private enum DamagingMode : byte
+    private static class DamagingOperation
     {
-        SyncDamage = 0x0,
-        Damage = 0x1,
-        RegionSkill = 0x2
+        public const byte SyncDamage = 0x0;
+        public const byte Damage = 0x1;
+        public const byte RegionSkill = 0x2;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        SkillHandlerMode mode = (SkillHandlerMode) packet.ReadByte();
-        switch (mode)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
-            case SkillHandlerMode.Cast:
+            case SkillHandlerOperations.Cast:
                 HandleCast(session, packet);
                 break;
-            case SkillHandlerMode.Damage:
+            case SkillHandlerOperations.Damage:
                 HandleDamageMode(session, packet);
                 break;
-            case SkillHandlerMode.Sync:
+            case SkillHandlerOperations.Sync:
                 HandleSyncSkills(session, packet);
                 break;
-            case SkillHandlerMode.SyncTick:
+            case SkillHandlerOperations.SyncTick:
                 HandleSyncTick(packet);
                 break;
-            case SkillHandlerMode.Cancel:
+            case SkillHandlerOperations.Cancel:
                 HandleCancelSkill(packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }
 
-    private static void HandleDamageMode(GameSession session, PacketReader packet)
+    private void HandleDamageMode(GameSession session, PacketReader packet)
     {
-        DamagingMode mode = (DamagingMode) packet.ReadByte();
-        switch (mode)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
-            case DamagingMode.SyncDamage:
+            case DamagingOperation.SyncDamage:
                 HandleSyncDamage(session, packet);
                 break;
-            case DamagingMode.Damage:
+            case DamagingOperation.Damage:
                 HandleDamage(session, packet);
                 break;
-            case DamagingMode.RegionSkill:
+            case DamagingOperation.RegionSkill:
                 HandleRegionSkills(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

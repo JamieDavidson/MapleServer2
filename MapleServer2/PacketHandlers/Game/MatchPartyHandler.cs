@@ -7,41 +7,41 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MatchPartyHandler : GamePacketHandler
+internal sealed class MatchPartyHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.MATCH_PARTY;
 
-    private enum MatchPartyMode : byte
+    private static class MatchPartyOperations
     {
-        CreateListing = 0x0,
-        RemoveListing = 0x1,
-        Refresh = 0x2
+        public const byte CreateListing = 0x0;
+        public const byte RemoveListing = 0x1;
+        public const byte Refresh = 0x2;
     }
 
-    private enum SearchFilter : byte
+    private static class SearchFilters
     {
-        MostMembers = 0xC,
-        LeastMembers = 0xB,
-        OldestFirst = 0x16,
-        NewestFirst = 0x15
+        public const byte MostMembers = 0xC;
+        public const byte LeastMembers = 0xB;
+        public const byte OldestFirst = 0x16;
+        public const byte NewestFirst = 0x15;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        MatchPartyMode mode = (MatchPartyMode) packet.ReadByte();
-        switch (mode)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
-            case MatchPartyMode.CreateListing:
+            case MatchPartyOperations.CreateListing:
                 HandleCreateListing(session, packet);
                 break;
-            case MatchPartyMode.RemoveListing:
+            case MatchPartyOperations.RemoveListing:
                 HandleRemoveListing(session);
                 break;
-            case MatchPartyMode.Refresh:
+            case MatchPartyOperations.Refresh:
                 HandleRefresh(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }
@@ -105,7 +105,7 @@ public class MatchPartyHandler : GamePacketHandler
     {
         //Get search terms:
         long unk = packet.ReadLong();
-        SearchFilter filterMode = (SearchFilter) packet.ReadByte();
+        var filterMode = packet.ReadByte();
         string searchText = packet.ReadUnicodeString().ToLower();
         long unk2 = packet.ReadLong();
 
@@ -114,16 +114,16 @@ public class MatchPartyHandler : GamePacketHandler
         //Filter
         switch (filterMode)
         {
-            case SearchFilter.MostMembers:
+            case SearchFilters.MostMembers:
                 partyList = partyList.OrderByDescending(p => p.Members.Count).ToList();
                 break;
-            case SearchFilter.LeastMembers:
+            case SearchFilters.LeastMembers:
                 partyList = partyList.OrderBy(p => p.Members.Count).ToList();
                 break;
-            case SearchFilter.OldestFirst:
+            case SearchFilters.OldestFirst:
                 partyList = partyList.OrderBy(p => p.CreationTimestamp).ToList();
                 break;
-            case SearchFilter.NewestFirst:
+            case SearchFilters.NewestFirst:
                 partyList = partyList.OrderByDescending(p => p.CreationTimestamp).ToList();
                 break;
         }

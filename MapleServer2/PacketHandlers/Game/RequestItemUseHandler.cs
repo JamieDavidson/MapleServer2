@@ -15,7 +15,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestItemUseHandler : GamePacketHandler
+internal sealed class RequestItemUseHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_USE;
 

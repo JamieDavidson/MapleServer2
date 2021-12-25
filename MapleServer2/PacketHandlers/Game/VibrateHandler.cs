@@ -8,7 +8,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class VibrateHandler : GamePacketHandler
+internal sealed class VibrateHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.VIBRATE;
 

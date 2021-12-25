@@ -8,42 +8,42 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RideHandler : GamePacketHandler
+internal sealed class RideHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_RIDE;
 
-    private enum RideMode : byte
+    private static class RideOperations
     {
-        StartRide = 0x0,
-        StopRide = 0x1,
-        ChangeRide = 0x2,
-        StartMultiPersonRide = 0x3,
-        StopMultiPersonRide = 0x4
+        public const byte StartRide = 0x0;
+        public const byte StopRide = 0x1;
+        public const byte ChangeRide = 0x2;
+        public const byte StartMultiPersonRide = 0x3;
+        public const byte StopMultiPersonRide = 0x4;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        RideMode mode = (RideMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case RideMode.StartRide:
+            case RideOperations.StartRide:
                 HandleStartRide(session, packet);
                 break;
-            case RideMode.StopRide:
+            case RideOperations.StopRide:
                 HandleStopRide(session, packet);
                 break;
-            case RideMode.ChangeRide:
+            case RideOperations.ChangeRide:
                 HandleChangeRide(session, packet);
                 break;
-            case RideMode.StartMultiPersonRide:
+            case RideOperations.StartMultiPersonRide:
                 HandleStartMultiPersonRide(session, packet);
                 break;
-            case RideMode.StopMultiPersonRide:
+            case RideOperations.StopMultiPersonRide:
                 HandleStopMultiPersonRide(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

@@ -10,30 +10,30 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class TrophyHandler : GamePacketHandler
+internal sealed class TrophyHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.TROPHY;
 
-    private enum TrophyHandlerMode : byte
+    private static class TrophyHandlerOperations
     {
-        ClaimReward = 0x03,
-        Favorite = 0x04
+        public const byte ClaimReward = 0x03;
+        public const byte Favorite = 0x04;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        TrophyHandlerMode mode = (TrophyHandlerMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
-            case TrophyHandlerMode.ClaimReward:
+            case TrophyHandlerOperations.ClaimReward:
                 HandleClaimReward(session, packet);
                 break;
-            case TrophyHandlerMode.Favorite:
+            case TrophyHandlerOperations.Favorite:
                 HandleFavorite(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

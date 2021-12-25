@@ -5,7 +5,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class BreakableHandler : GamePacketHandler
+internal sealed class BreakableHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.BREAKABLE;
 

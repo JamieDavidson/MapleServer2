@@ -10,42 +10,42 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class QuestHandler : GamePacketHandler
+internal sealed class QuestHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.QUEST;
 
-    private enum QuestMode : byte
+    private static class QuestOperations
     {
-        AcceptQuest = 0x02,
-        CompleteQuest = 0x04,
-        ExplorationQuests = 0x08,
-        ToggleTracking = 0x09,
-        CompleteNavigator = 0x18
+        public const byte AcceptQuest = 0x02;
+        public const byte CompleteQuest = 0x04;
+        public const byte ExplorationQuests = 0x08;
+        public const byte ToggleTracking = 0x09;
+        public const byte CompleteNavigator = 0x18;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        QuestMode mode = (QuestMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
-            case QuestMode.AcceptQuest:
+            case QuestOperations.AcceptQuest:
                 HandleAcceptQuest(session, packet);
                 break;
-            case QuestMode.CompleteQuest:
+            case QuestOperations.CompleteQuest:
                 HandleCompleteQuest(session, packet);
                 break;
-            case QuestMode.ExplorationQuests:
+            case QuestOperations.ExplorationQuests:
                 HandleAddExplorationQuests(session, packet);
                 break;
-            case QuestMode.CompleteNavigator:
+            case QuestOperations.CompleteNavigator:
                 HandleCompleteNavigator(session, packet);
                 break;
-            case QuestMode.ToggleTracking:
+            case QuestOperations.ToggleTracking:
                 HandleToggleTracking(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
         }
     }

@@ -7,37 +7,37 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class SkillBookTreeHandler : GamePacketHandler
+internal sealed class SkillBookTreeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_SKILL_BOOK_TREE;
 
-    private enum SkillBookMode : byte
+    private static class SkillBookOperations
     {
-        Open = 0x00,
-        Save = 0x01,
-        Rename = 0x02,
-        AddTab = 0x04
+        public const byte Open = 0x00;
+        public const byte Save = 0x01;
+        public const byte Rename = 0x02;
+        public const byte AddTab = 0x04;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        SkillBookMode mode = (SkillBookMode) packet.ReadByte();
-        switch (mode)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
-            case SkillBookMode.Open:
+            case SkillBookOperations.Open:
                 HandleOpen(session);
                 break;
-            case SkillBookMode.Save:
+            case SkillBookOperations.Save:
                 HandleSave(session, packet);
                 break;
-            case SkillBookMode.Rename:
+            case SkillBookOperations.Rename:
                 HandleRename(session, packet);
                 break;
-            case SkillBookMode.AddTab:
+            case SkillBookOperations.AddTab:
                 HandleAddTab(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

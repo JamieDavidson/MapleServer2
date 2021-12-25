@@ -6,7 +6,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class FallDamageHandler : GamePacketHandler
+internal sealed class FallDamageHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.STATE_FALL_DAMAGE;
 

@@ -4,26 +4,26 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class StateHandler : GamePacketHandler
+internal sealed class StateHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.STATE;
 
-    private enum StateHandlerMode : byte
+    private static class StateHandlerOperations
     {
-        Jump = 0x0,
-        Land = 0x1
+        public const byte Jump = 0x0;
+        public const byte Land = 0x1;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        StateHandlerMode mode = (StateHandlerMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
-            case StateHandlerMode.Jump:
+            case StateHandlerOperations.Jump:
                 HandleJump(session);
                 break;
-            case StateHandlerMode.Land:
+            case StateHandlerOperations.Land:
                 break;
         }
     }

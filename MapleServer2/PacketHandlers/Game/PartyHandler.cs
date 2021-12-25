@@ -7,67 +7,67 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class PartyHandler : GamePacketHandler
+internal sealed class PartyHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.PARTY;
 
-    private enum PartyMode : byte
+    private static class PartyOperations
     {
-        Invite = 0x1,
-        Join = 0x2,
-        Leave = 0x3,
-        Kick = 0x4,
-        SetLeader = 0x11,
-        FinderJoin = 0x17,
-        SummonParty = 0x1D,
-        VoteKick = 0x2D,
-        ReadyCheck = 0x2E,
-        FindDungeonParty = 0x21,
-        CancelFindDungeonParty = 0x22,
-        ReadyCheckUpdate = 0x30
+        public const byte Invite = 0x1;
+        public const byte Join = 0x2;
+        public const byte Leave = 0x3;
+        public const byte Kick = 0x4;
+        public const byte SetLeader = 0x11;
+        public const byte FinderJoin = 0x17;
+        public const byte SummonParty = 0x1D;
+        public const byte VoteKick = 0x2D;
+        public const byte ReadyCheck = 0x2E;
+        public const byte FindDungeonParty = 0x21;
+        public const byte CancelFindDungeonParty = 0x22;
+        public const byte ReadyCheckUpdate = 0x30;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        PartyMode mode = (PartyMode) packet.ReadByte(); //Mode
+        var operation = packet.ReadByte(); //Mode
 
-        switch (mode)
+        switch (operation)
         {
-            case PartyMode.Invite:
+            case PartyOperations.Invite:
                 HandleInvite(session, packet);
                 break;
-            case PartyMode.Join:
+            case PartyOperations.Join:
                 HandleJoin(session, packet);
                 break;
-            case PartyMode.Leave:
+            case PartyOperations.Leave:
                 HandleLeave(session);
                 break;
-            case PartyMode.Kick:
+            case PartyOperations.Kick:
                 HandleKick(session, packet);
                 break;
-            case PartyMode.SetLeader:
+            case PartyOperations.SetLeader:
                 HandleSetLeader(session, packet);
                 break;
-            case PartyMode.FinderJoin:
+            case PartyOperations.FinderJoin:
                 HandleFinderJoin(session, packet);
                 break;
-            case PartyMode.SummonParty:
+            case PartyOperations.SummonParty:
                 HandleSummonParty();
                 break;
-            case PartyMode.VoteKick:
+            case PartyOperations.VoteKick:
                 HandleVoteKick(session, packet);
                 break;
-            case PartyMode.ReadyCheck:
+            case PartyOperations.ReadyCheck:
                 HandleStartReadyCheck(session);
                 break;
-            case PartyMode.FindDungeonParty:
+            case PartyOperations.FindDungeonParty:
                 HandleFindDungeonParty(session, packet);
                 break;
-            case PartyMode.ReadyCheckUpdate:
+            case PartyOperations.ReadyCheckUpdate:
                 HandleReadyCheckUpdate(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

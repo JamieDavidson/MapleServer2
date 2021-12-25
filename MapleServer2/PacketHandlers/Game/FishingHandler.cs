@@ -11,52 +11,52 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class FishingHandler : GamePacketHandler
+internal sealed class FishingHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.FISHING;
 
-    private enum FishingMode : byte
+    private static class FishingOperations
     {
-        PrepareFishing = 0x0,
-        Stop = 0x1,
-        Catch = 0x8,
-        Start = 0x9,
-        FailMinigame = 0xA
+        public const byte PrepareFishing = 0x0;
+        public const byte Stop = 0x1;
+        public const byte Catch = 0x8;
+        public const byte Start = 0x9;
+        public const byte FailMinigame = 0xA;
     }
 
-    private enum FishingNotice : short
+    private static class FishingNotices
     {
-        CanOnlyFishNearWater = 0x1,
-        InvalidFishingRod = 0x2,
-        MasteryTooLowForMap = 0x3,
-        CannotFishHere = 0x4,
-        MasteryTooLowForRod = 0x6,
-        GearOrMiscInventoryFull = 0x7
+        public const short CanOnlyFishNearWater = 0x1;
+        public const short InvalidFishingRod = 0x2;
+        public const short MasteryTooLowForMap = 0x3;
+        public const short CannotFishHere = 0x4;
+        public const short MasteryTooLowForRod = 0x6;
+        public const short GearOrMiscInventoryFull = 0x7;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        FishingMode mode = (FishingMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case FishingMode.PrepareFishing:
+            case FishingOperations.PrepareFishing:
                 HandlePrepareFishing(session, packet);
                 break;
-            case FishingMode.Stop:
+            case FishingOperations.Stop:
                 HandleStop(session);
                 break;
-            case FishingMode.Catch:
+            case FishingOperations.Catch:
                 HandleCatch(session, packet);
                 break;
-            case FishingMode.Start:
+            case FishingOperations.Start:
                 HandleStart(session, packet);
                 break;
-            case FishingMode.FailMinigame:
+            case FishingOperations.FailMinigame:
                 HandleFailMinigame();
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }
@@ -68,13 +68,13 @@ public class FishingHandler : GamePacketHandler
 
         if (!FishingSpotMetadataStorage.CanFish(session.Player.MapId, masteryExp.CurrentExp))
         {
-            session.Send(FishingPacket.Notice((short) FishingNotice.MasteryTooLowForMap));
+            session.Send(FishingPacket.Notice((short) FishingNotices.MasteryTooLowForMap));
             return;
         }
 
         if (!session.Player.Inventory.Items.ContainsKey(fishingRodUid))
         {
-            session.Send(FishingPacket.Notice((short) FishingNotice.InvalidFishingRod));
+            session.Send(FishingPacket.Notice((short) FishingNotices.InvalidFishingRod));
             return;
         }
 
@@ -83,7 +83,7 @@ public class FishingHandler : GamePacketHandler
 
         if (rodMetadata.MasteryLimit < masteryExp.CurrentExp)
         {
-            session.Send(FishingPacket.Notice((short) FishingNotice.MasteryTooLowForRod));
+            session.Send(FishingPacket.Notice((short) FishingNotices.MasteryTooLowForRod));
         }
 
         int direction = Direction.GetClosestDirection(session.Player.FieldPlayer.Rotation);
@@ -92,7 +92,7 @@ public class FishingHandler : GamePacketHandler
         List<MapBlock> fishingBlocks = CollectFishingBlocks(startCoord, direction, session.Player.MapId);
         if (fishingBlocks.Count == 0)
         {
-            session.Send(FishingPacket.Notice((short) FishingNotice.CanOnlyFishNearWater));
+            session.Send(FishingPacket.Notice((short) FishingNotices.CanOnlyFishNearWater));
             return;
         }
         session.Player.FishingRod = fishingRod;

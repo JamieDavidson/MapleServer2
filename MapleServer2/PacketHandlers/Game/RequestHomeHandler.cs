@@ -6,29 +6,29 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestHomeHandler : GamePacketHandler
+internal sealed class RequestHomeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_HOME;
 
-    private enum RequestHomeMode : byte
+    private static class RequestHomeOperations
     {
-        InviteToHome = 0x01,
-        MoveToHome = 0x03
+        public const byte InviteToHome = 0x01;
+        public const byte MoveToHome = 0x03;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        RequestHomeMode mode = (RequestHomeMode) packet.ReadByte();
-        switch (mode)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
-            case RequestHomeMode.InviteToHome:
+            case RequestHomeOperations.InviteToHome:
                 HandleInviteToHome(session, packet);
                 break;
-            case RequestHomeMode.MoveToHome:
+            case RequestHomeOperations.MoveToHome:
                 HandleMoveToHome(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

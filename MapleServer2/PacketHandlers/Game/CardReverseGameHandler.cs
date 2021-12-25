@@ -9,34 +9,34 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class CardReverseGameHandler : GamePacketHandler
+internal sealed class CardReverseGameHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CARD_REVERSE_GAME;
 
-    private enum CardReverseGameMode : byte
+    private static class CardReverseGameOperations
     {
-        Open = 0x0,
-        Mix = 0x1,
-        Select = 0x2
+        public const byte Open = 0x0;
+        public const byte Mix = 0x1;
+        public const byte Select = 0x2;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        CardReverseGameMode mode = (CardReverseGameMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case CardReverseGameMode.Open:
+            case CardReverseGameOperations.Open:
                 HandleOpen(session);
                 break;
-            case CardReverseGameMode.Mix:
+            case CardReverseGameOperations.Mix:
                 HandleMix(session);
                 break;
-            case CardReverseGameMode.Select:
+            case CardReverseGameOperations.Select:
                 HandleSelect(session);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

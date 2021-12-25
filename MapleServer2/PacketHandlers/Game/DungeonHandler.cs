@@ -8,51 +8,51 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class DungeonHandler : GamePacketHandler
+internal sealed class DungeonHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ROOM_DUNGEON;
 
-    private enum DungeonMode : byte
+    private static class DungeonOperations
     {
-        ResetDungeon = 0x01,
-        CreateDungeon = 0x02,
-        EnterDungeonButton = 0x03,
-        EnterDungeonPortal = 0x0A,
-        AddRewards = 0x8,
-        GetHelp = 0x10,
-        Veteran = 0x11,
-        Favorite = 0x19
+        public const byte ResetDungeon = 0x01;
+        public const byte CreateDungeon = 0x02;
+        public const byte EnterDungeonButton = 0x03;
+        public const byte EnterDungeonPortal = 0x0A;
+        public const byte AddRewards = 0x8;
+        public const byte GetHelp = 0x10;
+        public const byte Veteran = 0x11;
+        public const byte Favorite = 0x19;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        DungeonMode mode = (DungeonMode) packet.ReadByte();
+        var operations = packet.ReadByte();
 
-        switch (mode)
+        switch (operations)
         {
-            case DungeonMode.EnterDungeonPortal:
+            case DungeonOperations.EnterDungeonPortal:
                 HandleEnterDungeonPortal(session);
                 break;
-            case DungeonMode.CreateDungeon:
+            case DungeonOperations.CreateDungeon:
                 HandleCreateDungeon(session, packet);
                 break;
-            case DungeonMode.EnterDungeonButton:
+            case DungeonOperations.EnterDungeonButton:
                 HandleEnterDungeonButton(session);
                 break;
-            case DungeonMode.AddRewards:
+            case DungeonOperations.AddRewards:
                 HandleAddRewards(session, packet);
                 break;
-            case DungeonMode.GetHelp:
+            case DungeonOperations.GetHelp:
                 HandleGetHelp(session, packet);
                 break;
-            case DungeonMode.Veteran:
+            case DungeonOperations.Veteran:
                 HandleVeteran(session, packet);
                 break;
-            case DungeonMode.Favorite:
+            case DungeonOperations.Favorite:
                 HandleFavorite(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operations);
                 break;
         }
     }

@@ -6,7 +6,7 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class TutorialHandler : GamePacketHandler
+internal sealed class TutorialHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.TUTORIAL;
 

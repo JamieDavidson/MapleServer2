@@ -12,7 +12,7 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class UserChatHandler : GamePacketHandler
+internal sealed class UserChatHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.USER_CHAT;
 

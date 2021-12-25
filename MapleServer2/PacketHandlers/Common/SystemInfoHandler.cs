@@ -4,7 +4,7 @@ using MapleServer2.Network;
 
 namespace MapleServer2.PacketHandlers.Common;
 
-public class SystemInfoHandler : CommonPacketHandler
+internal sealed class SystemInfoHandler : CommonPacketHandler
 {
     public override RecvOp OpCode => RecvOp.SYSTEM_INFO;
 

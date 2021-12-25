@@ -11,19 +11,19 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-internal class InteractObjectHandler : GamePacketHandler
+internal sealed class InteractObjectHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.INTERACT_OBJECT;
 
-    private enum InteractObjectMode : byte
+    private static class InteractObjectMode
     {
-        Cast = 0x0B,
-        Interact = 0x0C
+        public const byte Cast = 0x0B;
+        public const byte Interact = 0x0C;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        InteractObjectMode mode = (InteractObjectMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {

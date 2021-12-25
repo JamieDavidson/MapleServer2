@@ -10,33 +10,33 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class UgcHandler : GamePacketHandler
+internal sealed class UgcHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.UGC;
 
-    private enum UgcMode : byte
+    private static class UgcOperations
     {
-        CreateUgcItem = 0x01,
-        AddUgcItem = 0x03,
-        ProfilePicture = 0x0B
+        public const byte CreateUgcItem = 0x01;
+        public const byte AddUgcItem = 0x03;
+        public const byte ProfilePicture = 0x0B;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        UgcMode function = (UgcMode) packet.ReadByte();
-        switch (function)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
-            case UgcMode.CreateUgcItem:
+            case UgcOperations.CreateUgcItem:
                 HandleCreateUGCItem(session, packet);
                 break;
-            case UgcMode.AddUgcItem:
+            case UgcOperations.AddUgcItem:
                 HandleAddUgcItem(session, packet);
                 break;
-            case UgcMode.ProfilePicture:
+            case UgcOperations.ProfilePicture:
                 HandleProfilePicture(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(function);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

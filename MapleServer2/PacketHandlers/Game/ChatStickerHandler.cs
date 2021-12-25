@@ -6,42 +6,42 @@ using MapleServer2.Servers.Game;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class ChatStickerHandler : GamePacketHandler
+internal sealed class ChatStickerHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CHAT_STICKER;
 
-    private enum ChatStickerMode : byte
+    private static class ChatStickerOperations
     {
-        OpenWindow = 0x1,
-        UseSticker = 0x3,
-        GroupChatSticker = 0x4,
-        Favorite = 0x5,
-        Unfavorite = 0x6
+        public const byte OpenWindow = 0x1;
+        public const byte UseSticker = 0x3;
+        public const byte GroupChatSticker = 0x4;
+        public const byte Favorite = 0x5;
+        public const byte Unfavorite = 0x6;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        ChatStickerMode mode = (ChatStickerMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case ChatStickerMode.OpenWindow:
+            case ChatStickerOperations.OpenWindow:
                 HandleOpenWindow( /*session, packet*/);
                 break;
-            case ChatStickerMode.UseSticker:
+            case ChatStickerOperations.UseSticker:
                 HandleUseSticker(session, packet);
                 break;
-            case ChatStickerMode.GroupChatSticker:
+            case ChatStickerOperations.GroupChatSticker:
                 HandleGroupChatSticker(session, packet);
                 break;
-            case ChatStickerMode.Favorite:
+            case ChatStickerOperations.Favorite:
                 HandleFavorite(session, packet);
                 break;
-            case ChatStickerMode.Unfavorite:
+            case ChatStickerOperations.Unfavorite:
                 HandleUnfavorite(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

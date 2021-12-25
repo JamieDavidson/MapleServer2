@@ -6,26 +6,26 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class PlayerHostHandler : GamePacketHandler
+internal sealed class PlayerHostHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.PLAYER_HOST;
 
-    private enum PlayerHostMode : byte
+    private static class PlayerHostOperations
     {
-        Claim = 0x1
+        public const byte Claim = 0x1;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        PlayerHostMode mode = (PlayerHostMode) packet.ReadByte();
+        var operation = packet.ReadByte();
 
-        switch (mode)
+        switch (operation)
         {
-            case PlayerHostMode.Claim:
+            case PlayerHostOperations.Claim:
                 HandleClaim(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }

@@ -10,38 +10,38 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class MasteryHandler : GamePacketHandler
+internal sealed class MasteryHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CONSTRUCT_RECIPE;
 
-    private enum MasteryMode : byte
+    private static class MasteryOperations
     {
-        RewardBox = 0x01,
-        CraftItem = 0x02
+        public const byte RewardBox = 0x01;
+        public const byte CraftItem = 0x02;
     }
 
-    private enum MasteryNotice : byte
+    private static class MasteryNotices
     {
-        NotEnoughMastery = 0x01,
-        NotEnoughMesos = 0x02,
-        RequiredQuestIsNotCompleted = 0x03,
-        NotEnoughItems = 0x04,
-        InsufficientLevel = 0x07
+        public const byte NotEnoughMastery = 0x01;
+        public const byte NotEnoughMesos = 0x02;
+        public const byte RequiredQuestIsNotCompleted = 0x03;
+        public const byte NotEnoughItems = 0x04;
+        public const byte InsufficientLevel = 0x07;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        MasteryMode mode = (MasteryMode) packet.ReadByte();
-        switch (mode)
+        var operation = packet.ReadByte();
+        switch (operation)
         {
-            case MasteryMode.RewardBox:
+            case MasteryOperations.RewardBox:
                 HandleRewardBox(session, packet);
                 break;
-            case MasteryMode.CraftItem:
+            case MasteryOperations.CraftItem:
                 HandleCraftItem(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(GetType(), operation);
                 break;
         }
     }
@@ -89,7 +89,7 @@ public class MasteryHandler : GamePacketHandler
         {
             if (session.Player.Levels.MasteryExp.First(x => x.Type == (MasteryType) recipe.MasteryType).CurrentExp < recipe.RequireMastery)
             {
-                session.Send(MasteryPacket.MasteryNotice((short) MasteryNotice.NotEnoughMastery));
+                session.Send(MasteryPacket.MasteryNotice(MasteryNotices.NotEnoughMastery));
                 return;
             }
         }
@@ -100,7 +100,7 @@ public class MasteryHandler : GamePacketHandler
             {
                 if (session.Player.QuestData.TryGetValue(questId, out QuestStatus quest) && quest.State is not QuestState.Finished)
                 {
-                    session.Send(MasteryPacket.MasteryNotice((short) MasteryNotice.RequiredQuestIsNotCompleted));
+                    session.Send(MasteryPacket.MasteryNotice(MasteryNotices.RequiredQuestIsNotCompleted));
                     return;
                 }
             }
@@ -109,14 +109,14 @@ public class MasteryHandler : GamePacketHandler
         // does the play have enough mesos for this recipe?
         if (!session.Player.Wallet.Meso.Modify(-recipe.RequireMeso))
         {
-            session.Send(MasteryPacket.MasteryNotice((short) MasteryNotice.NotEnoughMesos));
+            session.Send(MasteryPacket.MasteryNotice(MasteryNotices.NotEnoughMesos));
             return;
         }
 
         // does the player have all the required ingredients for this recipe?
         if (!PlayerHasAllIngredients(session, recipe))
         {
-            session.Send(MasteryPacket.MasteryNotice((short) MasteryNotice.NotEnoughItems));
+            session.Send(MasteryPacket.MasteryNotice(MasteryNotices.NotEnoughItems));
             return;
         }
 
@@ -144,7 +144,7 @@ public class MasteryHandler : GamePacketHandler
 
         return true;
     }
-
+    
     private static void AddRewardItemsToInventory(GameSession session, RecipeMetadata recipe)
     {
         // award items

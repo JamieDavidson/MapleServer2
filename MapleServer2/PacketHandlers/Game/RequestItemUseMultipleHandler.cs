@@ -9,14 +9,14 @@ using MapleServer2.Types;
 
 namespace MapleServer2.PacketHandlers.Game;
 
-public class RequestItemUseMultipleHandler : GamePacketHandler
+internal sealed class RequestItemUseMultipleHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_USE_MULTIPLE;
 
-    private enum BoxType : byte
+    private static class BoxType
     {
-        OPEN = 0x00,
-        SELECT = 0x01
+        public const byte Open = 0x00;
+        public const byte Select = 0x01;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
@@ -24,7 +24,7 @@ public class RequestItemUseMultipleHandler : GamePacketHandler
         int itemId = packet.ReadInt();
         packet.ReadShort(); // Unknown
         int amount = packet.ReadInt();
-        BoxType boxType = (BoxType) packet.ReadShort();
+        var boxType = packet.ReadShort();
 
         string functionName = ItemMetadataStorage.GetFunction(itemId).Name;
         if (functionName != "SelectItemBox" && functionName != "OpenItemBox")
@@ -39,7 +39,7 @@ public class RequestItemUseMultipleHandler : GamePacketHandler
         }
 
         int index = 0;
-        if (boxType == BoxType.SELECT)
+        if (boxType == BoxType.Select)
         {
             index = packet.ReadShort() - 0x30; // Starts at 0x30 for some reason
             if (index < 0)
