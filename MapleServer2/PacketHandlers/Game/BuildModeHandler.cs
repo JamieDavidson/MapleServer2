@@ -11,33 +11,33 @@ public class BuildModeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_SET_BUILD_MODE;
 
-    private enum BuildModeMode : byte
+    private static class BuildModeOperation
     {
-        Stop = 0x0,
-        Start = 0x1
+        public const byte Stop = 0x0;
+        public const byte Start = 0x1;
     }
 
-    public enum BuildModeType : byte
+    public static class BuildModeType
     {
-        Stop = 0x0,
-        House = 0x1,
-        Liftables = 0x2,
+        public const byte Stop = 0x0;
+        public const byte House = 0x1;
+        public const byte Liftables = 0x2;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        BuildModeMode mode = (BuildModeMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
-            case BuildModeMode.Stop:
+            case BuildModeOperation.Stop:
                 HandleStop(session);
                 break;
-            case BuildModeMode.Start:
+            case BuildModeOperation.Start:
                 HandleStart(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(typeof(BuildModeHandler), mode);
                 break;
         }
     }

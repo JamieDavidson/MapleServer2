@@ -16,56 +16,56 @@ public class BlackMarketHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.BLACK_MARKET;
 
-    private enum BlackMarketMode : byte
+    private static class BlackMarketOperation
     {
-        Open = 0x1,
-        CreateListing = 0x2,
-        CancelListing = 0x3,
-        Search = 0x4,
-        Purchase = 0x5,
-        PrepareListing = 0x8
+        public const byte Open = 0x1;
+        public const byte CreateListing = 0x2;
+        public const byte CancelListing = 0x3;
+        public const byte Search = 0x4;
+        public const byte Purchase = 0x5;
+        public const byte PrepareListing = 0x8;
     }
 
-    private enum BlackMarketError
+    private static class BlackMarketError
     {
-        FailedToListItem = 0x05,
-        ItemNotInInventory = 0x0E,
-        ItemCannotBeListed = 0x20,
-        OneMinuteRestriction = 0x25,
-        Fatigue = 0x26,
-        CannotUseBlackMarket = 0x27,
-        QuantityNotAvailable = 0x29,
-        CannotPurchaseOwnItems = 0x2A,
-        RequiredLevelToList = 0x2B,
-        RequiredLevelToBuy = 0x2C
+        public const byte FailedToListItem = 0x05;
+        public const byte ItemNotInInventory = 0x0E;
+        public const byte ItemCannotBeListed = 0x20;
+        public const byte OneMinuteRestriction = 0x25;
+        public const byte Fatigue = 0x26;
+        public const byte CannotUseBlackMarket = 0x27;
+        public const byte QuantityNotAvailable = 0x29;
+        public const byte CannotPurchaseOwnItems = 0x2A;
+        public const byte RequiredLevelToList = 0x2B;
+        public const byte RequiredLevelToBuy = 0x2C;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        BlackMarketMode mode = (BlackMarketMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
-            case BlackMarketMode.Open:
+            case BlackMarketOperation.Open:
                 HandleOpen(session);
                 break;
-            case BlackMarketMode.CreateListing:
+            case BlackMarketOperation.CreateListing:
                 HandleCreateListing(session, packet);
                 break;
-            case BlackMarketMode.CancelListing:
+            case BlackMarketOperation.CancelListing:
                 HandleCancelListing(session, packet);
                 break;
-            case BlackMarketMode.Search:
+            case BlackMarketOperation.Search:
                 HandleSearch(session, packet);
                 break;
-            case BlackMarketMode.Purchase:
+            case BlackMarketOperation.Purchase:
                 HandlePurchase(session, packet);
                 break;
-            case BlackMarketMode.PrepareListing:
+            case BlackMarketOperation.PrepareListing:
                 HandlePrepareListing(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(typeof(BlackMarketHandler), mode);
                 break;
         }
     }
@@ -105,7 +105,7 @@ public class BlackMarketHandler : GamePacketHandler
 
         if (!session.Player.Inventory.Items.ContainsKey(itemUid))
         {
-            session.Send(BlackMarketPacket.Error((int) BlackMarketError.ItemNotInInventory));
+            session.Send(BlackMarketPacket.Error(BlackMarketError.ItemNotInInventory));
             return;
         }
 
@@ -222,13 +222,13 @@ public class BlackMarketHandler : GamePacketHandler
 
         if (listing.OwnerAccountId == session.Player.AccountId)
         {
-            session.Send(BlackMarketPacket.Error((int) BlackMarketError.CannotPurchaseOwnItems));
+            session.Send(BlackMarketPacket.Error(BlackMarketError.CannotPurchaseOwnItems));
             return;
         }
 
         if (listing.Item.Amount < amount)
         {
-            session.Send(BlackMarketPacket.Error((int) BlackMarketError.QuantityNotAvailable));
+            session.Send(BlackMarketPacket.Error(BlackMarketError.QuantityNotAvailable));
             return;
         }
 

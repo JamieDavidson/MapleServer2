@@ -11,42 +11,41 @@ public class BuddyEmoteHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.BUDDY_EMOTE;
 
-    private enum BuddyEmoteMode : byte
+    private static class BuddyEmoteOperations
     {
-        InviteBuddyEmote = 0x0,
-        InviteBuddyEmoteConfirm = 0x1,
-        LearnEmote = 0x2,
-        AcceptEmote = 0x3,
-        DeclineEmote = 0x4,
-        StopEmote = 0x6
+        public const byte InviteBuddyEmote = 0x0;
+        public const byte InviteBuddyEmoteConfirm = 0x1;
+        public const byte LearnEmote = 0x2;
+        public const byte AcceptEmote = 0x3;
+        public const byte DeclineEmote = 0x4;
+        public const byte StopEmote = 0x6;
     }
-
     public override void Handle(GameSession session, PacketReader packet)
     {
-        BuddyEmoteMode mode = (BuddyEmoteMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
-            case BuddyEmoteMode.InviteBuddyEmote:
+            case BuddyEmoteOperations.InviteBuddyEmote:
                 HandleInviteBuddyEmote(session, packet);
                 break;
-            case BuddyEmoteMode.InviteBuddyEmoteConfirm:
+            case BuddyEmoteOperations.InviteBuddyEmoteConfirm:
                 HandleInviteBuddyEmoteConfirm(session, packet);
                 break;
-            case BuddyEmoteMode.LearnEmote:
+            case BuddyEmoteOperations.LearnEmote:
                 HandleLearnEmote(session, packet);
                 break;
-            case BuddyEmoteMode.AcceptEmote:
+            case BuddyEmoteOperations.AcceptEmote:
                 HandleAcceptEmote(session, packet);
                 break;
-            case BuddyEmoteMode.DeclineEmote:
+            case BuddyEmoteOperations.DeclineEmote:
                 HandleDeclineEmote(session, packet);
                 break;
-            case BuddyEmoteMode.StopEmote:
+            case BuddyEmoteOperations.StopEmote:
                 HandleStopEmote(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(typeof(BuddyEmoteHandler), mode);
                 break;
         }
     }

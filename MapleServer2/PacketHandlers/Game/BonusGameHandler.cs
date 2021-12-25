@@ -10,28 +10,28 @@ public class BonusGameHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.BONUS_GAME;
 
-    private enum BonusGameType : byte
+    private static class BonusGameOperations
     {
-        Open = 0x00,
-        Spin = 0x02,
-        Close = 0x03
+        public const byte Open = 0x00;
+        public const byte Spin = 0x02;
+        public const byte Close = 0x03;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        BonusGameType mode = (BonusGameType) packet.ReadByte();
+        var mode = packet.ReadByte();
         switch (mode)
         {
-            case BonusGameType.Open:
+            case BonusGameOperations.Open:
                 HandleOpen(session, packet);
                 break;
-            case BonusGameType.Spin:
+            case BonusGameOperations.Spin:
                 HandleSpin(session);
                 break;
-            case BonusGameType.Close:
+            case BonusGameOperations.Close:
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(typeof(BonusGameHandler), mode);
                 break;
         }
     }

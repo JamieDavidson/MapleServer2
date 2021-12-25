@@ -17,66 +17,66 @@ public class BeautyHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.BEAUTY;
 
-    private enum BeautyMode : byte
+    private static class BeautyOperations
     {
-        LoadShop = 0x0,
-        NewBeauty = 0x3,
-        ModifyExistingBeauty = 0x5,
-        ModifySkin = 0x6,
-        RandomHair = 0x7,
-        Teleport = 0xA,
-        ChooseRandomHair = 0xC,
-        SaveHair = 0x10,
-        DeleteSavedHair = 0x12,
-        ChangeToSavedHair = 0x15,
-        DyeItem = 0x16,
-        BeautyVoucher = 0x17
+        public const byte LoadShop = 0x0;
+        public const byte NewBeauty = 0x3;
+        public const byte ModifyExistingBeauty = 0x5;
+        public const byte ModifySkin = 0x6;
+        public const byte RandomHair = 0x7;
+        public const byte Teleport = 0xA;
+        public const byte ChooseRandomHair = 0xC;
+        public const byte SaveHair = 0x10;
+        public const byte DeleteSavedHair = 0x12;
+        public const byte ChangeToSavedHair = 0x15;
+        public const byte DyeItem = 0x16;
+        public const byte BeautyVoucher = 0x17;
     }
 
     public override void Handle(GameSession session, PacketReader packet)
     {
-        BeautyMode mode = (BeautyMode) packet.ReadByte();
+        var mode = packet.ReadByte();
 
         switch (mode)
         {
-            case BeautyMode.LoadShop:
+            case BeautyOperations.LoadShop:
                 HandleLoadShop(session, packet);
                 break;
-            case BeautyMode.NewBeauty:
+            case BeautyOperations.NewBeauty:
                 HandleNewBeauty(session, packet);
                 break;
-            case BeautyMode.ModifyExistingBeauty:
+            case BeautyOperations.ModifyExistingBeauty:
                 HandleModifyExistingBeauty(session, packet);
                 break;
-            case BeautyMode.ModifySkin:
+            case BeautyOperations.ModifySkin:
                 HandleModifySkin(session, packet);
                 break;
-            case BeautyMode.RandomHair:
+            case BeautyOperations.RandomHair:
                 HandleRandomHair(session, packet);
                 break;
-            case BeautyMode.ChooseRandomHair:
+            case BeautyOperations.ChooseRandomHair:
                 HandleChooseRandomHair(session, packet);
                 break;
-            case BeautyMode.SaveHair:
+            case BeautyOperations.SaveHair:
                 HandleSaveHair(session, packet);
                 break;
-            case BeautyMode.Teleport:
+            case BeautyOperations.Teleport:
                 HandleTeleport(session, packet);
                 break;
-            case BeautyMode.DeleteSavedHair:
+            case BeautyOperations.DeleteSavedHair:
                 HandleDeleteSavedHair(session, packet);
                 break;
-            case BeautyMode.ChangeToSavedHair:
+            case BeautyOperations.ChangeToSavedHair:
                 HandleChangeToSavedHair(session, packet);
                 break;
-            case BeautyMode.DyeItem:
+            case BeautyOperations.DyeItem:
                 HandleDyeItem(session, packet);
                 break;
-            case BeautyMode.BeautyVoucher:
+            case BeautyOperations.BeautyVoucher:
                 HandleBeautyVoucher(session, packet);
                 break;
             default:
-                IPacketHandler<GameSession>.LogUnknownMode(mode);
+                IPacketHandler<GameSession>.LogUnknownMode(typeof(BeautyHandler), mode);
                 break;
         }
     }
