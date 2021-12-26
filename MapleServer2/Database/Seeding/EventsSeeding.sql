@@ -99,7 +99,7 @@ VALUES (1, 1, 0),
 
 INSERT INTO `event_string_boards` (`message_id`, `message`, `game_event_id`)
 VALUES (0,
-        'Welcome! Please see our Github or Discord for updates and to report any bugs. discord.gg/fVZRdBN7Nd',
+        'Butthole',
         1);
 
 INSERT INTO `event_mapleopoly` (`trip_amount`,
