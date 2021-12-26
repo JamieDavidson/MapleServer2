@@ -16,7 +16,7 @@ internal sealed class LiftableHandler : GamePacketHandler
 
     public override RecvOp OpCode => RecvOp.LIFTABLE;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -31,7 +31,7 @@ internal sealed class LiftableHandler : GamePacketHandler
         }
     }
 
-    private static void HandlePickUp(GameSession session, PacketReader packet)
+    private static void HandlePickUp(GameSession session, IPacketReader packet)
     {
         string id = packet.ReadString();
         IFieldActor<Player> fieldPlayer = session.Player.FieldPlayer;

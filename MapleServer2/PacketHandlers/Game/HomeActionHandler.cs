@@ -25,7 +25,7 @@ internal sealed class HomeActionHandler : GamePacketHandler
         public const byte SendPortalSettings = 0x0D;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -52,7 +52,7 @@ internal sealed class HomeActionHandler : GamePacketHandler
         }
     }
 
-    private static void HandleRespondSurvey(GameSession session, PacketReader packet)
+    private static void HandleRespondSurvey(GameSession session, IPacketReader packet)
     {
         packet.ReadByte();
         packet.ReadLong(); // character id
@@ -85,7 +85,7 @@ internal sealed class HomeActionHandler : GamePacketHandler
         homeSurvey.End();
     }
 
-    private static void HandleKick(PacketReader packet)
+    private static void HandleKick(IPacketReader packet)
     {
         string characterName = packet.ReadUnicodeString();
         Player target = GameServer.PlayerManager.GetPlayerByName(characterName);
@@ -99,7 +99,7 @@ internal sealed class HomeActionHandler : GamePacketHandler
         target.VisitingHomeId = 0;
     }
 
-    private static void HandleChangePortalSettings(GameSession session, PacketReader packet)
+    private static void HandleChangePortalSettings(GameSession session, IPacketReader packet)
     {
         packet.ReadByte();
         CoordB coordB = packet.Read<CoordB>();
@@ -122,7 +122,7 @@ internal sealed class HomeActionHandler : GamePacketHandler
         UpdateAllPortals(session);
     }
 
-    private static void HandleUpdateBallCoord(GameSession session, PacketReader packet)
+    private static void HandleUpdateBallCoord(GameSession session, IPacketReader packet)
     {
         byte mode = packet.ReadByte(); // 2 move, 3 hit ball
         int objectId = packet.ReadInt();
@@ -149,7 +149,7 @@ internal sealed class HomeActionHandler : GamePacketHandler
         }
     }
 
-    private static void HandleSendPortalSettings(GameSession session, PacketReader packet)
+    private static void HandleSendPortalSettings(GameSession session, IPacketReader packet)
     {
         CoordB coordB = packet.Read<CoordB>();
 

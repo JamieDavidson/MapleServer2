@@ -15,7 +15,7 @@ internal sealed class PlayerHostHandler : GamePacketHandler
         public const byte Claim = 0x1;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -30,7 +30,7 @@ internal sealed class PlayerHostHandler : GamePacketHandler
         }
     }
 
-    private static void HandleClaim(GameSession session, PacketReader packet)
+    private static void HandleClaim(GameSession session, IPacketReader packet)
     {
         int hongBaoId = packet.ReadInt();
 

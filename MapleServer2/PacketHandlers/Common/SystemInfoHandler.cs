@@ -8,7 +8,7 @@ internal sealed class SystemInfoHandler : CommonPacketHandler
 {
     public override RecvOp OpCode => RecvOp.SYSTEM_INFO;
 
-    protected override void HandleCommon(Session session, PacketReader packet)
+    protected override void HandleCommon(Session session, IPacketReader packet)
     {
         string info = packet.ReadUnicodeString();
         Logger.Debug("System Info: {info}", info);

@@ -16,7 +16,7 @@ internal sealed class GlobalPortalHandler : GamePacketHandler
         public const byte Enter = 0x2;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -31,7 +31,7 @@ internal sealed class GlobalPortalHandler : GamePacketHandler
         }
     }
 
-    private static void HandleEnter(GameSession session, PacketReader packet)
+    private static void HandleEnter(GameSession session, IPacketReader packet)
     {
         int globalEventId = packet.ReadInt();
         int selectionIndex = packet.ReadInt();

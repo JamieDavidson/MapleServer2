@@ -17,7 +17,7 @@ internal sealed class RequestGemEquipmentHandler : GamePacketHandler
         public const byte Transprency = 0x03;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -38,7 +38,7 @@ internal sealed class RequestGemEquipmentHandler : GamePacketHandler
         }
     }
 
-    private static void HandleEquipItem(GameSession session, PacketReader packet)
+    private static void HandleEquipItem(GameSession session, IPacketReader packet)
     {
         long itemUid = packet.ReadLong();
 
@@ -75,7 +75,7 @@ internal sealed class RequestGemEquipmentHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(GemPacket.EquipItem(session, item, emptyIndex));
     }
 
-    private static void HandleUnequipItem(GameSession session, PacketReader packet)
+    private static void HandleUnequipItem(GameSession session, IPacketReader packet)
     {
         byte index = packet.ReadByte();
 
@@ -95,7 +95,7 @@ internal sealed class RequestGemEquipmentHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(GemPacket.UnequipItem(session, item.GemSlot));
     }
 
-    private static void HandleTransparency(GameSession session, PacketReader packet)
+    private static void HandleTransparency(GameSession session, IPacketReader packet)
     {
         byte index = packet.ReadByte();
         byte[] transparencyBools = packet.ReadBytes(10);

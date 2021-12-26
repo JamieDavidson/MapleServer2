@@ -14,7 +14,7 @@ internal sealed class LoadUgcMapHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_LOAD_UGC_MAP;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         bool mapIsHome = session.Player.MapId == (int) Map.PrivateResidence;
         UGCMapMetadata ugcMapMetadata = UGCMapMetadataStorage.GetMetadata(session.Player.MapId);

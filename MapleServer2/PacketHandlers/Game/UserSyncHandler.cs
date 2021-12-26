@@ -15,7 +15,7 @@ internal sealed class UserSyncHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.USER_SYNC;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         byte function = packet.ReadByte(); // Unknown what this is for
         session.ServerTick = packet.ReadInt();

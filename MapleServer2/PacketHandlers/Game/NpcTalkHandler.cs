@@ -31,7 +31,7 @@ internal sealed class NpcTalkHandler : GamePacketHandler
         public const byte End = 3;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -53,7 +53,7 @@ internal sealed class NpcTalkHandler : GamePacketHandler
         }
     }
 
-    private static void HandleRespond(GameSession session, PacketReader packet)
+    private static void HandleRespond(GameSession session, IPacketReader packet)
     {
         List<QuestStatus> npcQuests = new();
         int objectId = packet.ReadInt();
@@ -229,7 +229,7 @@ internal sealed class NpcTalkHandler : GamePacketHandler
         // It appears if content has buttonset roulette, it's send again on every continue chat, unsure why since it doesn't break anything
     }
 
-    private static void HandleNextQuest(GameSession session, PacketReader packet)
+    private static void HandleNextQuest(GameSession session, IPacketReader packet)
     {
         int questId = packet.ReadInt();
         short mode = packet.ReadShort();

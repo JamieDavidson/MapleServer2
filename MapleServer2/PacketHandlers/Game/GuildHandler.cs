@@ -79,7 +79,7 @@ internal sealed class GuildHandler : GamePacketHandler
         public const byte YouNeedAtLeastXPlayersOnline = 0x30;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         byte mode = packet.ReadByte();
 
@@ -169,7 +169,7 @@ internal sealed class GuildHandler : GamePacketHandler
         }
     }
 
-    private static void HandleCreate(GameSession session, PacketReader packet)
+    private static void HandleCreate(GameSession session, IPacketReader packet)
     {
         string guildName = packet.ReadUnicodeString();
 
@@ -241,7 +241,7 @@ internal sealed class GuildHandler : GamePacketHandler
         DatabaseManager.Guilds.Delete(guild.Id);
     }
 
-    private static void HandleInvite(GameSession session, PacketReader packet)
+    private static void HandleInvite(GameSession session, IPacketReader packet)
     {
         string targetPlayer = packet.ReadUnicodeString();
 
@@ -274,7 +274,7 @@ internal sealed class GuildHandler : GamePacketHandler
 
     }
 
-    private static void HandleInviteResponse(GameSession session, PacketReader packet)
+    private static void HandleInviteResponse(GameSession session, IPacketReader packet)
     {
         long guildId = packet.ReadLong();
         string guildName = packet.ReadUnicodeString();
@@ -331,7 +331,7 @@ internal sealed class GuildHandler : GamePacketHandler
         guild.RemoveMember(session.Player);
     }
 
-    private static void HandleKick(GameSession session, PacketReader packet)
+    private static void HandleKick(GameSession session, IPacketReader packet)
     {
         string target = packet.ReadUnicodeString();
 
@@ -374,7 +374,7 @@ internal sealed class GuildHandler : GamePacketHandler
         guild.BroadcastPacketGuild(GuildPacket.KickMember(targetPlayer, session.Player));
     }
 
-    private static void HandleRankChange(GameSession session, PacketReader packet)
+    private static void HandleRankChange(GameSession session, IPacketReader packet)
     {
         string memberName = packet.ReadUnicodeString();
         byte rank = packet.ReadByte();
@@ -396,7 +396,7 @@ internal sealed class GuildHandler : GamePacketHandler
         guild.BroadcastPacketGuild(GuildPacket.RankChangeNotice(session.Player.Name, memberName, rank));
     }
 
-    private static void HandlePlayerMessage(GameSession session, PacketReader packet)
+    private static void HandlePlayerMessage(GameSession session, IPacketReader packet)
     {
         string message = packet.ReadUnicodeString();
 
@@ -452,7 +452,7 @@ internal sealed class GuildHandler : GamePacketHandler
         session.Send(GuildPacket.FinishCheckIn(member));
     }
 
-    private static void HandleTransferLeader(GameSession session, PacketReader packet)
+    private static void HandleTransferLeader(GameSession session, IPacketReader packet)
     {
         string target = packet.ReadUnicodeString();
 
@@ -482,7 +482,7 @@ internal sealed class GuildHandler : GamePacketHandler
         guild.AssignNewLeader(oldLeader, newLeader);
     }
 
-    private static void HandleGuildNotice(GameSession session, PacketReader packet)
+    private static void HandleGuildNotice(GameSession session, IPacketReader packet)
     {
         packet.ReadByte();
         string notice = packet.ReadUnicodeString();
@@ -508,7 +508,7 @@ internal sealed class GuildHandler : GamePacketHandler
         guild.BroadcastPacketGuild(GuildPacket.GuildNoticeChange(session.Player, notice));
     }
 
-    private static void HandleUpdateRank(GameSession session, PacketReader packet)
+    private static void HandleUpdateRank(GameSession session, IPacketReader packet)
     {
         byte rankIndex = packet.ReadByte();
         byte rankIndex2 = packet.ReadByte(); // repeat
@@ -527,7 +527,7 @@ internal sealed class GuildHandler : GamePacketHandler
         guild.BroadcastPacketGuild(GuildPacket.UpdateRankNotice(guild, rankIndex));
     }
 
-    private static void HandleListGuild(GameSession session, PacketReader packet)
+    private static void HandleListGuild(GameSession session, IPacketReader packet)
     {
         bool toggle = packet.ReadBool();
 
@@ -542,7 +542,7 @@ internal sealed class GuildHandler : GamePacketHandler
         session.Send(GuildPacket.ListGuildUpdate(session.Player, toggle));
     }
 
-    private static void HandleSubmitApplication(GameSession session, PacketReader packet)
+    private static void HandleSubmitApplication(GameSession session, IPacketReader packet)
     {
         long guildId = packet.ReadLong();
 
@@ -570,7 +570,7 @@ internal sealed class GuildHandler : GamePacketHandler
         }
     }
 
-    private static void HandleWithdrawApplication(GameSession session, PacketReader packet)
+    private static void HandleWithdrawApplication(GameSession session, IPacketReader packet)
     {
         long guildApplicationId = packet.ReadLong();
 
@@ -598,7 +598,7 @@ internal sealed class GuildHandler : GamePacketHandler
         }
     }
 
-    private static void HandleApplicationResponse(GameSession session, PacketReader packet)
+    private static void HandleApplicationResponse(GameSession session, IPacketReader packet)
     {
         long guildApplicationId = packet.ReadLong();
         byte response = packet.ReadByte();
@@ -657,7 +657,7 @@ internal sealed class GuildHandler : GamePacketHandler
         session.Send(GuildPacket.LoadApplications(session.Player));
     }
 
-    private static void HandleLoadGuildList(GameSession session, PacketReader packet)
+    private static void HandleLoadGuildList(GameSession session, IPacketReader packet)
     {
         int focusAttributes = packet.ReadInt();
 
@@ -678,7 +678,7 @@ internal sealed class GuildHandler : GamePacketHandler
         session.Send(GuildPacket.DisplayGuildList(guildList));
     }
 
-    private static void HandleSearchGuildByName(GameSession session, PacketReader packet)
+    private static void HandleSearchGuildByName(GameSession session, IPacketReader packet)
     {
         string name = packet.ReadUnicodeString();
 
@@ -686,7 +686,7 @@ internal sealed class GuildHandler : GamePacketHandler
         session.Send(GuildPacket.DisplayGuildList(guildList));
     }
 
-    private static void HandleUseBuff(GameSession session, PacketReader packet)
+    private static void HandleUseBuff(GameSession session, IPacketReader packet)
     {
         int buffId = packet.ReadInt();
 
@@ -723,7 +723,7 @@ internal sealed class GuildHandler : GamePacketHandler
         session.Send(GuildPacket.UseBuffNotice(buffId));
     }
 
-    private static void HandleUpgradeBuff(GameSession session, PacketReader packet)
+    private static void HandleUpgradeBuff(GameSession session, IPacketReader packet)
     {
         int buffId = packet.ReadInt();
 
@@ -755,7 +755,7 @@ internal sealed class GuildHandler : GamePacketHandler
         guild.BroadcastPacketGuild(GuildPacket.UpgradeBuff(buffId, buff.Level, session.Player.Name));
     }
 
-    private static void HandleUpgradeHome(GameSession session, PacketReader packet)
+    private static void HandleUpgradeHome(GameSession session, IPacketReader packet)
     {
         int themeId = packet.ReadInt();
 
@@ -785,7 +785,7 @@ internal sealed class GuildHandler : GamePacketHandler
         guild.BroadcastPacketGuild(GuildPacket.ChangeHouse(session.Player.Name, guild.HouseRank, guild.HouseTheme)); // need to confirm if this is the packet used when upgrading
     }
 
-    private static void HandleChangeHomeTheme(GameSession session, PacketReader packet)
+    private static void HandleChangeHomeTheme(GameSession session, IPacketReader packet)
     {
         int themeId = packet.ReadInt();
 
@@ -830,7 +830,7 @@ internal sealed class GuildHandler : GamePacketHandler
         session.Player.Warp(mapid, instanceId: guild.Id);
     }
 
-    private static void HandleGuildDonate(GameSession session, PacketReader packet)
+    private static void HandleGuildDonate(GameSession session, IPacketReader packet)
     {
         int donateQuantity = packet.ReadInt();
         int donationAmount = donateQuantity * 10000;
@@ -872,7 +872,7 @@ internal sealed class GuildHandler : GamePacketHandler
         guild.BroadcastPacketGuild(GuildPacket.UpdatePlayerContribution(member, donateQuantity));
     }
 
-    private static void HandleServices(GameSession session, PacketReader packet)
+    private static void HandleServices(GameSession session, IPacketReader packet)
     {
         int serviceId = packet.ReadInt();
 

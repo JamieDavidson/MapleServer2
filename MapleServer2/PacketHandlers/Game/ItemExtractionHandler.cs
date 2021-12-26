@@ -12,7 +12,7 @@ internal sealed class ItemExtractionHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ITEM_EXTRACTION;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         long anvilItemUid = packet.ReadLong();
         long sourceItemUid = packet.ReadLong();

@@ -14,7 +14,7 @@ internal sealed class StateHandler : GamePacketHandler
         public const byte Land = 0x1;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var mode = packet.ReadByte();
 

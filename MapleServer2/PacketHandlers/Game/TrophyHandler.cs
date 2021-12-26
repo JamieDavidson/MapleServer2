@@ -20,7 +20,7 @@ internal sealed class TrophyHandler : GamePacketHandler
         public const byte Favorite = 0x04;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var mode = packet.ReadByte();
 
@@ -38,7 +38,7 @@ internal sealed class TrophyHandler : GamePacketHandler
         }
     }
 
-    private static void HandleClaimReward(GameSession session, PacketReader packet)
+    private static void HandleClaimReward(GameSession session, IPacketReader packet)
     {
         int id = packet.ReadInt();
         if (!session.Player.TrophyData.TryGetValue(id, out Trophy trophy))
@@ -60,7 +60,7 @@ internal sealed class TrophyHandler : GamePacketHandler
         DatabaseManager.Trophies.Update(trophy);
     }
 
-    private static void HandleFavorite(GameSession session, PacketReader packet)
+    private static void HandleFavorite(GameSession session, IPacketReader packet)
     {
         int id = packet.ReadInt();
         bool favorited = packet.ReadBool();

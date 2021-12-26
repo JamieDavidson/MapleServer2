@@ -11,7 +11,7 @@ internal sealed class RideSyncHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.RIDE_SYNC;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         byte operation = packet.ReadByte(); // Unknown what this is for
         packet.ReadInt(); // ServerTicks

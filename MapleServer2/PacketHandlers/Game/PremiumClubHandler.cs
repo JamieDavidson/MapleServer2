@@ -21,7 +21,7 @@ internal sealed class PremiumClubHandler : GamePacketHandler
         public const byte PurchaseMembership = 0x4;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -50,7 +50,7 @@ internal sealed class PremiumClubHandler : GamePacketHandler
         session.Send(PremiumClubPacket.Open());
     }
 
-    private static void HandleClaimItems(GameSession session, PacketReader packet)
+    private static void HandleClaimItems(GameSession session, IPacketReader packet)
     {
         int benefitId = packet.ReadInt();
         session.Send(PremiumClubPacket.ClaimItem(benefitId));
@@ -78,7 +78,7 @@ internal sealed class PremiumClubHandler : GamePacketHandler
         session.Send(PremiumClubPacket.OpenPurchaseWindow());
     }
 
-    private static void HandlePurchaseMembership(GameSession session, PacketReader packet)
+    private static void HandlePurchaseMembership(GameSession session, IPacketReader packet)
     {
         int vipId = packet.ReadInt();
 

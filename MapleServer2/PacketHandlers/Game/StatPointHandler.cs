@@ -16,7 +16,7 @@ internal sealed class StatPointHandler : GamePacketHandler
         public const byte Reset = 0x3;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -34,7 +34,7 @@ internal sealed class StatPointHandler : GamePacketHandler
         }
     }
 
-    private static void HandleStatIncrement(GameSession session, PacketReader packet)
+    private static void HandleStatIncrement(GameSession session, IPacketReader packet)
     {
         byte statTypeIndex = packet.ReadByte();
 

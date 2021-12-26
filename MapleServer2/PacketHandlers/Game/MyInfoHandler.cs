@@ -9,7 +9,7 @@ internal sealed class MyInfoHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.MY_INFO;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         byte mode = packet.ReadByte(); //I don't know any other modes this could have so right now just handle the one.
         switch (mode)

@@ -19,7 +19,7 @@ internal sealed class JobHandler : GamePacketHandler
         public const byte Preset = 0x0B;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -47,7 +47,7 @@ internal sealed class JobHandler : GamePacketHandler
         session.Send(JobPacket.Close());
     }
 
-    private static void HandleSaveSkillTree(GameSession session, PacketReader packet)
+    private static void HandleSaveSkillTree(GameSession session, IPacketReader packet)
     {
         // Get skill tab to update
         SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == session.Player.ActiveSkillTabId);
@@ -71,7 +71,7 @@ internal sealed class JobHandler : GamePacketHandler
         DatabaseManager.SkillTabs.Update(skillTab);
     }
 
-    private static void HandleResetSkillTree(GameSession session, PacketReader packet)
+    private static void HandleResetSkillTree(GameSession session, IPacketReader packet)
     {
         int unknown = packet.ReadInt();
 
@@ -81,7 +81,7 @@ internal sealed class JobHandler : GamePacketHandler
         DatabaseManager.SkillTabs.Update(skillTab);
     }
 
-    private static void HandlePresetSkillTree(GameSession session, PacketReader packet)
+    private static void HandlePresetSkillTree(GameSession session, IPacketReader packet)
     {
         SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == session.Player.ActiveSkillTabId);
         int skillCount = packet.ReadInt();

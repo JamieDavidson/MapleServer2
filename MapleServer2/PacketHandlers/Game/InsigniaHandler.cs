@@ -10,7 +10,7 @@ internal sealed class InsigniaHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.INSIGNIA;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         short insigniaId = packet.ReadShort();
 

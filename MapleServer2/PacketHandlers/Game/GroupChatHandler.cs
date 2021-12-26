@@ -18,7 +18,7 @@ internal sealed class GroupChatHandler : GamePacketHandler
         public const byte Chat = 0x0A;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -57,7 +57,7 @@ internal sealed class GroupChatHandler : GamePacketHandler
         session.Send(GroupChatPacket.Create(groupChat));
     }
 
-    private static void HandleInvite(GameSession session, PacketReader packet)
+    private static void HandleInvite(GameSession session, IPacketReader packet)
     {
         string targetPlayer = packet.ReadUnicodeString();
         int groupChatId = packet.ReadInt();
@@ -93,7 +93,7 @@ internal sealed class GroupChatHandler : GamePacketHandler
         other.Session.Send(GroupChatPacket.Join(session.Player, other, groupChat));
     }
 
-    private static void HandleLeave(GameSession session, PacketReader packet)
+    private static void HandleLeave(GameSession session, IPacketReader packet)
     {
         int groupChatId = packet.ReadInt();
 
@@ -108,7 +108,7 @@ internal sealed class GroupChatHandler : GamePacketHandler
         groupChat.BroadcastPacketGroupChat(GroupChatPacket.LeaveNotice(groupChat, session.Player));
     }
 
-    private static void HandleChat(GameSession session, PacketReader packet)
+    private static void HandleChat(GameSession session, IPacketReader packet)
     {
         string message = packet.ReadUnicodeString();
         int groupChatId = packet.ReadInt();

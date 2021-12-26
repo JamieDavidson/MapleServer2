@@ -19,7 +19,7 @@ internal sealed class SystemShopHandler : GamePacketHandler
         public const byte ViaItem = 0x0A;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var mode = packet.ReadByte();
 
@@ -40,7 +40,7 @@ internal sealed class SystemShopHandler : GamePacketHandler
         }
     }
 
-    private static void HandleViaItem(GameSession session, PacketReader packet)
+    private static void HandleViaItem(GameSession session, IPacketReader packet)
     {
         bool openShop = packet.ReadBool();
 
@@ -73,7 +73,7 @@ internal sealed class SystemShopHandler : GamePacketHandler
         session.Send(ShopPacket.Reload());
         session.Send(SystemShopPacket.Open());
     }
-    private static void HandleFishingShop(GameSession session, PacketReader packet)
+    private static void HandleFishingShop(GameSession session, IPacketReader packet)
     {
         bool openShop = packet.ReadBool();
 
@@ -85,7 +85,7 @@ internal sealed class SystemShopHandler : GamePacketHandler
         OpenSystemShop(session, 161);
     }
 
-    private static void HandleMapleArenaShop(GameSession session, PacketReader packet)
+    private static void HandleMapleArenaShop(GameSession session, IPacketReader packet)
     {
         bool openShop = packet.ReadBool();
 

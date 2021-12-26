@@ -20,7 +20,7 @@ internal sealed class BuddyEmoteHandler : GamePacketHandler
         public const byte DeclineEmote = 0x4;
         public const byte StopEmote = 0x6;
     }
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -50,7 +50,7 @@ internal sealed class BuddyEmoteHandler : GamePacketHandler
         }
     }
 
-    private static void HandleInviteBuddyEmote(GameSession session, PacketReader packet)
+    private static void HandleInviteBuddyEmote(GameSession session, IPacketReader packet)
     {
         int buddyEmoteId = packet.ReadInt();
         long characterId = packet.ReadLong();
@@ -64,7 +64,7 @@ internal sealed class BuddyEmoteHandler : GamePacketHandler
         buddy.Session.Send(BuddyEmotePacket.SendRequest(buddyEmoteId, session.Player));
     }
 
-    private static void HandleInviteBuddyEmoteConfirm(GameSession session, PacketReader packet)
+    private static void HandleInviteBuddyEmoteConfirm(GameSession session, IPacketReader packet)
     {
         long senderCharacterId = packet.ReadLong();
 
@@ -77,14 +77,14 @@ internal sealed class BuddyEmoteHandler : GamePacketHandler
         buddy.Session.Send(BuddyEmotePacket.ConfirmSendRequest(session.Player));
     }
 
-    private static void HandleLearnEmote(GameSession session, PacketReader packet)
+    private static void HandleLearnEmote(GameSession session, IPacketReader packet)
     {
         long emoteItemUid = packet.ReadLong();
         // TODO grab emoteId from emoteItemUid
         session.Send(BuddyEmotePacket.LearnEmote());
     }
 
-    private static void HandleAcceptEmote(GameSession session, PacketReader packet)
+    private static void HandleAcceptEmote(GameSession session, IPacketReader packet)
     {
         int buddyEmoteId = packet.ReadInt();
         long senderCharacterId = packet.ReadLong();
@@ -103,7 +103,7 @@ internal sealed class BuddyEmoteHandler : GamePacketHandler
         buddy.Session.Send(BuddyEmotePacket.StartEmote(buddyEmoteId, buddy.Session.Player, session.Player, selfCoords, rotation));
     }
 
-    private static void HandleDeclineEmote(GameSession session, PacketReader packet)
+    private static void HandleDeclineEmote(GameSession session, IPacketReader packet)
     {
         int buddyEmoteId = packet.ReadInt();
         long senderCharacterId = packet.ReadLong();
@@ -117,7 +117,7 @@ internal sealed class BuddyEmoteHandler : GamePacketHandler
         other.Session.Send(BuddyEmotePacket.DeclineEmote(buddyEmoteId, session.Player));
     }
 
-    private static void HandleStopEmote(GameSession session, PacketReader packet)
+    private static void HandleStopEmote(GameSession session, IPacketReader packet)
     {
         int buddyEmoteId = packet.ReadInt();
         long target = packet.ReadLong();

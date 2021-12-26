@@ -10,7 +10,7 @@ internal sealed class RequestItemPickupHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_PICKUP;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         int objectId = packet.ReadInt();
 

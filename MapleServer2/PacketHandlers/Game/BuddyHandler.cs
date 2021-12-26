@@ -39,7 +39,7 @@ internal sealed class BuddyHandler : GamePacketHandler
         public const byte DeclinedRequest = 0x9;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -75,7 +75,7 @@ internal sealed class BuddyHandler : GamePacketHandler
         }
     }
 
-    private static void HandleSendRequest(GameSession session, PacketReader packet)
+    private static void HandleSendRequest(GameSession session, IPacketReader packet)
     {
         string otherPlayerName = packet.ReadUnicodeString();
         string message = packet.ReadUnicodeString();
@@ -140,7 +140,7 @@ internal sealed class BuddyHandler : GamePacketHandler
         }
     }
 
-    private static void HandleRemoveFriend(GameSession session, PacketReader packet)
+    private static void HandleRemoveFriend(GameSession session, IPacketReader packet)
     {
         long buddyId = packet.ReadLong();
 
@@ -163,7 +163,7 @@ internal sealed class BuddyHandler : GamePacketHandler
         DatabaseManager.Buddies.Delete(buddyFriend.Id);
     }
 
-    private static void HandleEditBlockReason(GameSession session, PacketReader packet)
+    private static void HandleEditBlockReason(GameSession session, IPacketReader packet)
     {
         long buddyId = packet.ReadLong();
         string otherPlayerName = packet.ReadUnicodeString();
@@ -180,7 +180,7 @@ internal sealed class BuddyHandler : GamePacketHandler
         DatabaseManager.Buddies.Update(buddy);
     }
 
-    private static void HandleAccept(GameSession session, PacketReader packet)
+    private static void HandleAccept(GameSession session, IPacketReader packet)
     {
         long buddyId = packet.ReadLong();
 
@@ -204,7 +204,7 @@ internal sealed class BuddyHandler : GamePacketHandler
         }
     }
 
-    private static void HandleDecline(GameSession session, PacketReader packet)
+    private static void HandleDecline(GameSession session, IPacketReader packet)
     {
         long buddyId = packet.ReadLong();
 
@@ -227,7 +227,7 @@ internal sealed class BuddyHandler : GamePacketHandler
         DatabaseManager.Buddies.Delete(buddyFriend.Id);
     }
 
-    private static void HandleBlock(GameSession session, PacketReader packet)
+    private static void HandleBlock(GameSession session, IPacketReader packet)
     {
         long buddyId = packet.ReadLong();
         string targetName = packet.ReadUnicodeString();
@@ -284,7 +284,7 @@ internal sealed class BuddyHandler : GamePacketHandler
         }
     }
 
-    private static void HandleUnblock(GameSession session, PacketReader packet)
+    private static void HandleUnblock(GameSession session, IPacketReader packet)
     {
         long buddyId = packet.ReadLong();
 
@@ -298,7 +298,7 @@ internal sealed class BuddyHandler : GamePacketHandler
         DatabaseManager.Buddies.Delete(buddy.Id);
     }
 
-    private static void HandleCancelRequest(GameSession session, PacketReader packet)
+    private static void HandleCancelRequest(GameSession session, IPacketReader packet)
     {
         long buddyId = packet.ReadLong();
 

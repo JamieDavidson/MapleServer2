@@ -11,7 +11,7 @@ internal sealed class RequestTutorialItemHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_TUTORIAL_ITEM;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         List<TutorialItemMetadata> metadata = JobMetadataStorage.GetTutorialItems((int) session.Player.Job);
 

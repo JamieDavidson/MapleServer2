@@ -9,7 +9,7 @@ internal sealed class RequestWorldMapHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_WORLD_MAP;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         byte operation = packet.ReadByte();
         switch (operation)

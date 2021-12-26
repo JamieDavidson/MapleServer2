@@ -46,7 +46,7 @@ internal sealed class MailHandler : GamePacketHandler
         public const byte MailPrivilegeSuspended = 0x20;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -93,7 +93,7 @@ internal sealed class MailHandler : GamePacketHandler
         session.Send(MailPacket.EndOpen());
     }
 
-    private static void HandleSend(GameSession session, PacketReader packet)
+    private static void HandleSend(GameSession session, IPacketReader packet)
     {
         string recipientName = packet.ReadUnicodeString();
         string title = packet.ReadUnicodeString();
@@ -122,7 +122,7 @@ internal sealed class MailHandler : GamePacketHandler
         session.Send(MailPacket.Send(mail));
     }
 
-    private static void HandleRead(GameSession session, PacketReader packet)
+    private static void HandleRead(GameSession session, IPacketReader packet)
     {
         long id = packet.ReadLong();
 
@@ -138,7 +138,7 @@ internal sealed class MailHandler : GamePacketHandler
         }
     }
 
-    private static void HandleCollect(GameSession session, PacketReader packet)
+    private static void HandleCollect(GameSession session, IPacketReader packet)
     {
         long id = packet.ReadLong();
         Mail mail = session.Player.Mailbox.FirstOrDefault(x => x.Id == id);
@@ -186,7 +186,7 @@ internal sealed class MailHandler : GamePacketHandler
         session.Send(MailPacket.UpdateReadTime(mail));
     }
 
-    private static void HandleDelete(GameSession session, PacketReader packet)
+    private static void HandleDelete(GameSession session, IPacketReader packet)
     {
         int count = packet.ReadInt();
         for (int i = 0; i < count; i++)
@@ -202,7 +202,7 @@ internal sealed class MailHandler : GamePacketHandler
         }
     }
 
-    private static void HandleReadBatch(GameSession session, PacketReader packet)
+    private static void HandleReadBatch(GameSession session, IPacketReader packet)
     {
         int count = packet.ReadInt();
 
@@ -212,7 +212,7 @@ internal sealed class MailHandler : GamePacketHandler
         }
     }
 
-    private static void HandleCollectBatch(GameSession session, PacketReader packet)
+    private static void HandleCollectBatch(GameSession session, IPacketReader packet)
     {
         int count = packet.ReadInt();
 

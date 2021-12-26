@@ -26,7 +26,7 @@ internal sealed class MatchPartyHandler : GamePacketHandler
         public const byte NewestFirst = 0x15;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -46,7 +46,7 @@ internal sealed class MatchPartyHandler : GamePacketHandler
         }
     }
 
-    public static void HandleCreateListing(GameSession session, PacketReader packet)
+    public static void HandleCreateListing(GameSession session, IPacketReader packet)
     {
         string partyName = packet.ReadUnicodeString();
         bool approval = packet.ReadBool();
@@ -101,7 +101,7 @@ internal sealed class MatchPartyHandler : GamePacketHandler
         party.BroadcastPacketParty(PartyPacket.MatchParty(null, false));
     }
 
-    public static void HandleRefresh(GameSession session, PacketReader packet)
+    public static void HandleRefresh(GameSession session, IPacketReader packet)
     {
         //Get search terms:
         long unk = packet.ReadLong();

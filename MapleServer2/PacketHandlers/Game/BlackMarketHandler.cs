@@ -40,7 +40,7 @@ internal sealed class BlackMarketHandler : GamePacketHandler
         public const byte RequiredLevelToBuy = 0x2C;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -76,7 +76,7 @@ internal sealed class BlackMarketHandler : GamePacketHandler
         session.Send(BlackMarketPacket.Open(listings));
     }
 
-    private static void HandlePrepareListing(GameSession session, PacketReader packet)
+    private static void HandlePrepareListing(GameSession session, IPacketReader packet)
     {
         int itemId = packet.ReadInt();
         int rarity = packet.ReadInt();
@@ -98,7 +98,7 @@ internal sealed class BlackMarketHandler : GamePacketHandler
         session.Send(BlackMarketPacket.PrepareListing(itemId, rarity, npcShopPrice));
     }
 
-    private static void HandleCreateListing(GameSession session, PacketReader packet)
+    private static void HandleCreateListing(GameSession session, IPacketReader packet)
     {
         long itemUid = packet.ReadLong();
         long price = packet.ReadLong();
@@ -143,7 +143,7 @@ internal sealed class BlackMarketHandler : GamePacketHandler
         session.Send(BlackMarketPacket.CreateListing(listing));
     }
 
-    private static void HandleCancelListing(GameSession session, PacketReader packet)
+    private static void HandleCancelListing(GameSession session, IPacketReader packet)
     {
         long listingId = packet.ReadLong();
 
@@ -164,7 +164,7 @@ internal sealed class BlackMarketHandler : GamePacketHandler
         MailHelper.BlackMarketCancellation(listing);
     }
 
-    private static void HandleSearch(GameSession session, PacketReader packet)
+    private static void HandleSearch(GameSession session, IPacketReader packet)
     {
         int minCategoryId = packet.ReadInt();
         int maxCategoryId = packet.ReadInt();
@@ -211,7 +211,7 @@ internal sealed class BlackMarketHandler : GamePacketHandler
         session.Send(BlackMarketPacket.SearchResults(searchResults));
     }
 
-    private static void HandlePurchase(GameSession session, PacketReader packet)
+    private static void HandlePurchase(GameSession session, IPacketReader packet)
     {
         long listingId = packet.ReadLong();
         int amount = packet.ReadInt();

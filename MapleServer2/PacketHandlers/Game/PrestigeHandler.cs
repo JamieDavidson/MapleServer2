@@ -17,7 +17,7 @@ internal sealed class PrestigeHandler : GamePacketHandler
         public const byte Reward = 0x03;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -28,7 +28,7 @@ internal sealed class PrestigeHandler : GamePacketHandler
         }
     }
 
-    private static void HandleReward(GameSession session, PacketReader packet)
+    private static void HandleReward(GameSession session, IPacketReader packet)
     {
         int rank = packet.ReadInt();
 

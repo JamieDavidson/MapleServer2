@@ -16,7 +16,7 @@ internal sealed class EmoteHandler : GamePacketHandler
         public const byte UseEmote = 0x2;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var mode = packet.ReadByte();
 
@@ -34,7 +34,7 @@ internal sealed class EmoteHandler : GamePacketHandler
         }
     }
 
-    private static void HandleLearnEmote(GameSession session, PacketReader packet)
+    private static void HandleLearnEmote(GameSession session, IPacketReader packet)
     {
         long itemUid = packet.ReadLong();
 
@@ -58,7 +58,7 @@ internal sealed class EmoteHandler : GamePacketHandler
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
     }
 
-    private static void HandleUseEmote(PacketReader packet)
+    private static void HandleUseEmote(IPacketReader packet)
     {
         int emoteId = packet.ReadInt();
         string animationName = packet.ReadUnicodeString();

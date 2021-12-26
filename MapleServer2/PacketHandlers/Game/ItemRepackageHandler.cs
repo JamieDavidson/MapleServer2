@@ -25,7 +25,7 @@ internal sealed class ItemRepackageHandler : GamePacketHandler
         public const byte InvalidLevel = 0x5;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -40,7 +40,7 @@ internal sealed class ItemRepackageHandler : GamePacketHandler
         }
     }
 
-    private static void HandleRepackage(GameSession session, PacketReader packet)
+    private static void HandleRepackage(GameSession session, IPacketReader packet)
     {
         long ribbonUid = packet.ReadLong();
         long repackingItemUid = packet.ReadLong();

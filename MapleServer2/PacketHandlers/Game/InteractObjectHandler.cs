@@ -21,7 +21,7 @@ internal sealed class InteractObjectHandler : GamePacketHandler
         public const byte Interact = 0x0C;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var mode = packet.ReadByte();
 
@@ -36,7 +36,7 @@ internal sealed class InteractObjectHandler : GamePacketHandler
         }
     }
 
-    private static void HandleCast(GameSession session, PacketReader packet)
+    private static void HandleCast(GameSession session, IPacketReader packet)
     {
         string id = packet.ReadString();
         InteractObject interactObject = session.FieldManager.State.InteractObjects[id];
@@ -48,7 +48,7 @@ internal sealed class InteractObjectHandler : GamePacketHandler
         // TODO: Change state of object only if player succeeds in the cast.
     }
 
-    private static void HandleInteract(GameSession session, PacketReader packet)
+    private static void HandleInteract(GameSession session, IPacketReader packet)
     {
         string id = packet.ReadString();
         InteractObject interactObject = session.FieldManager.State.InteractObjects[id];

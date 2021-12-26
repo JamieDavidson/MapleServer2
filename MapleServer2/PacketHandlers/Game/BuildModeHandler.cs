@@ -24,7 +24,7 @@ internal sealed class BuildModeHandler : GamePacketHandler
         public const byte Liftables = 0x2;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var mode = packet.ReadByte();
 
@@ -54,7 +54,7 @@ internal sealed class BuildModeHandler : GamePacketHandler
         session.Player.Guide = null; // remove guide from player
     }
 
-    private static void HandleStart(GameSession session, PacketReader packet)
+    private static void HandleStart(GameSession session, IPacketReader packet)
     {
         if (session.Player.Guide != null)
         {

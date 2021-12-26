@@ -21,7 +21,7 @@ internal sealed class RideHandler : GamePacketHandler
         public const byte StopMultiPersonRide = 0x4;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -48,7 +48,7 @@ internal sealed class RideHandler : GamePacketHandler
         }
     }
 
-    private static void HandleStartRide(GameSession session, PacketReader packet)
+    private static void HandleStartRide(GameSession session, IPacketReader packet)
     {
         RideType type = (RideType) packet.ReadByte();
         int mountId = packet.ReadInt();
@@ -77,7 +77,7 @@ internal sealed class RideHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(startPacket);
     }
 
-    private static void HandleStopRide(GameSession session, PacketReader packet)
+    private static void HandleStopRide(GameSession session, IPacketReader packet)
     {
         packet.ReadByte();
         bool forced = packet.ReadBool(); // Going into water without amphibious riding
@@ -87,7 +87,7 @@ internal sealed class RideHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(stopPacket);
     }
 
-    private static void HandleChangeRide(GameSession session, PacketReader packet)
+    private static void HandleChangeRide(GameSession session, IPacketReader packet)
     {
         int mountId = packet.ReadInt();
         long mountUid = packet.ReadLong();
@@ -102,7 +102,7 @@ internal sealed class RideHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(changePacket);
     }
 
-    private static void HandleStartMultiPersonRide(GameSession session, PacketReader packet)
+    private static void HandleStartMultiPersonRide(GameSession session, IPacketReader packet)
     {
         int otherPlayerObjectId = packet.ReadInt();
 

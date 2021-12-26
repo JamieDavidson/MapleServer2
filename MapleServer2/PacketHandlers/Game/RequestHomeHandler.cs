@@ -16,7 +16,7 @@ internal sealed class RequestHomeHandler : GamePacketHandler
         public const byte MoveToHome = 0x03;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -33,7 +33,7 @@ internal sealed class RequestHomeHandler : GamePacketHandler
         }
     }
 
-    private static void HandleInviteToHome(GameSession session, PacketReader packet)
+    private static void HandleInviteToHome(GameSession session, IPacketReader packet)
     {
         string characterName = packet.ReadUnicodeString();
         Player target = GameServer.PlayerManager.GetPlayerByName(characterName);
@@ -50,7 +50,7 @@ internal sealed class RequestHomeHandler : GamePacketHandler
     }
 
     // The same mode also handles creation of new homes.
-    private static void HandleMoveToHome(GameSession session, PacketReader packet)
+    private static void HandleMoveToHome(GameSession session, IPacketReader packet)
     {
         int homeTemplate = packet.ReadInt();
         Player player = session.Player;

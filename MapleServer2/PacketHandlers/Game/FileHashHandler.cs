@@ -8,7 +8,7 @@ internal sealed class FileHashHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.FILE_HASH;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         packet.ReadInt();
         string filename = packet.ReadString();

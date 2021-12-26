@@ -10,7 +10,7 @@ internal sealed class LogSendHandler : CommonPacketHandler
 {
     public override RecvOp OpCode => RecvOp.LOG_SEND;
 
-    protected override void HandleCommon(Session session, PacketReader packet)
+    protected override void HandleCommon(Session session, IPacketReader packet)
     {
         packet.ReadByte();
         byte function = packet.ReadByte();

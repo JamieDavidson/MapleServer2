@@ -29,7 +29,7 @@ internal sealed class ItemExchangeHandler : GamePacketHandler
         public const short CheckFusionAmount = 0x7;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var mode = packet.ReadByte();
 
@@ -44,7 +44,7 @@ internal sealed class ItemExchangeHandler : GamePacketHandler
         }
     }
 
-    private static void HandleUse(GameSession session, PacketReader packet)
+    private static void HandleUse(GameSession session, IPacketReader packet)
     {
         long itemUid = packet.ReadLong();
         long unk = packet.ReadLong();

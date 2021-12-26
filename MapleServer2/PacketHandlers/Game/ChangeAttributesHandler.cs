@@ -18,7 +18,7 @@ internal sealed class ChangeAttributesHandler : GamePacketHandler
         public const byte SelectNewAttributes = 0x02;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -36,7 +36,7 @@ internal sealed class ChangeAttributesHandler : GamePacketHandler
         }
     }
 
-    private static void HandleChangeAttributes(GameSession session, PacketReader packet)
+    private static void HandleChangeAttributes(GameSession session, IPacketReader packet)
     {
         short lockStatId = -1;
         bool isSpecialStat = false;
@@ -167,7 +167,7 @@ internal sealed class ChangeAttributesHandler : GamePacketHandler
         session.Send(ChangeAttributesPacket.PreviewNewItem(newItem));
     }
 
-    private static void HandleSelectNewAttributes(GameSession session, PacketReader packet)
+    private static void HandleSelectNewAttributes(GameSession session, IPacketReader packet)
     {
         long itemUid = packet.ReadLong();
 

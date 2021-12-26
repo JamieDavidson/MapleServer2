@@ -10,7 +10,7 @@ internal sealed class TutorialHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.TUTORIAL;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         JobMetadata metadata = JobMetadataStorage.GetJobMetadata((int) session.Player.Job);
         {

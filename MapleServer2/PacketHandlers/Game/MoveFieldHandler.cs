@@ -25,7 +25,7 @@ internal sealed class MoveFieldHandler : GamePacketHandler
         public const byte EnterDecorPlaner = 0x04;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var mode = packet.ReadByte();
 
@@ -52,7 +52,7 @@ internal sealed class MoveFieldHandler : GamePacketHandler
         }
     }
 
-    private static void HandleMove(GameSession session, PacketReader packet)
+    private static void HandleMove(GameSession session, IPacketReader packet)
     {
         int srcMapId = packet.ReadInt();
         if (srcMapId != session.FieldManager.MapId)
@@ -183,7 +183,7 @@ internal sealed class MoveFieldHandler : GamePacketHandler
         player.Warp(player.ReturnMapId, player.ReturnCoord, session.Player.FieldPlayer.Rotation);
     }
 
-    private static void HandleVisitHouse(GameSession session, PacketReader packet)
+    private static void HandleVisitHouse(GameSession session, IPacketReader packet)
     {
         int returnMapId = packet.ReadInt();
         packet.Skip(8);

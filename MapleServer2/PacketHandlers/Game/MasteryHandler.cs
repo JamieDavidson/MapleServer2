@@ -29,7 +29,7 @@ internal sealed class MasteryHandler : GamePacketHandler
         public const byte InsufficientLevel = 0x07;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -46,7 +46,7 @@ internal sealed class MasteryHandler : GamePacketHandler
         }
     }
 
-    private static void HandleRewardBox(GameSession session, PacketReader packet)
+    private static void HandleRewardBox(GameSession session, IPacketReader packet)
     {
         int rewardBoxDetails = packet.ReadInt();
         int type = rewardBoxDetails / 1000;
@@ -73,7 +73,7 @@ internal sealed class MasteryHandler : GamePacketHandler
         session.Send(MasteryPacket.ClaimReward(rewardBoxDetails, rewardBox));
     }
 
-    private static void HandleCraftItem(GameSession session, PacketReader packet)
+    private static void HandleCraftItem(GameSession session, IPacketReader packet)
     {
         int recipeId = packet.ReadInt();
 

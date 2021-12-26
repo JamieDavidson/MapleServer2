@@ -19,7 +19,7 @@ internal sealed class FunctionCubeHandler : GamePacketHandler
         public const byte Use = 0x04;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -33,7 +33,7 @@ internal sealed class FunctionCubeHandler : GamePacketHandler
         }
     }
 
-    private static void HandleUseCube(GameSession session, PacketReader packet)
+    private static void HandleUseCube(GameSession session, IPacketReader packet)
     {
         string coord = packet.ReadUnicodeString();
         byte unk = packet.ReadByte();

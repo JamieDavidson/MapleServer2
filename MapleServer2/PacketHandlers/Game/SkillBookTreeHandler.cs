@@ -19,7 +19,7 @@ internal sealed class SkillBookTreeHandler : GamePacketHandler
         public const byte AddTab = 0x04;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -47,7 +47,7 @@ internal sealed class SkillBookTreeHandler : GamePacketHandler
         session.Send(SkillBookTreePacket.Open(session.Player));
     }
 
-    private static void HandleSave(GameSession session, PacketReader packet)
+    private static void HandleSave(GameSession session, IPacketReader packet)
     {
         long activeTabId = packet.ReadLong();
         long selectedTab = packet.ReadLong(); // if 0 player used activate tab
@@ -89,7 +89,7 @@ internal sealed class SkillBookTreeHandler : GamePacketHandler
         }
     }
 
-    private static void HandleRename(GameSession session, PacketReader packet)
+    private static void HandleRename(GameSession session, IPacketReader packet)
     {
         long id = packet.ReadLong();
         string newName = packet.ReadUnicodeString();

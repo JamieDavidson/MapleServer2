@@ -10,7 +10,7 @@ internal sealed class GuideObjectSync : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.GUIDE_OBJECT_SYNC;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         byte objectType = packet.ReadByte(); // 0 = build, 1 = fish
         byte unk = packet.ReadByte();

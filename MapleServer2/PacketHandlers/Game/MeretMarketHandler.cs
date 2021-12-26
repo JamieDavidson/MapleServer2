@@ -34,7 +34,7 @@ internal sealed class MeretMarketHandler : GamePacketHandler
         public const byte LoadCart = 0x6B;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -110,7 +110,7 @@ internal sealed class MeretMarketHandler : GamePacketHandler
         session.Send(MeretMarketPacket.LoadSales(sales));
     }
 
-    private static void HandleListItem(GameSession session, PacketReader packet)
+    private static void HandleListItem(GameSession session, IPacketReader packet)
     {
         long itemUid = packet.ReadLong();
         long salePrice = packet.ReadLong();
@@ -165,7 +165,7 @@ internal sealed class MeretMarketHandler : GamePacketHandler
         return fee;
     }
 
-    private static void HandleRemoveListing(GameSession session, PacketReader packet)
+    private static void HandleRemoveListing(GameSession session, IPacketReader packet)
     {
         packet.ReadInt(); // 0
         long ugcMarketItemId = packet.ReadLong();
@@ -182,7 +182,7 @@ internal sealed class MeretMarketHandler : GamePacketHandler
         GameServer.UGCMarketManager.RemoveListing(item);
     }
 
-    private static void HandleUnlistItem(GameSession session, PacketReader packet)
+    private static void HandleUnlistItem(GameSession session, IPacketReader packet)
     {
         packet.ReadInt(); // 0
         long ugcMarketItemId = packet.ReadLong();
@@ -201,7 +201,7 @@ internal sealed class MeretMarketHandler : GamePacketHandler
         session.Send(MeretMarketPacket.UpdateExpiration(item));
     }
 
-    private static void HandleRelistItem(GameSession session, PacketReader packet)
+    private static void HandleRelistItem(GameSession session, IPacketReader packet)
     {
         long ugcMarketItemId = packet.ReadLong();
         long price = packet.ReadLong();
@@ -235,7 +235,7 @@ internal sealed class MeretMarketHandler : GamePacketHandler
         session.Send(MeretMarketPacket.RelistItem(item));
     }
 
-    private static void HandleCollectProfit(GameSession session, PacketReader packet)
+    private static void HandleCollectProfit(GameSession session, IPacketReader packet)
     {
         long saleId = packet.ReadLong();
 
@@ -263,7 +263,7 @@ internal sealed class MeretMarketHandler : GamePacketHandler
         session.Send(MeretMarketPacket.Initialize());
     }
 
-    private static void HandleOpenShop(GameSession session, PacketReader packet)
+    private static void HandleOpenShop(GameSession session, IPacketReader packet)
     {
         MeretMarketCategory category = (MeretMarketCategory) packet.ReadInt();
 
@@ -297,7 +297,7 @@ internal sealed class MeretMarketHandler : GamePacketHandler
         session.Send(MeretMarketPacket.LoadPremiumShopCategory(marketItems));
     }
 
-    private static void HandleOpenUGCMarket(GameSession session, PacketReader packet, MeretMarketCategoryMetadata metadata)
+    private static void HandleOpenUGCMarket(GameSession session, IPacketReader packet, MeretMarketCategoryMetadata metadata)
     {
         GenderFlag gender = (GenderFlag) packet.ReadByte();
         JobFlag job = (JobFlag) packet.ReadInt();
@@ -312,7 +312,7 @@ internal sealed class MeretMarketHandler : GamePacketHandler
         // TODO: Red Meret Market
     }
 
-    private static void HandlePurchase(GameSession session, PacketReader packet)
+    private static void HandlePurchase(GameSession session, IPacketReader packet)
     {
         byte quantity = packet.ReadByte();
         int marketItemId = packet.ReadInt();
@@ -353,7 +353,7 @@ internal sealed class MeretMarketHandler : GamePacketHandler
         session.Send(MeretMarketPacket.Purchase(0, marketItem.Id, marketItem.Price, 1));
     }
 
-    private static void PurchasePremiumItem(GameSession session, PacketReader packet, int marketItemId)
+    private static void PurchasePremiumItem(GameSession session, IPacketReader packet, int marketItemId)
     {
         packet.ReadInt();
         int childMarketItemId = packet.ReadInt();
@@ -431,7 +431,7 @@ internal sealed class MeretMarketHandler : GamePacketHandler
         session.Send(MeretMarketPacket.LoadCart());
     }
 
-    private static void HandleSendMarketRequest(GameSession session, PacketReader packet)
+    private static void HandleSendMarketRequest(GameSession session, IPacketReader packet)
     {
         packet.ReadByte(); //constant 1
         int meretMarketItemUid = packet.ReadInt();

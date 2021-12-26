@@ -34,7 +34,7 @@ internal sealed class FishingHandler : GamePacketHandler
         public const short GearOrMiscInventoryFull = 0x7;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -61,7 +61,7 @@ internal sealed class FishingHandler : GamePacketHandler
         }
     }
 
-    private static void HandlePrepareFishing(GameSession session, PacketReader packet)
+    private static void HandlePrepareFishing(GameSession session, IPacketReader packet)
     {
         long fishingRodUid = packet.ReadLong();
         MasteryExp masteryExp = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == MasteryType.Fishing);
@@ -251,7 +251,7 @@ internal sealed class FishingHandler : GamePacketHandler
         session.Player.Guide = null; // remove guide from player
     }
 
-    private static void HandleCatch(GameSession session, PacketReader packet)
+    private static void HandleCatch(GameSession session, IPacketReader packet)
     {
         bool success = packet.ReadBool();
 
@@ -317,7 +317,7 @@ internal sealed class FishingHandler : GamePacketHandler
         return selectedFishRarities;
     }
 
-    private static void HandleStart(GameSession session, PacketReader packet)
+    private static void HandleStart(GameSession session, IPacketReader packet)
     {
         CoordB coord = packet.Read<CoordB>();
         CoordS fishingBlock = coord.ToShort();

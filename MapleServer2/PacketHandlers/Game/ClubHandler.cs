@@ -22,7 +22,7 @@ internal sealed class ClubHandler : GamePacketHandler
         public const byte Rename = 0xE;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var mode = packet.ReadByte();
 
@@ -55,7 +55,7 @@ internal sealed class ClubHandler : GamePacketHandler
         }
     }
 
-    private static void HandleCreate(GameSession session, PacketReader packet)
+    private static void HandleCreate(GameSession session, IPacketReader packet)
     {
         // TODO fix creating for a party of more than 2. Currently if a member does not respond, despite atleast one other member accepting, it does not get created.
         Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
@@ -72,7 +72,7 @@ internal sealed class ClubHandler : GamePacketHandler
         party.BroadcastPacketParty(ClubPacket.Create(party, club));
     }
 
-    private static void HandleJoin(GameSession session, PacketReader packet)
+    private static void HandleJoin(GameSession session, IPacketReader packet)
     {
         Party party = session.Player.Party;
         if (party == null)
@@ -111,7 +111,7 @@ internal sealed class ClubHandler : GamePacketHandler
         }
     }
 
-    private static void HandleSendInvite(GameSession session, PacketReader packet)
+    private static void HandleSendInvite(GameSession session, IPacketReader packet)
     {
         long clubId = packet.ReadLong();
         string invitee = packet.ReadUnicodeString();
@@ -134,7 +134,7 @@ internal sealed class ClubHandler : GamePacketHandler
         other.Session.Send(ClubPacket.Invite(club, other));
     }
 
-    private static void HandleInviteResponse(GameSession session, PacketReader packet)
+    private static void HandleInviteResponse(GameSession session, IPacketReader packet)
     {
         long clubId = packet.ReadLong();
         string clubName = packet.ReadUnicodeString();
@@ -171,7 +171,7 @@ internal sealed class ClubHandler : GamePacketHandler
         }
     }
 
-    private static void HandleLeave(GameSession session, PacketReader packet)
+    private static void HandleLeave(GameSession session, IPacketReader packet)
     {
         long clubId = packet.ReadLong();
 
@@ -205,7 +205,7 @@ internal sealed class ClubHandler : GamePacketHandler
         }
     }
 
-    private static void HandleBuff(PacketReader packet)
+    private static void HandleBuff(IPacketReader packet)
     {
         long clubId = packet.ReadLong();
         int buffId = packet.ReadInt();
@@ -221,7 +221,7 @@ internal sealed class ClubHandler : GamePacketHandler
         club.BroadcastPacketClub(ClubPacket.ChangeBuff(club, buffId));
     }
 
-    private static void HandleRename(PacketReader packet)
+    private static void HandleRename(IPacketReader packet)
     {
         long clubId = packet.ReadLong();
         string clubNewName = packet.ReadUnicodeString();

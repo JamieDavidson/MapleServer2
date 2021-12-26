@@ -27,7 +27,7 @@ internal sealed class InstrumentHandler : GamePacketHandler
         public const byte AudienceEmote = 0xF;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -69,7 +69,7 @@ internal sealed class InstrumentHandler : GamePacketHandler
         }
     }
 
-    private static void HandleStartImprovise(GameSession session, PacketReader packet)
+    private static void HandleStartImprovise(GameSession session, IPacketReader packet)
     {
         long itemUid = packet.ReadLong();
 
@@ -95,7 +95,7 @@ internal sealed class InstrumentHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(InstrumentPacket.StartImprovise(session.Player.Instrument));
     }
 
-    private static void HandlePlayNote(GameSession session, PacketReader packet)
+    private static void HandlePlayNote(GameSession session, IPacketReader packet)
     {
         int note = packet.ReadInt();
 
@@ -114,7 +114,7 @@ internal sealed class InstrumentHandler : GamePacketHandler
         session.Player.Instrument = null;
     }
 
-    private static void HandlePlayScore(GameSession session, PacketReader packet)
+    private static void HandlePlayScore(GameSession session, IPacketReader packet)
     {
         long instrumentItemUid = packet.ReadLong();
         long scoreItemUid = packet.ReadLong();
@@ -163,7 +163,7 @@ internal sealed class InstrumentHandler : GamePacketHandler
         session.Player.Instrument = null;
     }
 
-    private static void HandleCompose(GameSession session, PacketReader packet)
+    private static void HandleCompose(GameSession session, IPacketReader packet)
     {
         var itemUid = packet.ReadLong();
         var length = packet.ReadInt();
@@ -190,7 +190,7 @@ internal sealed class InstrumentHandler : GamePacketHandler
         session.Send(InstrumentPacket.Compose(item));
     }
 
-    private static void HandleStartEnsemble(GameSession session, PacketReader packet)
+    private static void HandleStartEnsemble(GameSession session, IPacketReader packet)
     {
         long instrumentItemUid = packet.ReadLong();
         long scoreItemUid = packet.ReadLong();
@@ -268,7 +268,7 @@ internal sealed class InstrumentHandler : GamePacketHandler
         session.Send(InstrumentPacket.Fireworks(session.Player.FieldPlayer.ObjectId));
     }
 
-    private static void HandleAudienceEmote(PacketReader packet)
+    private static void HandleAudienceEmote(IPacketReader packet)
     {
         int skillId = packet.ReadInt();
     }

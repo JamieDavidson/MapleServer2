@@ -23,7 +23,7 @@ internal sealed class ShopHandler : GamePacketHandler
         public const byte OpenViaItem = 0x0A;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -74,7 +74,7 @@ internal sealed class ShopHandler : GamePacketHandler
         session.Player.ShopId = 0;
     }
 
-    private static void HandleSell(GameSession session, PacketReader packet)
+    private static void HandleSell(GameSession session, IPacketReader packet)
     {
         // sell to shop
         long itemUid = packet.ReadLong();
@@ -95,7 +95,7 @@ internal sealed class ShopHandler : GamePacketHandler
         session.Send(ShopPacket.Sell(item, quantity));
     }
 
-    private static void HandleBuy(GameSession session, PacketReader packet)
+    private static void HandleBuy(GameSession session, IPacketReader packet)
     {
         int itemUid = packet.ReadInt();
         int quantity = packet.ReadInt();
@@ -150,7 +150,7 @@ internal sealed class ShopHandler : GamePacketHandler
         session.Send(ShopPacket.Buy(shopItem.ItemId, quantity, shopItem.Price, shopItem.TokenType));
     }
 
-    private static void HandleOpenViaItem(GameSession session, PacketReader packet)
+    private static void HandleOpenViaItem(GameSession session, IPacketReader packet)
     {
         byte unk = packet.ReadByte();
         int itemId = packet.ReadInt();

@@ -9,7 +9,7 @@ internal sealed class CharacterInfoHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CHARACTER_INFO;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         long characterId = packet.ReadLong();
 

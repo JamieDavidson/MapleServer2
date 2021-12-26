@@ -10,7 +10,7 @@ internal sealed class RequestMoneyPickupHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_MONEY_PICKUP;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         int objectCount = packet.ReadByte();
 

@@ -20,7 +20,7 @@ internal sealed class CardReverseGameHandler : GamePacketHandler
         public const byte Select = 0x2;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 

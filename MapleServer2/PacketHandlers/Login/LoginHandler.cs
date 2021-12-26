@@ -38,7 +38,7 @@ internal sealed class LoginHandler : LoginPacketHandler
         ServerName = Environment.GetEnvironmentVariable("NAME");
     }
 
-    public override void Handle(LoginSession session, PacketReader packet)
+    public override void Handle(LoginSession session, IPacketReader packet)
     {
         var mode = packet.ReadByte();
         string username = packet.ReadUnicodeString();

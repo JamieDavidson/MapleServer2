@@ -9,7 +9,7 @@ internal sealed class RequestTimeSyncHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_TIME_SYNC;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         int key = packet.ReadInt();
 

@@ -16,7 +16,7 @@ internal sealed class UserChatHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.USER_CHAT;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         ChatType type = (ChatType) packet.ReadInt();
         string message = packet.ReadUnicodeString();

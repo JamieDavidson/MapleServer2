@@ -24,7 +24,7 @@ internal sealed class DungeonHandler : GamePacketHandler
         public const byte Favorite = 0x19;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operations = packet.ReadByte();
 
@@ -69,7 +69,7 @@ internal sealed class DungeonHandler : GamePacketHandler
 
     }
 
-    public static void HandleCreateDungeon(GameSession session, PacketReader packet)
+    public static void HandleCreateDungeon(GameSession session, IPacketReader packet)
     {
         int dungeonId = packet.ReadInt();
         bool groupEnter = packet.ReadBool();
@@ -134,7 +134,7 @@ internal sealed class DungeonHandler : GamePacketHandler
         session.Player.Warp(dungeonSession.DungeonLobbyId, instanceId: dungeonSession.DungeonInstanceId);
     }
 
-    private static void HandleAddRewards(GameSession session, PacketReader packet)
+    private static void HandleAddRewards(GameSession session, IPacketReader packet)
     {
         int dungeonId = packet.ReadInt();
 
@@ -142,7 +142,7 @@ internal sealed class DungeonHandler : GamePacketHandler
         // session.Send(DungeonPacket.UpdateDungeon(dungeonId, toggle));
     }
 
-    private static void HandleGetHelp(GameSession session, PacketReader packet)
+    private static void HandleGetHelp(GameSession session, IPacketReader packet)
     {
         int dungeonId = packet.ReadInt();
 
@@ -164,7 +164,7 @@ internal sealed class DungeonHandler : GamePacketHandler
         MapleServer.BroadcastPacketAll(DungeonHelperPacket.BroadcastAssist(party, dungeonId));
     }
 
-    private static void HandleVeteran(GameSession session, PacketReader packet)
+    private static void HandleVeteran(GameSession session, IPacketReader packet)
     {
         int dungeonId = packet.ReadInt();
 
@@ -172,7 +172,7 @@ internal sealed class DungeonHandler : GamePacketHandler
         // session.Send(DungeonPacket.UpdateDungeon(dungeonId, toggle));
     }
 
-    private static void HandleFavorite(GameSession session, PacketReader packet)
+    private static void HandleFavorite(GameSession session, IPacketReader packet)
     {
         int dungeonId = packet.ReadInt();
         byte toggle = packet.ReadByte();

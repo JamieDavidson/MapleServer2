@@ -57,7 +57,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         public const byte RemoveBuildingPermission = 0x3A;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -158,14 +158,14 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         }
     }
 
-    private static void HandleLoadFurnishingItem(GameSession session, PacketReader packet)
+    private static void HandleLoadFurnishingItem(GameSession session, IPacketReader packet)
     {
         int itemId = packet.ReadInt();
         long itemUid = packet.ReadLong();
         session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadFurnishingItem(session.Player.FieldPlayer, itemId, itemUid));
     }
 
-    private static void HandleBuyPlot(GameSession session, PacketReader packet)
+    private static void HandleBuyPlot(GameSession session, IPacketReader packet)
     {
         int groupId = packet.ReadInt();
         int homeTemplate = packet.ReadInt();
@@ -263,7 +263,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         // 54 00 0E 01 00 00 00 01 01 00 00 00, send mail
     }
 
-    private static void HandleAddFurnishing(GameSession session, PacketReader packet)
+    private static void HandleAddFurnishing(GameSession session, IPacketReader packet)
     {
         CoordB coord = packet.Read<CoordB>();
         byte padding = packet.ReadByte();
@@ -391,7 +391,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         fieldManager.BroadcastPacket(LiftablePacket.UpdateEntityByCoord(liftable));
     }
 
-    private static void HandleRemoveCube(GameSession session, PacketReader packet)
+    private static void HandleRemoveCube(GameSession session, IPacketReader packet)
     {
         CoordB coord = packet.Read<CoordB>();
         Player player = session.Player;
@@ -424,7 +424,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         RemoveCube(session, homeOwner, cube, home);
     }
 
-    private static void HandleRotateCube(GameSession session, PacketReader packet)
+    private static void HandleRotateCube(GameSession session, IPacketReader packet)
     {
         CoordB coord = packet.Read<CoordB>();
         Player player = session.Player;
@@ -449,7 +449,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.Send(ResponseCubePacket.RotateCube(session.Player.FieldPlayer, cube));
     }
 
-    private static void HandleReplaceCube(GameSession session, PacketReader packet)
+    private static void HandleReplaceCube(GameSession session, IPacketReader packet)
     {
         CoordB coord = packet.Read<CoordB>();
         packet.Skip(1);
@@ -583,7 +583,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         AddFunctionCube(session, coord, newFieldCube);
     }
 
-    private static void HandlePickup(GameSession session, PacketReader packet)
+    private static void HandlePickup(GameSession session, IPacketReader packet)
     {
         CoordB coords = packet.Read<CoordB>();
 
@@ -604,7 +604,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(session.Player.FieldPlayer, false));
     }
 
-    private static void HandleHomeName(GameSession session, PacketReader packet)
+    private static void HandleHomeName(GameSession session, IPacketReader packet)
     {
         string name = packet.ReadUnicodeString();
 
@@ -621,7 +621,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadHome(session.Player.FieldPlayer.ObjectId, session.Player.Account.Home));
     }
 
-    private static void HandleHomePassword(GameSession session, PacketReader packet)
+    private static void HandleHomePassword(GameSession session, IPacketReader packet)
     {
         packet.ReadByte();
         string password = packet.ReadUnicodeString();
@@ -656,7 +656,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.Send(ResponseCubePacket.ArchitectScoreExpiration(player.AccountId, TimeInfo.Now()));
     }
 
-    private static void HandleHomeDescription(GameSession session, PacketReader packet)
+    private static void HandleHomeDescription(GameSession session, IPacketReader packet)
     {
         string description = packet.ReadUnicodeString();
 
@@ -687,7 +687,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.SendNotice("The interior has been cleared!"); // TODO: use notice packet
     }
 
-    private static void HandleRequestLayout(GameSession session, PacketReader packet)
+    private static void HandleRequestLayout(GameSession session, IPacketReader packet)
     {
         int layoutId = packet.ReadInt();
 
@@ -752,7 +752,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.Send(ResponseCubePacket.BillPopup(cubeCosts, cubeCount));
     }
 
-    private static void HandleDecorPlannerLoadLayout(GameSession session, PacketReader packet)
+    private static void HandleDecorPlannerLoadLayout(GameSession session, IPacketReader packet)
     {
         int layoutId = packet.ReadInt();
 
@@ -788,7 +788,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.SendNotice("Layout loaded succesfully!"); // TODO: Use notice packet
     }
 
-    private static void HandleLoadLayout(GameSession session, PacketReader packet)
+    private static void HandleLoadLayout(GameSession session, IPacketReader packet)
     {
         int layoutId = packet.ReadInt();
 
@@ -904,7 +904,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         }
     }
 
-    private static void HandleSaveLayout(GameSession session, PacketReader packet)
+    private static void HandleSaveLayout(GameSession session, IPacketReader packet)
     {
         int layoutId = packet.ReadInt();
         string layoutName = packet.ReadUnicodeString();
@@ -1023,7 +1023,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.Send(ResponseCubePacket.DecorationScore(home));
     }
 
-    private static void HandleInteriorDesingReward(GameSession session, PacketReader packet)
+    private static void HandleInteriorDesingReward(GameSession session, IPacketReader packet)
     {
         byte rewardId = packet.ReadByte();
         Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
@@ -1075,7 +1075,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         });
     }
 
-    private static void HandleEnablePermission(GameSession session, PacketReader packet)
+    private static void HandleEnablePermission(GameSession session, IPacketReader packet)
     {
         HomePermission permission = (HomePermission) packet.ReadByte();
         bool enabled = packet.ReadBool();
@@ -1098,7 +1098,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(ResponseCubePacket.EnablePermission(permission, enabled));
     }
 
-    private static void HandleSetPermission(GameSession session, PacketReader packet)
+    private static void HandleSetPermission(GameSession session, IPacketReader packet)
     {
         HomePermission permission = (HomePermission) packet.ReadByte();
         byte setting = packet.ReadByte();
@@ -1117,7 +1117,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(ResponseCubePacket.SetPermission(permission, setting));
     }
 
-    private static void HandleUpdateBudget(GameSession session, PacketReader packet)
+    private static void HandleUpdateBudget(GameSession session, IPacketReader packet)
     {
         long mesos = packet.ReadLong();
         long merets = packet.ReadLong();
@@ -1134,7 +1134,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(ResponseCubePacket.UpdateBudget(home));
     }
 
-    private static void HandleModifyInteriorSettings(GameSession session, byte operation, PacketReader packet)
+    private static void HandleModifyInteriorSettings(GameSession session, byte operation, IPacketReader packet)
     {
         byte value = packet.ReadByte();
 
@@ -1156,7 +1156,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         }
     }
 
-    private static void HandleGiveBuildingPermission(GameSession session, PacketReader packet)
+    private static void HandleGiveBuildingPermission(GameSession session, IPacketReader packet)
     {
         string characterName = packet.ReadUnicodeString();
 
@@ -1181,7 +1181,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         target.Session.SendNotice("You have been granted furnishing rights."); // TODO: use the notice packet
     }
 
-    private static void HandleRemoveBuildingPermission(GameSession session, PacketReader packet)
+    private static void HandleRemoveBuildingPermission(GameSession session, IPacketReader packet)
     {
         string characterName = packet.ReadUnicodeString();
 

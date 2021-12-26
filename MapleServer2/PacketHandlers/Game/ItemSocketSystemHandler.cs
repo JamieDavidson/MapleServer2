@@ -30,7 +30,7 @@ internal sealed class ItemSocketSystemHandler : GamePacketHandler
         public const byte ConfirmCatalystAmount = 0x4;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -60,7 +60,7 @@ internal sealed class ItemSocketSystemHandler : GamePacketHandler
         }
     }
 
-    private static void HandleUnlockSocket(GameSession session, PacketReader packet)
+    private static void HandleUnlockSocket(GameSession session, IPacketReader packet)
     {
         long itemUid = packet.ReadLong();
         byte fodderAmount = packet.ReadByte();
@@ -145,7 +145,7 @@ internal sealed class ItemSocketSystemHandler : GamePacketHandler
         session.Send(ItemSocketSystemPacket.UnlockSocket(equip, (byte) slot, unlockedSockets));
     }
 
-    private static void HandleSelectUnlockSocketEquip(GameSession session, PacketReader packet)
+    private static void HandleSelectUnlockSocketEquip(GameSession session, IPacketReader packet)
     {
         long unkUid = packet.ReadLong();
         byte slot = packet.ReadByte();
@@ -161,7 +161,7 @@ internal sealed class ItemSocketSystemHandler : GamePacketHandler
         session.Send(ItemSocketSystemPacket.SelectUnlockSocketEquip(unkUid, slot, itemUid));
     }
 
-    private static void HandleUpgradeGem(GameSession session, PacketReader packet)
+    private static void HandleUpgradeGem(GameSession session, IPacketReader packet)
     {
         long equipUid = packet.ReadLong();
         byte slot = packet.ReadByte();
@@ -296,7 +296,7 @@ internal sealed class ItemSocketSystemHandler : GamePacketHandler
         }
     }
 
-    private static void HandleSelectGemUpgrade(GameSession session, PacketReader packet)
+    private static void HandleSelectGemUpgrade(GameSession session, IPacketReader packet)
     {
         long equipUid = packet.ReadLong();
         byte slot = packet.ReadByte();
@@ -331,7 +331,7 @@ internal sealed class ItemSocketSystemHandler : GamePacketHandler
         session.Send(ItemSocketSystemPacket.SelectGemUpgrade(equipUid, slot, itemUid));
     }
 
-    private static void HandleMountGem(GameSession session, PacketReader packet)
+    private static void HandleMountGem(GameSession session, IPacketReader packet)
     {
         long equipItemUid = packet.ReadLong();
         long gemItemUid = packet.ReadLong();
@@ -381,7 +381,7 @@ internal sealed class ItemSocketSystemHandler : GamePacketHandler
         session.Send(ItemSocketSystemPacket.MountGem(equipItemUid, gemstone, slot));
     }
 
-    private static void HandleExtractGem(GameSession session, PacketReader packet)
+    private static void HandleExtractGem(GameSession session, IPacketReader packet)
     {
         long equipItemUid = packet.ReadLong();
         byte slot = packet.ReadByte();

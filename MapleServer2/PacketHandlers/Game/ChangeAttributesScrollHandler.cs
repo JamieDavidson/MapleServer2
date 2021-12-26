@@ -16,7 +16,7 @@ internal sealed class ChangeAttributesScrollHandler : GamePacketHandler
         public const byte SelectNewAttributes = 3;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var mode = packet.ReadByte();
         switch (mode)
@@ -33,7 +33,7 @@ internal sealed class ChangeAttributesScrollHandler : GamePacketHandler
         }
     }
 
-    private static void HandleChangeAttributes(GameSession session, PacketReader packet)
+    private static void HandleChangeAttributes(GameSession session, IPacketReader packet)
     {
         short lockStatId = -1;
         bool isSpecialStat = false;
@@ -102,7 +102,7 @@ internal sealed class ChangeAttributesScrollHandler : GamePacketHandler
         session.Send(ChangeAttributesScrollPacket.PreviewNewItem(newItem));
     }
 
-    private static void HandleSelectNewAttributes(GameSession session, PacketReader packet)
+    private static void HandleSelectNewAttributes(GameSession session, IPacketReader packet)
     {
         long gearUid = packet.ReadLong();
 

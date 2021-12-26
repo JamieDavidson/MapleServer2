@@ -15,7 +15,7 @@ internal sealed class RequestUserEnvHandler : GamePacketHandler
         public const byte Trophy = 0x3;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -33,7 +33,7 @@ internal sealed class RequestUserEnvHandler : GamePacketHandler
         }
     }
 
-    private static void HandleTitleChange(GameSession session, PacketReader packet)
+    private static void HandleTitleChange(GameSession session, IPacketReader packet)
     {
         int titleID = packet.ReadInt();
 

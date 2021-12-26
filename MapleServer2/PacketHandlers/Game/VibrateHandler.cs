@@ -12,7 +12,7 @@ internal sealed class VibrateHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.VIBRATE;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         string entityId = packet.ReadString();
         long skillSN = packet.ReadLong();

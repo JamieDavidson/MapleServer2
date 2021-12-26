@@ -15,7 +15,7 @@ internal sealed class ResponseKeyHandler : CommonPacketHandler
 {
     public override RecvOp OpCode => RecvOp.RESPONSE_KEY;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         long accountId = packet.ReadLong();
         AuthData authData = DatabaseManager.AuthData.GetByAccountId(accountId);
@@ -195,7 +195,7 @@ internal sealed class ResponseKeyHandler : CommonPacketHandler
         //session.Send(ServerEnterPacket.Confirm());
     }
 
-    public override void Handle(LoginSession session, PacketReader packet)
+    public override void Handle(LoginSession session, IPacketReader packet)
     {
         session.AccountId = packet.ReadLong();
 
@@ -204,7 +204,7 @@ internal sealed class ResponseKeyHandler : CommonPacketHandler
         HandleCommon(session, packet);
     }
 
-    protected override void HandleCommon(Session session, PacketReader packet)
+    protected override void HandleCommon(Session session, IPacketReader packet)
     {
         long accountId = packet.ReadLong();
         int tokenA = packet.ReadInt();

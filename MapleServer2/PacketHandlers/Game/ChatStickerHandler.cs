@@ -19,7 +19,7 @@ internal sealed class ChatStickerHandler : GamePacketHandler
         public const byte Unfavorite = 0x6;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -52,7 +52,7 @@ internal sealed class ChatStickerHandler : GamePacketHandler
         //session.Send(ChatStickerPacket.ExpiredStickerNotification());
     }
 
-    private static void HandleUseSticker(GameSession session, PacketReader packet)
+    private static void HandleUseSticker(GameSession session, IPacketReader packet)
     {
         int stickerId = packet.ReadInt();
         string script = packet.ReadUnicodeString();
@@ -67,7 +67,7 @@ internal sealed class ChatStickerHandler : GamePacketHandler
         session.Send(ChatStickerPacket.UseSticker(stickerId, script));
     }
 
-    private static void HandleGroupChatSticker(GameSession session, PacketReader packet)
+    private static void HandleGroupChatSticker(GameSession session, IPacketReader packet)
     {
         int stickerId = packet.ReadInt();
         string groupChatName = packet.ReadUnicodeString();
@@ -82,7 +82,7 @@ internal sealed class ChatStickerHandler : GamePacketHandler
         session.Send(ChatStickerPacket.GroupChatSticker(stickerId, groupChatName));
     }
 
-    private static void HandleFavorite(GameSession session, PacketReader packet)
+    private static void HandleFavorite(GameSession session, IPacketReader packet)
     {
         int stickerId = packet.ReadInt();
 
@@ -94,7 +94,7 @@ internal sealed class ChatStickerHandler : GamePacketHandler
         session.Send(ChatStickerPacket.Favorite(stickerId));
     }
 
-    private static void HandleUnfavorite(GameSession session, PacketReader packet)
+    private static void HandleUnfavorite(GameSession session, IPacketReader packet)
     {
         int stickerId = packet.ReadInt();
 

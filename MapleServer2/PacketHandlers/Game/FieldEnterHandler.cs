@@ -13,7 +13,7 @@ internal sealed class FieldEnterHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.RESPONSE_FIELD_ENTER;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         packet.ReadInt(); // ?
 

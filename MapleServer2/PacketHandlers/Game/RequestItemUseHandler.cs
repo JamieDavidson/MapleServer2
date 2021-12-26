@@ -19,7 +19,7 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_USE;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         long itemUid = packet.ReadLong();
 
@@ -124,7 +124,7 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
     }
 
-    private static void HandleSelectItemBox(GameSession session, PacketReader packet, Item item)
+    private static void HandleSelectItemBox(GameSession session, IPacketReader packet, Item item)
     {
         short boxType = packet.ReadShort();
         int index = packet.ReadShort() - 0x30;
@@ -132,14 +132,14 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
         ItemBoxHelper.GiveItemFromSelectBox(session, item, index);
     }
 
-    private static void HandleOpenItemBox(GameSession session, PacketReader packet, Item item)
+    private static void HandleOpenItemBox(GameSession session, IPacketReader packet, Item item)
     {
         short boxType = packet.ReadShort();
 
         ItemBoxHelper.GiveItemFromOpenBox(session, item);
     }
 
-    private static void HandleOpenMassive(GameSession session, PacketReader packet, Item item)
+    private static void HandleOpenMassive(GameSession session, IPacketReader packet, Item item)
     {
         // Major WIP
 
@@ -208,7 +208,7 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
     }
 
-    private static void HandleOpenGachaBox(GameSession session, PacketReader packet, Item capsule)
+    private static void HandleOpenGachaBox(GameSession session, IPacketReader packet, Item capsule)
     {
         string amount = packet.ReadUnicodeString();
         int rollCount = 0;
@@ -281,7 +281,7 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
         return contents;
     }
 
-    public static void HandleOpenCoupleEffectBox(GameSession session, PacketReader packet, Item item)
+    public static void HandleOpenCoupleEffectBox(GameSession session, IPacketReader packet, Item item)
     {
         string targetUser = packet.ReadUnicodeString();
 
@@ -345,7 +345,7 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
         session.Send(NoticePacket.Notice(SystemNotice.BuddyBadgeMailedToUser, NoticeType.ChatAndFastText, noticeParameters));
     }
 
-    public static void HandlePetExtraction(GameSession session, PacketReader packet, Item item)
+    public static void HandlePetExtraction(GameSession session, IPacketReader packet, Item item)
     {
         long petUid = long.Parse(packet.ReadUnicodeString());
         var inventory = session.Player.Inventory;
@@ -367,14 +367,14 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
         session.Send(PetSkinPacket.Extract(petUid, badge));
     }
 
-    public static void HandleCallAirTaxi(GameSession session, PacketReader packet, Item item)
+    public static void HandleCallAirTaxi(GameSession session, IPacketReader packet, Item item)
     {
         int fieldID = int.Parse(packet.ReadUnicodeString());
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         session.Player.Warp(fieldID);
     }
 
-    public static void HandleInstallBillBoard(GameSession session, PacketReader packet, Item item)
+    public static void HandleInstallBillBoard(GameSession session, IPacketReader packet, Item item)
     {
         string[] parameters = packet.ReadUnicodeString().Split("'");
         string title = parameters[0];
@@ -420,7 +420,7 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
         session.Send(ItemRepackagePacket.Open(item.Uid));
     }
 
-    public static void HandleNameVoucher(GameSession session, PacketReader packet, Item item)
+    public static void HandleNameVoucher(GameSession session, IPacketReader packet, Item item)
     {
         string characterName = packet.ReadUnicodeString();
         session.Player.Name = characterName;

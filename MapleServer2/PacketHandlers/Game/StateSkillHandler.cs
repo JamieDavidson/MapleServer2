@@ -9,7 +9,7 @@ internal sealed class StateSkillHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.STATE_SKILL;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         byte operation = packet.ReadByte();
         if (operation == 0)

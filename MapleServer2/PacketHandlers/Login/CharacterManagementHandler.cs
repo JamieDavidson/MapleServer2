@@ -23,7 +23,7 @@ internal sealed class CharacterManagementHandler : LoginPacketHandler
         public const byte Delete = 0x2;
     }
 
-    public override void Handle(LoginSession session, PacketReader packet)
+    public override void Handle(LoginSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -43,7 +43,7 @@ internal sealed class CharacterManagementHandler : LoginPacketHandler
         }
     }
 
-    private void HandleDelete(LoginSession session, PacketReader packet)
+    private void HandleDelete(LoginSession session, IPacketReader packet)
     {
         long characterId = packet.ReadLong();
         if (!DatabaseManager.Characters.SetCharacterDeleted(characterId))
@@ -55,7 +55,7 @@ internal sealed class CharacterManagementHandler : LoginPacketHandler
         Logger.Info($"Character id {characterId} deleted!");
     }
 
-    private void HandleSelect(LoginSession session, PacketReader packet)
+    private void HandleSelect(LoginSession session, IPacketReader packet)
     {
         long characterId = packet.ReadLong();
         packet.ReadShort(); // 01 00
@@ -80,7 +80,7 @@ internal sealed class CharacterManagementHandler : LoginPacketHandler
         session.SendFinal(MigrationPacket.LoginToGame(endpoint, player), logoutNotice: false);
     }
 
-    private static void HandleCreate(LoginSession session, PacketReader packet)
+    private static void HandleCreate(LoginSession session, IPacketReader packet)
     {
         Gender gender = (Gender) packet.ReadByte();
         Job job = (Job) packet.ReadShort();

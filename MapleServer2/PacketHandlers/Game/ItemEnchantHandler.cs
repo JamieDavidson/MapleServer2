@@ -10,7 +10,7 @@ internal sealed class ItemEnchantHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_ENCHANT;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         byte operation = packet.ReadByte();
 
@@ -30,7 +30,7 @@ internal sealed class ItemEnchantHandler : GamePacketHandler
         }
     }
 
-    private static void HandleBeginEnchant(GameSession session, PacketReader packet)
+    private static void HandleBeginEnchant(GameSession session, IPacketReader packet)
     {
         byte type = packet.ReadByte();
         long itemUid = packet.ReadLong();
@@ -43,7 +43,7 @@ internal sealed class ItemEnchantHandler : GamePacketHandler
         }
     }
 
-    private static void HandleOpheliaEnchant(GameSession session, PacketReader packet)
+    private static void HandleOpheliaEnchant(GameSession session, IPacketReader packet)
     {
         long itemUid = packet.ReadLong();
 
@@ -57,7 +57,7 @@ internal sealed class ItemEnchantHandler : GamePacketHandler
         }
     }
 
-    private static void HandlePeachyEnchant(GameSession session, PacketReader packet)
+    private static void HandlePeachyEnchant(GameSession session, IPacketReader packet)
     {
         long itemUid = packet.ReadLong();
 

@@ -17,7 +17,7 @@ internal sealed class BonusGameHandler : GamePacketHandler
         public const byte Close = 0x03;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -36,7 +36,7 @@ internal sealed class BonusGameHandler : GamePacketHandler
         }
     }
 
-    private static void HandleOpen(GameSession session, PacketReader packet)
+    private static void HandleOpen(GameSession session, IPacketReader packet)
     {
         int gameId = packet.ReadInt();
 

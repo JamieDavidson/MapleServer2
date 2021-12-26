@@ -19,7 +19,7 @@ internal sealed class RequestItemUseMultipleHandler : GamePacketHandler
         public const byte Select = 0x01;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         int itemId = packet.ReadInt();
         packet.ReadShort(); // Unknown

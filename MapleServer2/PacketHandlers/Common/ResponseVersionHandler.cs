@@ -11,14 +11,14 @@ internal sealed class ResponseVersionHandler : CommonPacketHandler
 {
     public override RecvOp OpCode => RecvOp.RESPONSE_VERSION;
 
-    public override void Handle(LoginSession session, PacketReader packet)
+    public override void Handle(LoginSession session, IPacketReader packet)
     {
         HandleCommon(session, packet);
 
         session.Send(RequestPacket.Login());
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         HandleCommon(session, packet);
 
@@ -31,7 +31,7 @@ internal sealed class ResponseVersionHandler : CommonPacketHandler
         session.Send(RequestPacket.Key());
     }
 
-    protected override void HandleCommon(Session session, PacketReader packet)
+    protected override void HandleCommon(Session session, IPacketReader packet)
     {
         uint version = packet.Read<uint>();
         // +4 Bytes CONST(2F 00 02 00)

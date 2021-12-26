@@ -28,7 +28,7 @@ internal sealed class LapenshardHandler : GamePacketHandler
         public const byte Green = 43;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -54,7 +54,7 @@ internal sealed class LapenshardHandler : GamePacketHandler
         }
     }
 
-    private static void HandleEquip(GameSession session, PacketReader packet)
+    private static void HandleEquip(GameSession session, IPacketReader packet)
     {
         int slotId = packet.ReadInt();
         long itemUid = packet.ReadLong();
@@ -90,7 +90,7 @@ internal sealed class LapenshardHandler : GamePacketHandler
         session.Send(LapenshardPacket.Equip(slotId, item.Id));
     }
 
-    private static void HandleUnequip(GameSession session, PacketReader packet)
+    private static void HandleUnequip(GameSession session, IPacketReader packet)
     {
         int slotId = packet.ReadInt();
 
@@ -107,7 +107,7 @@ internal sealed class LapenshardHandler : GamePacketHandler
         session.Send(LapenshardPacket.Unequip(slotId));
     }
 
-    private static void HandleAddFusion(GameSession session, PacketReader packet)
+    private static void HandleAddFusion(GameSession session, IPacketReader packet)
     {
         long itemUid = packet.ReadLong();
         int itemId = packet.ReadInt();
@@ -122,7 +122,7 @@ internal sealed class LapenshardHandler : GamePacketHandler
         session.Send(LapenshardPacket.Select(10000));
     }
 
-    private static void HandleAddCatalyst(GameSession session, PacketReader packet)
+    private static void HandleAddCatalyst(GameSession session, IPacketReader packet)
     {
         long itemUid = packet.ReadLong();
         int itemId = packet.ReadInt();
@@ -140,7 +140,7 @@ internal sealed class LapenshardHandler : GamePacketHandler
         session.Send(LapenshardPacket.Select(10000));
     }
 
-    private static void HandleFusion(GameSession session, PacketReader packet)
+    private static void HandleFusion(GameSession session, IPacketReader packet)
     {
         long itemUid = packet.ReadLong();
         int itemId = packet.ReadInt();

@@ -34,7 +34,7 @@ internal sealed class SkillHandler : GamePacketHandler
         public const byte RegionSkill = 0x2;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -60,7 +60,7 @@ internal sealed class SkillHandler : GamePacketHandler
         }
     }
 
-    private void HandleDamageMode(GameSession session, PacketReader packet)
+    private void HandleDamageMode(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -80,7 +80,7 @@ internal sealed class SkillHandler : GamePacketHandler
         }
     }
 
-    private static void HandleCast(GameSession session, PacketReader packet)
+    private static void HandleCast(GameSession session, IPacketReader packet)
     {
         long skillSN = packet.ReadLong();
         int serverTick = packet.ReadInt();
@@ -112,7 +112,7 @@ internal sealed class SkillHandler : GamePacketHandler
         }
     }
 
-    private static void HandleSyncSkills(GameSession session, PacketReader packet)
+    private static void HandleSyncSkills(GameSession session, IPacketReader packet)
     {
         long skillSN = packet.ReadLong();
         int skillId = packet.ReadInt();
@@ -129,18 +129,18 @@ internal sealed class SkillHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(SkillSyncPacket.Sync(skillSN, session.Player.FieldPlayer, position, rotation, toggle), session);
     }
 
-    private static void HandleSyncTick(PacketReader packet)
+    private static void HandleSyncTick(IPacketReader packet)
     {
         long skillSN = packet.ReadLong();
         int serverTick = packet.ReadInt();
     }
 
-    private static void HandleCancelSkill(PacketReader packet)
+    private static void HandleCancelSkill(IPacketReader packet)
     {
         long skillSN = packet.ReadLong();
     }
 
-    private static void HandleSyncDamage(GameSession session, PacketReader packet)
+    private static void HandleSyncDamage(GameSession session, IPacketReader packet)
     {
         long skillSN = packet.ReadLong();
         byte attackPoint = packet.ReadByte();
@@ -165,7 +165,7 @@ internal sealed class SkillHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(SkillDamagePacket.SyncDamage(skillSN, position, rotation, session.Player.FieldPlayer, sourceId, count, atkCount, targetId, animation));
     }
 
-    private static void HandleDamage(GameSession session, PacketReader packet)
+    private static void HandleDamage(GameSession session, IPacketReader packet)
     {
         long skillSN = packet.ReadLong();
         int attackCounter = packet.ReadInt();
@@ -232,7 +232,7 @@ internal sealed class SkillHandler : GamePacketHandler
         }
     }
 
-    private static void HandleRegionSkills(GameSession session, PacketReader packet)
+    private static void HandleRegionSkills(GameSession session, IPacketReader packet)
     {
         long skillSN = packet.ReadLong();
         byte mode = packet.ReadByte();

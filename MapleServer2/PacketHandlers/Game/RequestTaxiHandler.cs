@@ -21,7 +21,7 @@ internal sealed class RequestTaxiHandler : GamePacketHandler
         public const byte DiscoverTaxi = 0x5;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 

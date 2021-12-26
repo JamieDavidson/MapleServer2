@@ -27,7 +27,7 @@ internal sealed class PartyHandler : GamePacketHandler
         public const byte ReadyCheckUpdate = 0x30;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte(); //Mode
 
@@ -72,7 +72,7 @@ internal sealed class PartyHandler : GamePacketHandler
         }
     }
 
-    private static void HandleInvite(GameSession session, PacketReader packet)
+    private static void HandleInvite(GameSession session, IPacketReader packet)
     {
         string target = packet.ReadUnicodeString();
 
@@ -142,7 +142,7 @@ internal sealed class PartyHandler : GamePacketHandler
         }
     }
 
-    private static void HandleJoin(GameSession session, PacketReader packet)
+    private static void HandleJoin(GameSession session, IPacketReader packet)
     {
         string target = packet.ReadUnicodeString();
         PartyNotice response = (PartyNotice) packet.ReadByte();
@@ -224,7 +224,7 @@ internal sealed class PartyHandler : GamePacketHandler
         }
     }
 
-    private static void HandleSetLeader(GameSession session, PacketReader packet)
+    private static void HandleSetLeader(GameSession session, IPacketReader packet)
     {
         string target = packet.ReadUnicodeString();
 
@@ -246,7 +246,7 @@ internal sealed class PartyHandler : GamePacketHandler
         party.Members.Insert(0, newLeader);
     }
 
-    private static void HandleFinderJoin(GameSession session, PacketReader packet)
+    private static void HandleFinderJoin(GameSession session, IPacketReader packet)
     {
         int partyId = packet.ReadInt();
         string leaderName = packet.ReadUnicodeString();
@@ -273,7 +273,7 @@ internal sealed class PartyHandler : GamePacketHandler
         JoinParty(session, PartyNotice.AcceptedInvite, partyId);
     }
 
-    private static void HandleKick(GameSession session, PacketReader packet)
+    private static void HandleKick(GameSession session, IPacketReader packet)
     {
         long charId = packet.ReadLong();
 
@@ -293,7 +293,7 @@ internal sealed class PartyHandler : GamePacketHandler
         party.RemoveMember(kickedPlayer);
     }
 
-    private static void HandleVoteKick(GameSession session, PacketReader packet)
+    private static void HandleVoteKick(GameSession session, IPacketReader packet)
     {
         long charId = packet.ReadLong();
 
@@ -337,7 +337,7 @@ internal sealed class PartyHandler : GamePacketHandler
         party.StartReadyCheck();
     }
 
-    private static void HandleFindDungeonParty(GameSession session, PacketReader packet)
+    private static void HandleFindDungeonParty(GameSession session, IPacketReader packet)
     {
         int dungeonId = packet.ReadInt();
 
@@ -373,7 +373,7 @@ internal sealed class PartyHandler : GamePacketHandler
         session.Send(PartyPacket.DungeonFindParty());
     }
 
-    private static void HandleReadyCheckUpdate(GameSession session, PacketReader packet)
+    private static void HandleReadyCheckUpdate(GameSession session, IPacketReader packet)
     {
         int checkNum = packet.ReadInt() + 1; //+ 1 is because the ReadyChecks variable is always 1 ahead
         byte response = packet.ReadByte();

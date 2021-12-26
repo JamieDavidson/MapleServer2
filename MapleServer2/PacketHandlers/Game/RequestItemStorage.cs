@@ -22,7 +22,7 @@ internal sealed class RequestItemStorage : GamePacketHandler
         public const byte Close = 0x0F;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -58,7 +58,7 @@ internal sealed class RequestItemStorage : GamePacketHandler
         }
     }
 
-    private static void HandleAdd(GameSession session, PacketReader packet)
+    private static void HandleAdd(GameSession session, IPacketReader packet)
     {
         packet.ReadLong();
         long uid = packet.ReadLong();
@@ -74,7 +74,7 @@ internal sealed class RequestItemStorage : GamePacketHandler
         session.Player.Account.BankInventory.Add(session, uid, amount, slot);
     }
 
-    private static void HandleRemove(GameSession session, PacketReader packet)
+    private static void HandleRemove(GameSession session, IPacketReader packet)
     {
         packet.ReadLong();
         long uid = packet.ReadLong();
@@ -90,7 +90,7 @@ internal sealed class RequestItemStorage : GamePacketHandler
         session.Player.Inventory.AddItem(session, item, false);
     }
 
-    private static void HandleMove(GameSession session, PacketReader packet)
+    private static void HandleMove(GameSession session, IPacketReader packet)
     {
         packet.ReadLong();
         long destinationUid = packet.ReadLong();
@@ -99,7 +99,7 @@ internal sealed class RequestItemStorage : GamePacketHandler
         session.Player.Account.BankInventory.Move(session, destinationUid, destinationSlot);
     }
 
-    private static void HandleMesos(GameSession session, PacketReader packet)
+    private static void HandleMesos(GameSession session, IPacketReader packet)
     {
         packet.ReadLong();
         byte mode = packet.ReadByte();

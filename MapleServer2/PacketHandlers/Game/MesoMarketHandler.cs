@@ -39,7 +39,7 @@ internal sealed class MesoMarketHandler : GamePacketHandler
         ItemSoldOut = 0x11,
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -75,7 +75,7 @@ internal sealed class MesoMarketHandler : GamePacketHandler
         session.Send(MesoMarketPacket.MyListings(listings));
     }
 
-    private static void HandleCreateListing(GameSession session, PacketReader packet)
+    private static void HandleCreateListing(GameSession session, IPacketReader packet)
     {
         long mesos = packet.ReadLong();
         long price = packet.ReadLong();
@@ -100,7 +100,7 @@ internal sealed class MesoMarketHandler : GamePacketHandler
         session.Send(MesoMarketPacket.AccountStats(session.Player.Account.MesoMarketDailyListings, session.Player.Account.MesoMarketMonthlyPurchases));
     }
 
-    private static void HandleCancelListing(GameSession session, PacketReader packet)
+    private static void HandleCancelListing(GameSession session, IPacketReader packet)
     {
         long listingId = packet.ReadLong();
 
@@ -117,7 +117,7 @@ internal sealed class MesoMarketHandler : GamePacketHandler
         DatabaseManager.MesoMarketListings.Delete(listingId);
     }
 
-    private static void HandleRefreshListings(GameSession session, PacketReader packet)
+    private static void HandleRefreshListings(GameSession session, IPacketReader packet)
     {
         // GMS2 has this set at 5m min and max due to it being Meso Tokens instead of mesos
         long minMesoRange = packet.ReadLong();
@@ -127,7 +127,7 @@ internal sealed class MesoMarketHandler : GamePacketHandler
         session.Send(MesoMarketPacket.LoadListings(listings));
     }
 
-    private static void HandlePurchase(GameSession session, PacketReader packet)
+    private static void HandlePurchase(GameSession session, IPacketReader packet)
     {
         long listingId = packet.ReadLong();
 

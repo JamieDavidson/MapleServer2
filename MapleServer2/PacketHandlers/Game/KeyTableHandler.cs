@@ -19,7 +19,7 @@ internal sealed class KeyTableHandler : GamePacketHandler
         public const byte SetActiveHotbar = 0x08;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var requestType = packet.ReadByte();
 
@@ -46,7 +46,7 @@ internal sealed class KeyTableHandler : GamePacketHandler
         }
     }
 
-    private static void AddToQuickSlot(GameSession session, PacketReader packet)
+    private static void AddToQuickSlot(GameSession session, IPacketReader packet)
     {
         short hotbarId = packet.ReadShort();
         if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
@@ -63,7 +63,7 @@ internal sealed class KeyTableHandler : GamePacketHandler
         }
     }
 
-    private static void SetKeyBinds(GameSession session, PacketReader packet)
+    private static void SetKeyBinds(GameSession session, IPacketReader packet)
     {
         int numBindings = packet.ReadInt();
 
@@ -74,7 +74,7 @@ internal sealed class KeyTableHandler : GamePacketHandler
         }
     }
 
-    private static void MoveQuickSlot(GameSession session, PacketReader packet)
+    private static void MoveQuickSlot(GameSession session, IPacketReader packet)
     {
         short hotbarId = packet.ReadShort();
         if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
@@ -91,7 +91,7 @@ internal sealed class KeyTableHandler : GamePacketHandler
         session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
     }
 
-    private static void RemoveQuickSlot(GameSession session, PacketReader packet)
+    private static void RemoveQuickSlot(GameSession session, IPacketReader packet)
     {
         short hotbarId = packet.ReadShort();
         if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
@@ -108,7 +108,7 @@ internal sealed class KeyTableHandler : GamePacketHandler
         }
     }
 
-    private static void SetActiveHotbar(GameSession session, PacketReader packet)
+    private static void SetActiveHotbar(GameSession session, IPacketReader packet)
     {
         short hotbarId = packet.ReadShort();
 

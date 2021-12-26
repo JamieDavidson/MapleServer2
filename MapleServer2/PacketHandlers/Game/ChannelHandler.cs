@@ -10,7 +10,7 @@ internal sealed class ChannelHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CHANNEL;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         short channelId = packet.ReadShort();
 

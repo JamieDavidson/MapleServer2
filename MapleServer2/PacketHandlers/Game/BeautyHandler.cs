@@ -33,7 +33,7 @@ internal sealed class BeautyHandler : GamePacketHandler
         public const byte BeautyVoucher = 0x17;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -81,7 +81,7 @@ internal sealed class BeautyHandler : GamePacketHandler
         }
     }
 
-    private static void HandleLoadShop(GameSession session, PacketReader packet)
+    private static void HandleLoadShop(GameSession session, IPacketReader packet)
     {
         int npcId = packet.ReadInt();
         BeautyCategory category = (BeautyCategory) packet.ReadByte();
@@ -129,7 +129,7 @@ internal sealed class BeautyHandler : GamePacketHandler
         session.Send(BeautyPacket.LoadBeautyShop(beautyShop, beautyItems));
     }
 
-    private static void HandleNewBeauty(GameSession session, PacketReader packet)
+    private static void HandleNewBeauty(GameSession session, IPacketReader packet)
     {
         byte unk = packet.ReadByte();
         bool useVoucher = packet.ReadBool();
@@ -164,7 +164,7 @@ internal sealed class BeautyHandler : GamePacketHandler
         ModifyBeauty(session, packet, beautyItem);
     }
 
-    private static void HandleModifyExistingBeauty(GameSession session, PacketReader packet)
+    private static void HandleModifyExistingBeauty(GameSession session, IPacketReader packet)
     {
         byte unk = packet.ReadByte();
         bool useVoucher = packet.ReadBool();
@@ -192,7 +192,7 @@ internal sealed class BeautyHandler : GamePacketHandler
         ModifyBeauty(session, packet, beautyItem);
     }
 
-    private static void HandleModifySkin(GameSession session, PacketReader packet)
+    private static void HandleModifySkin(GameSession session, IPacketReader packet)
     {
         byte unk = packet.ReadByte();
         SkinColor skinColor = packet.Read<SkinColor>();
@@ -208,7 +208,7 @@ internal sealed class BeautyHandler : GamePacketHandler
         session.Player.SkinColor = skinColor;
         session.FieldManager.BroadcastPacket(SkinColorPacket.Update(session.Player.FieldPlayer, skinColor));
     }
-    private static void HandleRandomHair(GameSession session, PacketReader packet)
+    private static void HandleRandomHair(GameSession session, IPacketReader packet)
     {
         int shopId = packet.ReadInt();
         bool useVoucher = packet.ReadBool();
@@ -271,7 +271,7 @@ internal sealed class BeautyHandler : GamePacketHandler
         session.Send(BeautyPacket.RandomHairOption(previousHair, newHair));
     }
 
-    private static void HandleChooseRandomHair(GameSession session, PacketReader packet)
+    private static void HandleChooseRandomHair(GameSession session, IPacketReader packet)
     {
         byte selection = packet.ReadByte();
 
@@ -304,7 +304,7 @@ internal sealed class BeautyHandler : GamePacketHandler
         session.Player.HairInventory.RandomHair = null; // remove random hair option from hair inventory
     }
 
-    private static void HandleSaveHair(GameSession session, PacketReader packet)
+    private static void HandleSaveHair(GameSession session, IPacketReader packet)
     {
         long hairUid = packet.ReadLong();
 
@@ -331,7 +331,7 @@ internal sealed class BeautyHandler : GamePacketHandler
         session.Send(BeautyPacket.SaveHair(hair, hairCopy));
     }
 
-    private static void HandleTeleport(GameSession session, PacketReader packet)
+    private static void HandleTeleport(GameSession session, IPacketReader packet)
     {
         byte teleportId = packet.ReadByte();
 
@@ -355,7 +355,7 @@ internal sealed class BeautyHandler : GamePacketHandler
         session.Player.Warp((int) mapId, instanceId: session.Player.CharacterId);
     }
 
-    private static void HandleDeleteSavedHair(GameSession session, PacketReader packet)
+    private static void HandleDeleteSavedHair(GameSession session, IPacketReader packet)
     {
         long hairUid = packet.ReadLong();
 
@@ -369,7 +369,7 @@ internal sealed class BeautyHandler : GamePacketHandler
         session.Player.HairInventory.SavedHair.Remove(hair);
     }
 
-    private static void HandleChangeToSavedHair(GameSession session, PacketReader packet)
+    private static void HandleChangeToSavedHair(GameSession session, IPacketReader packet)
     {
         long hairUid = packet.ReadLong();
 
@@ -399,7 +399,7 @@ internal sealed class BeautyHandler : GamePacketHandler
         session.Send(BeautyPacket.ChangetoSavedHair());
     }
 
-    private static void HandleDyeItem(GameSession session, PacketReader packet)
+    private static void HandleDyeItem(GameSession session, IPacketReader packet)
     {
         BeautyMetadata beautyShop = BeautyMetadataStorage.GetShopById(506);
 
@@ -447,7 +447,7 @@ internal sealed class BeautyHandler : GamePacketHandler
         }
     }
 
-    private static void HandleBeautyVoucher(GameSession session, PacketReader packet)
+    private static void HandleBeautyVoucher(GameSession session, IPacketReader packet)
     {
         long itemUid = packet.ReadLong();
 
@@ -472,7 +472,7 @@ internal sealed class BeautyHandler : GamePacketHandler
         player.Inventory.ConsumeItem(session, voucher.Uid, 1);
     }
 
-    private static void ModifyBeauty(GameSession session, PacketReader packet, Item beautyItem)
+    private static void ModifyBeauty(GameSession session, IPacketReader packet, Item beautyItem)
     {
         ItemSlot itemSlot = ItemMetadataStorage.GetSlot(beautyItem.Id);
         Dictionary<ItemSlot, Item> cosmetics = session.Player.Inventory.Cosmetics;

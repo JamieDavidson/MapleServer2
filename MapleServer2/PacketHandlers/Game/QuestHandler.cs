@@ -23,7 +23,7 @@ internal sealed class QuestHandler : GamePacketHandler
         public const byte CompleteNavigator = 0x18;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var mode = packet.ReadByte();
 
@@ -50,7 +50,7 @@ internal sealed class QuestHandler : GamePacketHandler
         }
     }
 
-    private static void HandleAcceptQuest(GameSession session, PacketReader packet)
+    private static void HandleAcceptQuest(GameSession session, IPacketReader packet)
     {
         int questId = packet.ReadInt();
         int objectId = packet.ReadInt();
@@ -66,7 +66,7 @@ internal sealed class QuestHandler : GamePacketHandler
         session.Send(QuestPacket.AcceptQuest(questId));
     }
 
-    private static void HandleCompleteQuest(GameSession session, PacketReader packet)
+    private static void HandleCompleteQuest(GameSession session, IPacketReader packet)
     {
         int questId = packet.ReadInt();
         int objectId = packet.ReadInt();
@@ -112,7 +112,7 @@ internal sealed class QuestHandler : GamePacketHandler
         }
     }
 
-    private static void HandleCompleteNavigator(GameSession session, PacketReader packet)
+    private static void HandleCompleteNavigator(GameSession session, IPacketReader packet)
     {
         int questId = packet.ReadInt();
 
@@ -137,7 +137,7 @@ internal sealed class QuestHandler : GamePacketHandler
         session.Send(QuestPacket.CompleteQuest(questId, false));
     }
 
-    private static void HandleAddExplorationQuests(GameSession session, PacketReader packet)
+    private static void HandleAddExplorationQuests(GameSession session, IPacketReader packet)
     {
         int listSize = packet.ReadInt();
         for (int i = 0; i < listSize; i++)
@@ -158,7 +158,7 @@ internal sealed class QuestHandler : GamePacketHandler
         }
     }
 
-    private static void HandleToggleTracking(GameSession session, PacketReader packet)
+    private static void HandleToggleTracking(GameSession session, IPacketReader packet)
     {
         int questId = packet.ReadInt();
         bool tracked = packet.ReadBool();

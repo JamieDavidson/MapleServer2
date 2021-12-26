@@ -21,7 +21,7 @@ internal sealed class UgcHandler : GamePacketHandler
         public const byte ProfilePicture = 0x0B;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -41,7 +41,7 @@ internal sealed class UgcHandler : GamePacketHandler
         }
     }
 
-    private static void HandleCreateUGCItem(GameSession session, PacketReader packet)
+    private static void HandleCreateUGCItem(GameSession session, IPacketReader packet)
     {
         packet.ReadLong();
         packet.ReadByte();
@@ -101,7 +101,7 @@ internal sealed class UgcHandler : GamePacketHandler
         session.Send(UgcPacket.CreateUGC(true, item.UGC));
     }
 
-    private static void HandleAddUgcItem(GameSession session, PacketReader packet)
+    private static void HandleAddUgcItem(GameSession session, IPacketReader packet)
     {
         packet.ReadByte();
         packet.ReadByte();
@@ -130,7 +130,7 @@ internal sealed class UgcHandler : GamePacketHandler
         session.Send(UgcPacket.SetItemUrl(item.UGC));
     }
 
-    private static void HandleProfilePicture(GameSession session, PacketReader packet)
+    private static void HandleProfilePicture(GameSession session, IPacketReader packet)
     {
         string path = packet.ReadUnicodeString();
         session.Player.ProfileUrl = path;

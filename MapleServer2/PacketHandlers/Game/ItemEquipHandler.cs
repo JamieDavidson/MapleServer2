@@ -17,7 +17,7 @@ internal sealed class ItemEquipHandler : GamePacketHandler
         public const byte Unequip = 1;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -32,7 +32,7 @@ internal sealed class ItemEquipHandler : GamePacketHandler
         }
     }
 
-    private static void HandleEquipItem(GameSession session, PacketReader packet)
+    private static void HandleEquipItem(GameSession session, IPacketReader packet)
     {
         long itemUid = packet.ReadLong();
         string equipSlotStr = packet.ReadUnicodeString();
@@ -122,7 +122,7 @@ internal sealed class ItemEquipHandler : GamePacketHandler
         }
     }
 
-    private static void HandleUnequipItem(GameSession session, PacketReader packet)
+    private static void HandleUnequipItem(GameSession session, IPacketReader packet)
     {
         long itemUid = packet.ReadLong();
         Inventory inventory = session.Player.Inventory;
