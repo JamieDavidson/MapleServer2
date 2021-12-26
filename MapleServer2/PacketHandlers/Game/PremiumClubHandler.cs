@@ -21,7 +21,7 @@ internal sealed class PremiumClubHandler : GamePacketHandler
         public const byte PurchaseMembership = 0x4;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -50,9 +50,9 @@ internal sealed class PremiumClubHandler : GamePacketHandler
         session.Send(PremiumClubPacket.Open());
     }
 
-    private static void HandleClaimItems(GameSession session, PacketReader packet)
+    private static void HandleClaimItems(GameSession session, IPacketReader packet)
     {
-        int benefitId = packet.ReadInt();
+        var benefitId = packet.ReadInt();
         session.Send(PremiumClubPacket.ClaimItem(benefitId));
 
         if (!PremiumClubDailyBenefitMetadataStorage.IsValid(benefitId))
@@ -60,7 +60,7 @@ internal sealed class PremiumClubHandler : GamePacketHandler
             return;
         }
 
-        PremiumClubDailyBenefitMetadata benefit = PremiumClubDailyBenefitMetadataStorage.GetMetadata(benefitId);
+        var benefit = PremiumClubDailyBenefitMetadataStorage.GetMetadata(benefitId);
 
         Item benefitRewardItem = new(benefit.ItemId)
         {
@@ -78,16 +78,16 @@ internal sealed class PremiumClubHandler : GamePacketHandler
         session.Send(PremiumClubPacket.OpenPurchaseWindow());
     }
 
-    private static void HandlePurchaseMembership(GameSession session, PacketReader packet)
+    private static void HandlePurchaseMembership(GameSession session, IPacketReader packet)
     {
-        int vipId = packet.ReadInt();
+        var vipId = packet.ReadInt();
 
         if (!PremiumClubPackageMetadataStorage.IsValid(vipId))
         {
             return;
         }
 
-        PremiumClubPackageMetadata vipPackage = PremiumClubPackageMetadataStorage.GetMetadata(vipId);
+        var vipPackage = PremiumClubPackageMetadataStorage.GetMetadata(vipId);
 
         if (!session.Player.Account.RemoveMerets(vipPackage.Price))
         {
@@ -96,7 +96,7 @@ internal sealed class PremiumClubHandler : GamePacketHandler
 
         session.Send(PremiumClubPacket.PurchaseMembership(vipId));
 
-        foreach (BonusItem item in vipPackage.BonusItem)
+        foreach (var item in vipPackage.BonusItem)
         {
             Item bonusItem = new(item.Id)
             {
@@ -106,16 +106,16 @@ internal sealed class PremiumClubHandler : GamePacketHandler
             session.Player.Inventory.AddItem(session, bonusItem, true);
         }
 
-        int vipTime = vipPackage.VipPeriod * 3600; // Convert to seconds, as vipPeriod is given as hours
+        var vipTime = vipPackage.VipPeriod * 3600; // Convert to seconds, as vipPeriod is given as hours
 
         ActivatePremium(session, vipTime);
     }
 
     public static void ActivatePremium(GameSession session, long vipTime)
     {
-        long expiration = TimeInfo.Now() + vipTime;
+        var expiration = TimeInfo.Now() + vipTime;
 
-        Account account = session.Player.Account;
+        var account = session.Player.Account;
         if (!account.IsVip())
         {
             account.VIPExpiration = expiration;

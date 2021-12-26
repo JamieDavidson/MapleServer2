@@ -10,10 +10,10 @@ internal sealed class CharacterNameChangeHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.CHECK_CHAR_NAME;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
-        string characterName = packet.ReadUnicodeString();
-        long itemUid = packet.ReadLong();
+        var characterName = packet.ReadUnicodeString();
+        var itemUid = packet.ReadLong();
 
         if (DatabaseManager.Characters.NameExists(characterName))
         {

@@ -16,7 +16,7 @@ internal sealed class RequestHomeHandler : GamePacketHandler
         public const byte MoveToHome = 0x03;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -33,10 +33,10 @@ internal sealed class RequestHomeHandler : GamePacketHandler
         }
     }
 
-    private static void HandleInviteToHome(GameSession session, PacketReader packet)
+    private static void HandleInviteToHome(GameSession session, IPacketReader packet)
     {
-        string characterName = packet.ReadUnicodeString();
-        Player target = GameServer.PlayerManager.GetPlayerByName(characterName);
+        var characterName = packet.ReadUnicodeString();
+        var target = GameServer.PlayerManager.GetPlayerByName(characterName);
         if (target == null)
         {
             return;
@@ -50,10 +50,10 @@ internal sealed class RequestHomeHandler : GamePacketHandler
     }
 
     // The same mode also handles creation of new homes.
-    private static void HandleMoveToHome(GameSession session, PacketReader packet)
+    private static void HandleMoveToHome(GameSession session, IPacketReader packet)
     {
-        int homeTemplate = packet.ReadInt();
-        Player player = session.Player;
+        var homeTemplate = packet.ReadInt();
+        var player = session.Player;
         if (player.Account.Home == null)
         {
             player.Account.Home = new(player.Account.Id, player.Name, homeTemplate);
@@ -61,21 +61,21 @@ internal sealed class RequestHomeHandler : GamePacketHandler
 
             // Send inventories
             session.Send(WarehouseInventoryPacket.StartList());
-            int counter = 0;
-            foreach (KeyValuePair<long, Item> kvp in player.Account.Home.WarehouseInventory)
+            var counter = 0;
+            foreach (var kvp in player.Account.Home.WarehouseInventory)
             {
                 session.Send(WarehouseInventoryPacket.Load(kvp.Value, ++counter));
             }
             session.Send(WarehouseInventoryPacket.EndList());
 
             session.Send(FurnishingInventoryPacket.StartList());
-            foreach (Cube cube in player.Account.Home.FurnishingInventory.Values.Where(x => x.Item != null))
+            foreach (var cube in player.Account.Home.FurnishingInventory.Values.Where(x => x.Item != null))
             {
                 session.Send(FurnishingInventoryPacket.Load(cube));
             }
             session.Send(FurnishingInventoryPacket.EndList());
         }
-        Home home = GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
+        var home = GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
 
         player.VisitingHomeId = player.Account.Home.Id;
         player.Guide = null;

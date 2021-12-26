@@ -16,7 +16,7 @@ internal sealed class SuperChatHandler : GamePacketHandler
         public const byte Deselect = 0x1;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var mode = packet.ReadByte();
 
@@ -34,12 +34,12 @@ internal sealed class SuperChatHandler : GamePacketHandler
         }
     }
 
-    private static void HandleSelect(GameSession session, PacketReader packet)
+    private static void HandleSelect(GameSession session, IPacketReader packet)
     {
-        int itemId = packet.ReadInt();
+        var itemId = packet.ReadInt();
 
         var inventory = session.Player.Inventory;
-        Item superChatItem = inventory.GetItemByItemId(itemId);
+        var superChatItem = inventory.GetItemByItemId(itemId);
         if (superChatItem == null)
         {
             return;

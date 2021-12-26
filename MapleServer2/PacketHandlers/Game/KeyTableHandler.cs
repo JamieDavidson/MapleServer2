@@ -19,7 +19,7 @@ internal sealed class KeyTableHandler : GamePacketHandler
         public const byte SetActiveHotbar = 0x08;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var requestType = packet.ReadByte();
 
@@ -46,71 +46,71 @@ internal sealed class KeyTableHandler : GamePacketHandler
         }
     }
 
-    private static void AddToQuickSlot(GameSession session, PacketReader packet)
+    private static void AddToQuickSlot(GameSession session, IPacketReader packet)
     {
-        short hotbarId = packet.ReadShort();
-        if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
+        var hotbarId = packet.ReadShort();
+        if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out var targetHotbar))
         {
             Logger.Warn($"Invalid hotbar id {hotbarId}");
             return;
         }
 
-        QuickSlot quickSlot = packet.Read<QuickSlot>();
-        int targetSlot = packet.ReadInt();
+        var quickSlot = packet.Read<QuickSlot>();
+        var targetSlot = packet.ReadInt();
         if (targetHotbar.AddToFirstSlot(quickSlot))
         {
             session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
         }
     }
 
-    private static void SetKeyBinds(GameSession session, PacketReader packet)
+    private static void SetKeyBinds(GameSession session, IPacketReader packet)
     {
-        int numBindings = packet.ReadInt();
+        var numBindings = packet.ReadInt();
 
-        for (int i = 0; i < numBindings; i++)
+        for (var i = 0; i < numBindings; i++)
         {
-            KeyBind keyBind = packet.Read<KeyBind>();
+            var keyBind = packet.Read<KeyBind>();
             session.Player.GameOptions.SetKeyBind(ref keyBind);
         }
     }
 
-    private static void MoveQuickSlot(GameSession session, PacketReader packet)
+    private static void MoveQuickSlot(GameSession session, IPacketReader packet)
     {
-        short hotbarId = packet.ReadShort();
-        if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
+        var hotbarId = packet.ReadShort();
+        if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out var targetHotbar))
         {
             Logger.Warn($"Invalid hotbar id {hotbarId}");
             return;
         }
 
         // Adds or moves a quickslot around
-        QuickSlot quickSlot = packet.Read<QuickSlot>();
-        int targetSlot = packet.ReadInt();
+        var quickSlot = packet.Read<QuickSlot>();
+        var targetSlot = packet.ReadInt();
         targetHotbar.MoveQuickSlot(targetSlot, quickSlot);
 
         session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
     }
 
-    private static void RemoveQuickSlot(GameSession session, PacketReader packet)
+    private static void RemoveQuickSlot(GameSession session, IPacketReader packet)
     {
-        short hotbarId = packet.ReadShort();
-        if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out Hotbar targetHotbar))
+        var hotbarId = packet.ReadShort();
+        if (!session.Player.GameOptions.TryGetHotbar(hotbarId, out var targetHotbar))
         {
             Logger.Warn($"Invalid hotbar id {hotbarId}");
             return;
         }
 
-        int skillId = packet.ReadInt();
-        long itemUid = packet.ReadLong();
+        var skillId = packet.ReadInt();
+        var itemUid = packet.ReadLong();
         if (targetHotbar.RemoveQuickSlot(skillId, itemUid))
         {
             session.Send(KeyTablePacket.SendHotbars(session.Player.GameOptions));
         }
     }
 
-    private static void SetActiveHotbar(GameSession session, PacketReader packet)
+    private static void SetActiveHotbar(GameSession session, IPacketReader packet)
     {
-        short hotbarId = packet.ReadShort();
+        var hotbarId = packet.ReadShort();
 
         session.Player.GameOptions.SetActiveHotbar(hotbarId);
     }

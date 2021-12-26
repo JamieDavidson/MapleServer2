@@ -17,7 +17,7 @@ internal sealed class PrestigeHandler : GamePacketHandler
         public const byte Reward = 0x03;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -28,9 +28,9 @@ internal sealed class PrestigeHandler : GamePacketHandler
         }
     }
 
-    private static void HandleReward(GameSession session, PacketReader packet)
+    private static void HandleReward(GameSession session, IPacketReader packet)
     {
-        int rank = packet.ReadInt();
+        var rank = packet.ReadInt();
 
         if (session.Player.PrestigeRewardsClaimed.Contains(rank))
         {
@@ -38,7 +38,7 @@ internal sealed class PrestigeHandler : GamePacketHandler
         }
 
         // Get reward data
-        PrestigeReward reward = PrestigeMetadataStorage.GetReward(rank);
+        var reward = PrestigeMetadataStorage.GetReward(rank);
 
         if (reward.Type.Equals("item"))
         {

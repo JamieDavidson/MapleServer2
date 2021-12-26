@@ -22,7 +22,7 @@ internal sealed class RequestItemStorage : GamePacketHandler
         public const byte Close = 0x0F;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -58,12 +58,12 @@ internal sealed class RequestItemStorage : GamePacketHandler
         }
     }
 
-    private static void HandleAdd(GameSession session, PacketReader packet)
+    private static void HandleAdd(GameSession session, IPacketReader packet)
     {
         packet.ReadLong();
-        long uid = packet.ReadLong();
-        short slot = packet.ReadShort();
-        int amount = packet.ReadInt();
+        var uid = packet.ReadLong();
+        var slot = packet.ReadShort();
+        var amount = packet.ReadInt();
 
         var inventory = session.Player.Inventory;
         if (!inventory.HasItemWithUid(uid))
@@ -74,14 +74,14 @@ internal sealed class RequestItemStorage : GamePacketHandler
         session.Player.Account.BankInventory.Add(session, uid, amount, slot);
     }
 
-    private static void HandleRemove(GameSession session, PacketReader packet)
+    private static void HandleRemove(GameSession session, IPacketReader packet)
     {
         packet.ReadLong();
-        long uid = packet.ReadLong();
-        short destinationSlot = packet.ReadShort();
-        int amount = packet.ReadInt();
+        var uid = packet.ReadLong();
+        var destinationSlot = packet.ReadShort();
+        var amount = packet.ReadInt();
 
-        if (!session.Player.Account.BankInventory.Remove(session, uid, amount, out Item item))
+        if (!session.Player.Account.BankInventory.Remove(session, uid, amount, out var item))
         {
             return;
         }
@@ -90,22 +90,22 @@ internal sealed class RequestItemStorage : GamePacketHandler
         session.Player.Inventory.AddItem(session, item, false);
     }
 
-    private static void HandleMove(GameSession session, PacketReader packet)
+    private static void HandleMove(GameSession session, IPacketReader packet)
     {
         packet.ReadLong();
-        long destinationUid = packet.ReadLong();
-        short destinationSlot = packet.ReadShort();
+        var destinationUid = packet.ReadLong();
+        var destinationSlot = packet.ReadShort();
 
         session.Player.Account.BankInventory.Move(session, destinationUid, destinationSlot);
     }
 
-    private static void HandleMesos(GameSession session, PacketReader packet)
+    private static void HandleMesos(GameSession session, IPacketReader packet)
     {
         packet.ReadLong();
-        byte mode = packet.ReadByte();
-        long amount = packet.ReadLong();
-        Wallet wallet = session.Player.Wallet;
-        BankInventory bankInventory = session.Player.Account.BankInventory;
+        var mode = packet.ReadByte();
+        var amount = packet.ReadLong();
+        var wallet = session.Player.Wallet;
+        var bankInventory = session.Player.Account.BankInventory;
 
         if (mode == 1) // add mesos
         {

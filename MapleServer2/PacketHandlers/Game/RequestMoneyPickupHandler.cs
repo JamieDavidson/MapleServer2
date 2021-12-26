@@ -10,21 +10,21 @@ internal sealed class RequestMoneyPickupHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_MONEY_PICKUP;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         int objectCount = packet.ReadByte();
 
-        for (int i = 0; i < objectCount; i++)
+        for (var i = 0; i < objectCount; i++)
         {
-            int objectId = packet.ReadInt();
+            var objectId = packet.ReadInt();
 
-            bool foundItem = session.FieldManager.State.TryGetItem(objectId, out IFieldObject<Item> fieldItem);
+            var foundItem = session.FieldManager.State.TryGetItem(objectId, out var fieldItem);
             if (!foundItem || fieldItem.Value.Id is < 90000001 or > 90000003)
             {
                 continue;
             }
 
-            if (!session.FieldManager.RemoveItem(objectId, out Item item))
+            if (!session.FieldManager.RemoveItem(objectId, out var item))
             {
                 continue;
             }

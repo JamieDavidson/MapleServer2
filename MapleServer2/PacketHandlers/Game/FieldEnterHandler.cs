@@ -13,15 +13,15 @@ internal sealed class FieldEnterHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.RESPONSE_FIELD_ENTER;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         packet.ReadInt(); // ?
 
         // Liftable: 00 00 00 00 00
         // SendBreakable
         // Self
-        Player player = session.Player;
-        Account account = player.Account;
+        var player = session.Player;
+        var account = player.Account;
         session.EnterField(player);
         session.Send(StatPacket.SetStats(session.Player.FieldPlayer));
         session.Send(StatPointPacket.WriteTotalStatPoints(player));
@@ -41,9 +41,9 @@ internal sealed class FieldEnterHandler : GamePacketHandler
         session.Send(ResponseCubePacket.ReturnMap(player.ReturnMapId));
         session.Send(LapenshardPacket.Load(player.Inventory.LapenshardStorage));
 
-        IEnumerable<Cube> cubes = session.FieldManager.State.Cubes.Values.Where(x => x.Value.PlotNumber == 1
-                                                                                    && x.Value.Item.HousingCategory is ItemHousingCategory.Farming or ItemHousingCategory.Ranching).Select(x => x.Value);
-        foreach (Cube cube in cubes)
+        var cubes = session.FieldManager.State.Cubes.Values.Where(x => x.Value.PlotNumber == 1
+                                                                       && x.Value.Item.HousingCategory is ItemHousingCategory.Farming or ItemHousingCategory.Ranching).Select(x => x.Value);
+        foreach (var cube in cubes)
         {
             session.Send(FunctionCubePacket.UpdateFunctionCube(cube.CoordF.ToByte(), 2, 1));
         }
@@ -54,7 +54,7 @@ internal sealed class FieldEnterHandler : GamePacketHandler
 
         session.Send(KeyTablePacket.SendHotbars(player.GameOptions));
 
-        List<GameEvent> gameEvents = DatabaseManager.Events.FindAll();
+        var gameEvents = DatabaseManager.Events.FindAll();
         session.Send(GameEventPacket.Load(gameEvents));
     }
 }

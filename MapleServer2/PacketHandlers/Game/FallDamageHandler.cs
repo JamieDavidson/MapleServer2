@@ -10,9 +10,9 @@ internal sealed class FallDamageHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.STATE_FALL_DAMAGE;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
-        float distance = packet.ReadFloat();
+        var distance = packet.ReadFloat();
 
         if (distance > Block.BLOCK_SIZE * 6)
         {

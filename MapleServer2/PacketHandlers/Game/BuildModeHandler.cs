@@ -24,7 +24,7 @@ internal sealed class BuildModeHandler : GamePacketHandler
         public const byte Liftables = 0x2;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var mode = packet.ReadByte();
 
@@ -54,22 +54,22 @@ internal sealed class BuildModeHandler : GamePacketHandler
         session.Player.Guide = null; // remove guide from player
     }
 
-    private static void HandleStart(GameSession session, PacketReader packet)
+    private static void HandleStart(GameSession session, IPacketReader packet)
     {
         if (session.Player.Guide != null)
         {
             return;
         }
 
-        byte unk = packet.ReadByte();
-        int furnishingItemId = packet.ReadInt();
-        long furnishingItemUid = packet.ReadLong();
+        var unk = packet.ReadByte();
+        var furnishingItemId = packet.ReadInt();
+        var furnishingItemUid = packet.ReadLong();
 
         // Add Guide Object
-        CoordF startCoord = Block.ClosestBlock(session.Player.FieldPlayer.Coord);
+        var startCoord = Block.ClosestBlock(session.Player.FieldPlayer.Coord);
         startCoord.Z += Block.BLOCK_SIZE;
         GuideObject guide = new(0, session.Player.CharacterId);
-        IFieldObject<GuideObject> fieldGuide = session.FieldManager.RequestFieldObject(guide);
+        var fieldGuide = session.FieldManager.RequestFieldObject(guide);
         fieldGuide.Coord = startCoord;
         session.Player.Guide = fieldGuide;
         session.FieldManager.AddGuide(fieldGuide);

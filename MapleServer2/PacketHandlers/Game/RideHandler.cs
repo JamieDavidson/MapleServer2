@@ -21,7 +21,7 @@ internal sealed class RideHandler : GamePacketHandler
         public const byte StopMultiPersonRide = 0x4;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -48,12 +48,12 @@ internal sealed class RideHandler : GamePacketHandler
         }
     }
 
-    private static void HandleStartRide(GameSession session, PacketReader packet)
+    private static void HandleStartRide(GameSession session, IPacketReader packet)
     {
-        RideType type = (RideType) packet.ReadByte();
-        int mountId = packet.ReadInt();
+        var type = (RideType) packet.ReadByte();
+        var mountId = packet.ReadInt();
         packet.ReadLong();
-        long mountUid = packet.ReadLong();
+        var mountUid = packet.ReadLong();
         // [46-0s] (UgcPacketHelper.Ugc()) but client doesn't set this data?
 
         var inventory = session.Player.Inventory;
@@ -62,7 +62,7 @@ internal sealed class RideHandler : GamePacketHandler
             return;
         }
 
-        IFieldObject<Mount> fieldMount =
+        var fieldMount =
             session.FieldManager.RequestFieldObject(new Mount
             {
                 Type = type,
@@ -73,24 +73,24 @@ internal sealed class RideHandler : GamePacketHandler
         fieldMount.Value.Players[0] = session.Player.FieldPlayer;
         session.Player.Mount = fieldMount;
 
-        PacketWriter startPacket = MountPacket.StartRide(session.Player.FieldPlayer);
+        var startPacket = MountPacket.StartRide(session.Player.FieldPlayer);
         session.FieldManager.BroadcastPacket(startPacket);
     }
 
-    private static void HandleStopRide(GameSession session, PacketReader packet)
+    private static void HandleStopRide(GameSession session, IPacketReader packet)
     {
         packet.ReadByte();
-        bool forced = packet.ReadBool(); // Going into water without amphibious riding
+        var forced = packet.ReadBool(); // Going into water without amphibious riding
 
         session.Player.Mount = null; // Remove mount from player
-        PacketWriter stopPacket = MountPacket.StopRide(session.Player.FieldPlayer, forced);
+        var stopPacket = MountPacket.StopRide(session.Player.FieldPlayer, forced);
         session.FieldManager.BroadcastPacket(stopPacket);
     }
 
-    private static void HandleChangeRide(GameSession session, PacketReader packet)
+    private static void HandleChangeRide(GameSession session, IPacketReader packet)
     {
-        int mountId = packet.ReadInt();
-        long mountUid = packet.ReadLong();
+        var mountId = packet.ReadInt();
+        var mountUid = packet.ReadLong();
 
         var inventory = session.Player.Inventory;
         if (!inventory.HasItemWithUid(mountUid))
@@ -98,22 +98,22 @@ internal sealed class RideHandler : GamePacketHandler
             return;
         }
 
-        PacketWriter changePacket = MountPacket.ChangeRide(session.Player.FieldPlayer.ObjectId, mountId, mountUid);
+        var changePacket = MountPacket.ChangeRide(session.Player.FieldPlayer.ObjectId, mountId, mountUid);
         session.FieldManager.BroadcastPacket(changePacket);
     }
 
-    private static void HandleStartMultiPersonRide(GameSession session, PacketReader packet)
+    private static void HandleStartMultiPersonRide(GameSession session, IPacketReader packet)
     {
-        int otherPlayerObjectId = packet.ReadInt();
+        var otherPlayerObjectId = packet.ReadInt();
 
-        if (!session.FieldManager.State.Players.TryGetValue(otherPlayerObjectId, out IFieldActor<Player> otherPlayer) || otherPlayer.Value.Mount == null)
+        if (!session.FieldManager.State.Players.TryGetValue(otherPlayerObjectId, out var otherPlayer) || otherPlayer.Value.Mount == null)
         {
             return;
         }
 
-        bool isFriend = BuddyManager.IsFriend(session.Player, otherPlayer.Value);
-        bool isGuildMember = session.Player != null && otherPlayer.Value.Guild != null && session.Player.Guild.Id == otherPlayer.Value.Guild.Id;
-        bool isPartyMember = session.Player.Party == otherPlayer.Value.Party;
+        var isFriend = BuddyManager.IsFriend(session.Player, otherPlayer.Value);
+        var isGuildMember = session.Player != null && otherPlayer.Value.Guild != null && session.Player.Guild.Id == otherPlayer.Value.Guild.Id;
+        var isPartyMember = session.Player.Party == otherPlayer.Value.Party;
 
         if (!isFriend &&
             !isGuildMember &&
@@ -122,7 +122,7 @@ internal sealed class RideHandler : GamePacketHandler
             return;
         }
 
-        int index = Array.FindIndex(otherPlayer.Value.Mount.Value.Players, 0, otherPlayer.Value.Mount.Value.Players.Length, x => x == null);
+        var index = Array.FindIndex(otherPlayer.Value.Mount.Value.Players, 0, otherPlayer.Value.Mount.Value.Players.Length, x => x == null);
         otherPlayer.Value.Mount.Value.Players[index] = session.Player.FieldPlayer;
         session.Player.Mount = otherPlayer.Value.Mount;
         session.FieldManager.BroadcastPacket(MountPacket.StartTwoPersonRide(otherPlayerObjectId, session.Player.FieldPlayer.ObjectId, (byte) (index - 1)));
@@ -130,7 +130,7 @@ internal sealed class RideHandler : GamePacketHandler
 
     private static void HandleStopMultiPersonRide(GameSession session)
     {
-        IFieldObject<Player> otherPlayer = session.Player.Mount.Value.Players[0];
+        var otherPlayer = session.Player.Mount.Value.Players[0];
         if (otherPlayer == null)
         {
             return;
@@ -141,7 +141,7 @@ internal sealed class RideHandler : GamePacketHandler
         session.Player.Mount = null;
         if (otherPlayer.Value.Mount != null)
         {
-            int index = Array.FindIndex(otherPlayer.Value.Mount.Value.Players, 0, otherPlayer.Value.Mount.Value.Players.Length, x => x.ObjectId == session.Player.FieldPlayer.ObjectId);
+            var index = Array.FindIndex(otherPlayer.Value.Mount.Value.Players, 0, otherPlayer.Value.Mount.Value.Players.Length, x => x.ObjectId == session.Player.FieldPlayer.ObjectId);
             otherPlayer.Value.Mount.Value.Players[index] = null;
         }
     }

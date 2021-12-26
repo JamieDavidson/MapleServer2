@@ -8,7 +8,7 @@ internal abstract class HeartbeatHandler : CommonPacketHandler
 {
     public override RecvOp OpCode => RecvOp.RESPONSE_HEARTBEAT;
 
-    public override void Handle(LoginSession session, PacketReader packet)
+    public override void Handle(LoginSession session, IPacketReader packet)
     {
         session.ServerTick = packet.ReadInt();
         session.ClientTick = packet.ReadInt();

@@ -11,23 +11,23 @@ internal static class GatheringHelper
     public static void HandleGathering(GameSession session, int recipeId, out int numDrop)
     {
         numDrop = 0;
-        RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(recipeId);
+        var recipe = RecipeMetadataStorage.GetRecipe(recipeId);
         if (recipe == null)
         {
             return;
         }
 
-        long currentMastery = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == (MasteryType) recipe.MasteryType).CurrentExp;
+        var currentMastery = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == (MasteryType) recipe.MasteryType).CurrentExp;
         if (currentMastery < recipe.RequireMastery)
         {
             return;
         }
 
         session.Player.IncrementGatheringCount(recipe.Id, 0);
-        int numCount = session.Player.GatheringCount.FirstOrDefault(x => x.RecipeId == recipe.Id).CurrentCount;
+        var numCount = session.Player.GatheringCount.FirstOrDefault(x => x.RecipeId == recipe.Id).CurrentCount;
 
-        List<RecipeItem> items = recipe.RewardItems;
-        int masteryDiffFactor = numCount switch
+        var items = recipe.RewardItems;
+        var masteryDiffFactor = numCount switch
         {
             int n when n < recipe.HighPropLimitCount => MasteryFactorMetadataStorage.GetFactor(0),
             int n when n < recipe.NormalPropLimitCount => MasteryFactorMetadataStorage.GetFactor(1),
@@ -40,9 +40,9 @@ internal static class GatheringHelper
             return;
         }
 
-        foreach (RecipeItem item in items)
+        foreach (var item in items)
         {
-            int prob = masteryDiffFactor / 100;
+            var prob = masteryDiffFactor / 100;
             if (RandomProvider.Get().Next(100) >= prob)
             {
                 continue;

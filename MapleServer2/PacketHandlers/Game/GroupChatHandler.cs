@@ -18,7 +18,7 @@ internal sealed class GroupChatHandler : GamePacketHandler
         public const byte Chat = 0x0A;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -57,25 +57,25 @@ internal sealed class GroupChatHandler : GamePacketHandler
         session.Send(GroupChatPacket.Create(groupChat));
     }
 
-    private static void HandleInvite(GameSession session, PacketReader packet)
+    private static void HandleInvite(GameSession session, IPacketReader packet)
     {
-        string targetPlayer = packet.ReadUnicodeString();
-        int groupChatId = packet.ReadInt();
+        var targetPlayer = packet.ReadUnicodeString();
+        var groupChatId = packet.ReadInt();
 
-        GroupChat groupChat = GameServer.GroupChatManager.GetGroupChatById(groupChatId);
+        var groupChat = GameServer.GroupChatManager.GetGroupChatById(groupChatId);
         if (groupChat == null)
         {
             return;
         }
 
-        Player other = GameServer.PlayerManager.GetPlayerByName(targetPlayer);
+        var other = GameServer.PlayerManager.GetPlayerByName(targetPlayer);
         if (other == null)
         {
             session.Send(GroupChatPacket.Error(session.Player, targetPlayer, (int) GroupChatError.OfflinePlayer));
             return;
         }
 
-        int count = other.GroupChatId.Count(x => x != 0);
+        var count = other.GroupChatId.Count(x => x != 0);
 
         if (count >= 3) // 3 is the max group chats a user can be at
         {
@@ -93,11 +93,11 @@ internal sealed class GroupChatHandler : GamePacketHandler
         other.Session.Send(GroupChatPacket.Join(session.Player, other, groupChat));
     }
 
-    private static void HandleLeave(GameSession session, PacketReader packet)
+    private static void HandleLeave(GameSession session, IPacketReader packet)
     {
-        int groupChatId = packet.ReadInt();
+        var groupChatId = packet.ReadInt();
 
-        GroupChat groupChat = GameServer.GroupChatManager.GetGroupChatById(groupChatId);
+        var groupChat = GameServer.GroupChatManager.GetGroupChatById(groupChatId);
         if (groupChat == null)
         {
             return;
@@ -108,12 +108,12 @@ internal sealed class GroupChatHandler : GamePacketHandler
         groupChat.BroadcastPacketGroupChat(GroupChatPacket.LeaveNotice(groupChat, session.Player));
     }
 
-    private static void HandleChat(GameSession session, PacketReader packet)
+    private static void HandleChat(GameSession session, IPacketReader packet)
     {
-        string message = packet.ReadUnicodeString();
-        int groupChatId = packet.ReadInt();
+        var message = packet.ReadUnicodeString();
+        var groupChatId = packet.ReadInt();
 
-        GroupChat groupChat = GameServer.GroupChatManager.GetGroupChatById(groupChatId);
+        var groupChat = GameServer.GroupChatManager.GetGroupChatById(groupChatId);
         if (groupChat == null)
         {
             return;

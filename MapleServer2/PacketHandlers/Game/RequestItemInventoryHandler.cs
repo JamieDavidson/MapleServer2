@@ -18,7 +18,7 @@ internal sealed class RequestItemInventoryHandler : GamePacketHandler
         public const byte Expand = 0xB;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -45,36 +45,36 @@ internal sealed class RequestItemInventoryHandler : GamePacketHandler
         }
     }
 
-    private static void HandleMove(GameSession session, PacketReader packet)
+    private static void HandleMove(GameSession session, IPacketReader packet)
     {
-        long uid = packet.ReadLong(); // Grabs incoming item packet uid
-        short dstSlot = packet.ReadShort(); // Grabs incoming item packet slot
+        var uid = packet.ReadLong(); // Grabs incoming item packet uid
+        var dstSlot = packet.ReadShort(); // Grabs incoming item packet slot
         session.Player.Inventory.MoveItem(session, uid, dstSlot);
     }
 
-    private static void HandleDrop(GameSession session, PacketReader packet)
+    private static void HandleDrop(GameSession session, IPacketReader packet)
     {
         // TODO: Make sure items are tradable?
-        long uid = packet.ReadLong();
-        int amount = packet.ReadInt(); // Grabs incoming item packet amount
+        var uid = packet.ReadLong();
+        var amount = packet.ReadInt(); // Grabs incoming item packet amount
         session.Player.Inventory.DropItem(session, uid, amount, false);
     }
 
-    private static void HandleDropBound(GameSession session, PacketReader packet)
+    private static void HandleDropBound(GameSession session, IPacketReader packet)
     {
-        long uid = packet.ReadLong();
+        var uid = packet.ReadLong();
         session.Player.Inventory.DropItem(session, uid, 0, true);
     }
 
-    private static void HandleSort(GameSession session, PacketReader packet)
+    private static void HandleSort(GameSession session, IPacketReader packet)
     {
-        InventoryTab tab = (InventoryTab) packet.ReadShort();
+        var tab = (InventoryTab) packet.ReadShort();
         session.Player.Inventory.SortInventory(session, tab);
     }
 
-    private static void HandleExpand(GameSession session, PacketReader packet)
+    private static void HandleExpand(GameSession session, IPacketReader packet)
     {
-        InventoryTab tab = (InventoryTab) packet.ReadByte();
+        var tab = (InventoryTab) packet.ReadByte();
         session.Player.Inventory.ExpandInventory(session, tab);
     }
 }

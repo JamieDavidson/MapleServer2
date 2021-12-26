@@ -15,7 +15,7 @@ internal sealed class LoginUgcHandler : LoginPacketHandler
         public const byte ProfilePicture = 0x0B;
     }
 
-    public override void Handle(LoginSession session, PacketReader packet)
+    public override void Handle(LoginSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -29,7 +29,7 @@ internal sealed class LoginUgcHandler : LoginPacketHandler
         }
     }
 
-    private static void HandleProfilePicture(LoginSession session, PacketReader packet)
+    private static void HandleProfilePicture(LoginSession session, IPacketReader packet)
     {
         string path = packet.ReadUnicodeString();
         DatabaseManager.Characters.UpdateProfileUrl(session.CharacterId, path);

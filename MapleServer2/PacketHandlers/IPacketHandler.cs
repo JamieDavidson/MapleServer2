@@ -11,7 +11,7 @@ public interface IPacketHandler<in T> where T : Session
 {
     public RecvOp OpCode { get; }
 
-    public void Handle(T session, PacketReader packet);
+    public void Handle(T session, IPacketReader packet);
 
     public static void LogUnknownMode(Enum mode)
     {

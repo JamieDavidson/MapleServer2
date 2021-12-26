@@ -25,7 +25,7 @@ internal sealed class ItemRepackageHandler : GamePacketHandler
         public const byte InvalidLevel = 0x5;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -40,10 +40,10 @@ internal sealed class ItemRepackageHandler : GamePacketHandler
         }
     }
 
-    private static void HandleRepackage(GameSession session, PacketReader packet)
+    private static void HandleRepackage(GameSession session, IPacketReader packet)
     {
-        long ribbonUid = packet.ReadLong();
-        long repackingItemUid = packet.ReadLong();
+        var ribbonUid = packet.ReadLong();
+        var repackingItemUid = packet.ReadLong();
 
         var inventory = session.Player.Inventory;
         var ribbon = inventory.GetItemByUid(ribbonUid);
@@ -59,7 +59,7 @@ internal sealed class ItemRepackageHandler : GamePacketHandler
             session.Send(ItemRepackagePacket.Notice(ItemRepackageErrors.CannotBePackaged));
         }
 
-        int ribbonRequirementAmount = ItemMetadataStorage.GetRepackageConsumeCount(ribbon.Id);
+        var ribbonRequirementAmount = ItemMetadataStorage.GetRepackageConsumeCount(ribbon.Id);
         if (ribbonRequirementAmount > ribbon.Amount)
         {
             session.Send(ItemRepackagePacket.Notice(ItemRepackageErrors.CannotBePackaged));

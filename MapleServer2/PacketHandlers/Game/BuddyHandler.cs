@@ -39,7 +39,7 @@ internal sealed class BuddyHandler : GamePacketHandler
         public const byte DeclinedRequest = 0x9;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -75,10 +75,10 @@ internal sealed class BuddyHandler : GamePacketHandler
         }
     }
 
-    private static void HandleSendRequest(GameSession session, PacketReader packet)
+    private static void HandleSendRequest(GameSession session, IPacketReader packet)
     {
-        string otherPlayerName = packet.ReadUnicodeString();
-        string message = packet.ReadUnicodeString();
+        var otherPlayerName = packet.ReadUnicodeString();
+        var message = packet.ReadUnicodeString();
 
         if (!DatabaseManager.Characters.NameExists(otherPlayerName))
         {
@@ -86,7 +86,7 @@ internal sealed class BuddyHandler : GamePacketHandler
             return;
         }
 
-        Player targetPlayer = GameServer.PlayerManager.GetPlayerByName(otherPlayerName);
+        var targetPlayer = GameServer.PlayerManager.GetPlayerByName(otherPlayerName);
         if (targetPlayer == null) // If the player is not online, get player data from database
         {
             targetPlayer = DatabaseManager.Characters.FindPartialPlayerByName(otherPlayerName);
@@ -123,7 +123,7 @@ internal sealed class BuddyHandler : GamePacketHandler
             return;
         }
 
-        long id = GuidGenerator.Long();
+        var id = GuidGenerator.Long();
         Buddy buddy = new(id, session.Player.CharacterId, targetPlayer, message, true, false);
         Buddy buddyTargetPlayer = new(id, targetPlayer.CharacterId, session.Player, message, false, true);
         GameServer.BuddyManager.AddBuddy(buddy);
@@ -140,16 +140,16 @@ internal sealed class BuddyHandler : GamePacketHandler
         }
     }
 
-    private static void HandleRemoveFriend(GameSession session, PacketReader packet)
+    private static void HandleRemoveFriend(GameSession session, IPacketReader packet)
     {
-        long buddyId = packet.ReadLong();
+        var buddyId = packet.ReadLong();
 
-        Buddy buddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(session.Player, buddyId);
-        Buddy buddyFriend = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddyId);
+        var buddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(session.Player, buddyId);
+        var buddyFriend = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddyId);
 
         session.Send(BuddyPacket.RemoveFromList(buddy));
 
-        Player otherPlayer = GameServer.PlayerManager.GetPlayerByName(buddy.Friend.Name);
+        var otherPlayer = GameServer.PlayerManager.GetPlayerByName(buddy.Friend.Name);
         if (otherPlayer != null)
         {
             otherPlayer.Session.Send(BuddyPacket.RemoveFromList(buddyFriend));
@@ -163,13 +163,13 @@ internal sealed class BuddyHandler : GamePacketHandler
         DatabaseManager.Buddies.Delete(buddyFriend.Id);
     }
 
-    private static void HandleEditBlockReason(GameSession session, PacketReader packet)
+    private static void HandleEditBlockReason(GameSession session, IPacketReader packet)
     {
-        long buddyId = packet.ReadLong();
-        string otherPlayerName = packet.ReadUnicodeString();
-        string newBlockReason = packet.ReadUnicodeString();
+        var buddyId = packet.ReadLong();
+        var otherPlayerName = packet.ReadUnicodeString();
+        var newBlockReason = packet.ReadUnicodeString();
 
-        Buddy buddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(session.Player, buddyId);
+        var buddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(session.Player, buddyId);
         if (buddy == null || otherPlayerName != buddy.Friend.Name)
         {
             return;
@@ -180,12 +180,12 @@ internal sealed class BuddyHandler : GamePacketHandler
         DatabaseManager.Buddies.Update(buddy);
     }
 
-    private static void HandleAccept(GameSession session, PacketReader packet)
+    private static void HandleAccept(GameSession session, IPacketReader packet)
     {
-        long buddyId = packet.ReadLong();
+        var buddyId = packet.ReadLong();
 
-        Buddy buddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(session.Player, buddyId);
-        Buddy buddyFriend = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddyId);
+        var buddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(session.Player, buddyId);
+        var buddyFriend = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddyId);
 
         buddy.IsFriendRequest = false;
         buddyFriend.IsPending = false;
@@ -196,7 +196,7 @@ internal sealed class BuddyHandler : GamePacketHandler
         DatabaseManager.Buddies.Update(buddy);
         DatabaseManager.Buddies.Update(buddyFriend);
 
-        Player otherPlayer = GameServer.PlayerManager.GetPlayerByName(buddy.Friend.Name);
+        var otherPlayer = GameServer.PlayerManager.GetPlayerByName(buddy.Friend.Name);
         if (otherPlayer != null)
         {
             otherPlayer.Session.Send(BuddyPacket.UpdateBuddy(buddyFriend));
@@ -204,16 +204,16 @@ internal sealed class BuddyHandler : GamePacketHandler
         }
     }
 
-    private static void HandleDecline(GameSession session, PacketReader packet)
+    private static void HandleDecline(GameSession session, IPacketReader packet)
     {
-        long buddyId = packet.ReadLong();
+        var buddyId = packet.ReadLong();
 
-        Buddy buddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(session.Player, buddyId);
-        Buddy buddyFriend = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddyId);
+        var buddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(session.Player, buddyId);
+        var buddyFriend = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddyId);
 
         session.Send(BuddyPacket.DeclineRequest(buddy));
 
-        Player otherPlayer = GameServer.PlayerManager.GetPlayerByName(buddy.Friend.Name);
+        var otherPlayer = GameServer.PlayerManager.GetPlayerByName(buddy.Friend.Name);
         if (otherPlayer != null)
         {
             otherPlayer.Session.Send(BuddyPacket.RemoveFromList(buddyFriend));
@@ -227,11 +227,11 @@ internal sealed class BuddyHandler : GamePacketHandler
         DatabaseManager.Buddies.Delete(buddyFriend.Id);
     }
 
-    private static void HandleBlock(GameSession session, PacketReader packet)
+    private static void HandleBlock(GameSession session, IPacketReader packet)
     {
-        long buddyId = packet.ReadLong();
-        string targetName = packet.ReadUnicodeString();
-        string message = packet.ReadUnicodeString();
+        var buddyId = packet.ReadLong();
+        var targetName = packet.ReadUnicodeString();
+        var message = packet.ReadUnicodeString();
 
         if (session.Player.BuddyList.Count(b => b.Blocked) >= 100) // 100 is block limit
         {
@@ -245,7 +245,7 @@ internal sealed class BuddyHandler : GamePacketHandler
             return;
         }
 
-        Player targetPlayer = GameServer.PlayerManager.GetPlayerByName(targetName);
+        var targetPlayer = GameServer.PlayerManager.GetPlayerByName(targetName);
         if (targetPlayer == null) // If the player is not online, get player data from database
         {
             targetPlayer = DatabaseManager.Characters.FindPartialPlayerByName(targetName);
@@ -254,7 +254,7 @@ internal sealed class BuddyHandler : GamePacketHandler
 
         if (buddyId == 0) // if buddy doesn't exist, create Buddy
         {
-            long id = GuidGenerator.Long();
+            var id = GuidGenerator.Long();
             Buddy buddy = new(id, session.Player.CharacterId, targetPlayer, message, false, false, true);
             GameServer.BuddyManager.AddBuddy(buddy);
             session.Player.BuddyList.Add(buddy);
@@ -264,8 +264,8 @@ internal sealed class BuddyHandler : GamePacketHandler
         }
         else
         {
-            Buddy buddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(session.Player, buddyId);
-            Buddy buddyFriend = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddyId);
+            var buddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(session.Player, buddyId);
+            var buddyFriend = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddyId);
 
             if (targetPlayer.Session != null && targetPlayer.Session.Connected())
             {
@@ -284,11 +284,11 @@ internal sealed class BuddyHandler : GamePacketHandler
         }
     }
 
-    private static void HandleUnblock(GameSession session, PacketReader packet)
+    private static void HandleUnblock(GameSession session, IPacketReader packet)
     {
-        long buddyId = packet.ReadLong();
+        var buddyId = packet.ReadLong();
 
-        Buddy buddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(session.Player, buddyId);
+        var buddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(session.Player, buddyId);
 
         session.Send(BuddyPacket.Unblock(buddy));
         session.Send(BuddyPacket.RemoveFromList(buddy));
@@ -298,16 +298,16 @@ internal sealed class BuddyHandler : GamePacketHandler
         DatabaseManager.Buddies.Delete(buddy.Id);
     }
 
-    private static void HandleCancelRequest(GameSession session, PacketReader packet)
+    private static void HandleCancelRequest(GameSession session, IPacketReader packet)
     {
-        long buddyId = packet.ReadLong();
+        var buddyId = packet.ReadLong();
 
-        Buddy buddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(session.Player, buddyId);
-        Buddy buddyFriend = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddyId);
+        var buddy = GameServer.BuddyManager.GetBuddyByPlayerAndId(session.Player, buddyId);
+        var buddyFriend = GameServer.BuddyManager.GetBuddyByPlayerAndId(buddy.Friend, buddyId);
 
         session.Send(BuddyPacket.CancelRequest(buddy));
 
-        Player targetPlayer = GameServer.PlayerManager.GetPlayerByName(buddy.Friend.Name);
+        var targetPlayer = GameServer.PlayerManager.GetPlayerByName(buddy.Friend.Name);
 
         if (targetPlayer != null)
         {

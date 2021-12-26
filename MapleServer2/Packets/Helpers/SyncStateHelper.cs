@@ -7,7 +7,7 @@ namespace MapleServer2.Packets.Helpers;
 
 public static class SyncStateHelper
 {
-    public static SyncState ReadSyncState(this PacketReader packet)
+    public static SyncState ReadSyncState(this IPacketReader packet)
     {
         SyncState state = new();
 
@@ -65,7 +65,7 @@ public static class SyncStateHelper
         return state;
     }
 
-    public static PacketWriter WriteSyncState(this PacketWriter pWriter, SyncState entry)
+    public static IPacketWriter WriteSyncState(this IPacketWriter pWriter, SyncState entry)
     {
         pWriter.WriteByte(entry.Animation1);
         pWriter.WriteByte(entry.Animation2);
@@ -121,7 +121,7 @@ public static class SyncStateHelper
         return pWriter;
     }
 
-    public static PacketWriter WriteSyncStates(this PacketWriter pWriter, params SyncState[] syncStates)
+    public static IPacketWriter WriteSyncStates(this IPacketWriter pWriter, params SyncState[] syncStates)
     {
         pWriter.WriteByte((byte) syncStates.Length);
         foreach (SyncState entry in syncStates)

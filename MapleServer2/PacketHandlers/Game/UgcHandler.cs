@@ -21,7 +21,7 @@ internal sealed class UgcHandler : GamePacketHandler
         public const byte ProfilePicture = 0x0B;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -41,28 +41,28 @@ internal sealed class UgcHandler : GamePacketHandler
         }
     }
 
-    private static void HandleCreateUGCItem(GameSession session, PacketReader packet)
+    private static void HandleCreateUGCItem(GameSession session, IPacketReader packet)
     {
         packet.ReadLong();
         packet.ReadByte();
         packet.ReadByte();
         packet.ReadByte();
         packet.ReadInt();
-        long accountId = packet.ReadLong();
-        long characterId = packet.ReadLong();
+        var accountId = packet.ReadLong();
+        var characterId = packet.ReadLong();
         packet.ReadLong();
         packet.ReadInt();
         packet.ReadShort();
         packet.ReadShort();
-        long unk = packet.ReadLong(); // some kind of UID
-        int itemId = packet.ReadInt();
-        int amount = packet.ReadInt();
-        string itemName = packet.ReadUnicodeString();
+        var unk = packet.ReadLong(); // some kind of UID
+        var itemId = packet.ReadInt();
+        var amount = packet.ReadInt();
+        var itemName = packet.ReadUnicodeString();
         packet.ReadByte();
-        long cost = packet.ReadLong();
-        bool useVoucher = packet.ReadBool();
+        var cost = packet.ReadLong();
+        var useVoucher = packet.ReadBool();
 
-        UgcDesignMetadata metadata = UgcDesignMetadataStorage.GetItem(itemId);
+        var metadata = UgcDesignMetadataStorage.GetItem(itemId);
         if (metadata is null)
         {
             return;
@@ -101,24 +101,24 @@ internal sealed class UgcHandler : GamePacketHandler
         session.Send(UgcPacket.CreateUGC(true, item.UGC));
     }
 
-    private static void HandleAddUgcItem(GameSession session, PacketReader packet)
+    private static void HandleAddUgcItem(GameSession session, IPacketReader packet)
     {
         packet.ReadByte();
         packet.ReadByte();
         packet.ReadByte();
         packet.ReadInt();
-        long accountId = packet.ReadLong();
-        long characterId = packet.ReadLong();
+        var accountId = packet.ReadLong();
+        var characterId = packet.ReadLong();
         packet.ReadInt();
-        long ugcUid = packet.ReadLong();
-        string ugcGuid = packet.ReadUnicodeString();
+        var ugcUid = packet.ReadLong();
+        var ugcGuid = packet.ReadUnicodeString();
 
         if (accountId != session.Player.Account.Id || characterId != session.Player.CharacterId || ugcUid == 0)
         {
             return;
         }
 
-        Item item = DatabaseManager.Items.FindByUGCUid(ugcUid);
+        var item = DatabaseManager.Items.FindByUGCUid(ugcUid);
         if (item is null)
         {
             return;
@@ -130,9 +130,9 @@ internal sealed class UgcHandler : GamePacketHandler
         session.Send(UgcPacket.SetItemUrl(item.UGC));
     }
 
-    private static void HandleProfilePicture(GameSession session, PacketReader packet)
+    private static void HandleProfilePicture(GameSession session, IPacketReader packet)
     {
-        string path = packet.ReadUnicodeString();
+        var path = packet.ReadUnicodeString();
         session.Player.ProfileUrl = path;
         DatabaseManager.Characters.UpdateProfileUrl(session.Player.CharacterId, path);
 

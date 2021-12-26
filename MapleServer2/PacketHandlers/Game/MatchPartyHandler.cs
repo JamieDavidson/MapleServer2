@@ -26,7 +26,7 @@ internal sealed class MatchPartyHandler : GamePacketHandler
         public const byte NewestFirst = 0x15;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -46,13 +46,13 @@ internal sealed class MatchPartyHandler : GamePacketHandler
         }
     }
 
-    public static void HandleCreateListing(GameSession session, PacketReader packet)
+    public static void HandleCreateListing(GameSession session, IPacketReader packet)
     {
-        string partyName = packet.ReadUnicodeString();
-        bool approval = packet.ReadBool();
-        int memberCountRecruit = packet.ReadInt();
+        var partyName = packet.ReadUnicodeString();
+        var approval = packet.ReadBool();
+        var memberCountRecruit = packet.ReadInt();
 
-        Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
+        var party = GameServer.PartyManager.GetPartyByLeader(session.Player);
 
         if (party == null)
         {
@@ -83,7 +83,7 @@ internal sealed class MatchPartyHandler : GamePacketHandler
 
     public static void HandleRemoveListing(GameSession session)
     {
-        Party party = session.Player.Party;
+        var party = session.Player.Party;
         if (party == null)
         {
             return;
@@ -101,15 +101,15 @@ internal sealed class MatchPartyHandler : GamePacketHandler
         party.BroadcastPacketParty(PartyPacket.MatchParty(null, false));
     }
 
-    public static void HandleRefresh(GameSession session, PacketReader packet)
+    public static void HandleRefresh(GameSession session, IPacketReader packet)
     {
         //Get search terms:
-        long unk = packet.ReadLong();
+        var unk = packet.ReadLong();
         var filterMode = packet.ReadByte();
-        string searchText = packet.ReadUnicodeString().ToLower();
-        long unk2 = packet.ReadLong();
+        var searchText = packet.ReadUnicodeString().ToLower();
+        var unk2 = packet.ReadLong();
 
-        List<Party> partyList = GameServer.PartyManager.GetPartyFinderList();
+        var partyList = GameServer.PartyManager.GetPartyFinderList();
 
         //Filter
         switch (filterMode)

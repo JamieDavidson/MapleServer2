@@ -16,7 +16,7 @@ internal sealed class LiftableHandler : GamePacketHandler
 
     public override RecvOp OpCode => RecvOp.LIFTABLE;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -31,23 +31,23 @@ internal sealed class LiftableHandler : GamePacketHandler
         }
     }
 
-    private static void HandlePickUp(GameSession session, PacketReader packet)
+    private static void HandlePickUp(GameSession session, IPacketReader packet)
     {
-        string id = packet.ReadString();
-        IFieldActor<Player> fieldPlayer = session.Player.FieldPlayer;
+        var id = packet.ReadString();
+        var fieldPlayer = session.Player.FieldPlayer;
         if (id.Contains('_'))
         {
-            string coordHexa = long.Parse(id.Split('_')[1]).ToString("X2");
+            var coordHexa = long.Parse(id.Split('_')[1]).ToString("X2");
             if (coordHexa.Length == 5)
             {
                 coordHexa = "0" + coordHexa;
             }
 
-            CoordB coordB = CoordB.From(
+            var coordB = CoordB.From(
                 (sbyte) Convert.ToByte(coordHexa[4..], 16),
                 (sbyte) Convert.ToByte(coordHexa.Substring(2, 2), 16),
                 (sbyte) Convert.ToByte(coordHexa[..2], 16));
-            LiftableObject liftable = session.FieldManager.State.LiftableObjects.Values.FirstOrDefault(x => x.Position == coordB.ToFloat());
+            var liftable = session.FieldManager.State.LiftableObjects.Values.FirstOrDefault(x => x.Position == coordB.ToFloat());
             if (liftable is null)
             {
                 return;
@@ -62,7 +62,7 @@ internal sealed class LiftableHandler : GamePacketHandler
             return;
         }
 
-        if (!session.FieldManager.State.LiftableObjects.TryGetValue(id, out LiftableObject liftable2))
+        if (!session.FieldManager.State.LiftableObjects.TryGetValue(id, out var liftable2))
         {
             return;
         }

@@ -10,21 +10,21 @@ internal sealed class GuideObjectSync : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.GUIDE_OBJECT_SYNC;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
-        byte objectType = packet.ReadByte(); // 0 = build, 1 = fish
-        byte unk = packet.ReadByte();
-        byte unk2 = packet.ReadByte();
-        byte unk3 = packet.ReadByte();
-        byte unk4 = packet.ReadByte();
-        byte unk5 = packet.ReadByte();
-        CoordS coord = packet.Read<CoordS>();
-        CoordS unkCoord = packet.Read<CoordS>();
-        CoordS rotation = packet.Read<CoordS>();
-        short unk6 = packet.ReadShort();
-        int unk7 = packet.ReadInt(); // always -1 ?
-        int playerTick = packet.ReadInt();
-        int playerTick2 = packet.ReadInt(); // packet is given twice for some reason
+        var objectType = packet.ReadByte(); // 0 = build, 1 = fish
+        var unk = packet.ReadByte();
+        var unk2 = packet.ReadByte();
+        var unk3 = packet.ReadByte();
+        var unk4 = packet.ReadByte();
+        var unk5 = packet.ReadByte();
+        var coord = packet.Read<CoordS>();
+        var unkCoord = packet.Read<CoordS>();
+        var rotation = packet.Read<CoordS>();
+        var unk6 = packet.ReadShort();
+        var unk7 = packet.ReadInt(); // always -1 ?
+        var playerTick = packet.ReadInt();
+        var playerTick2 = packet.ReadInt(); // packet is given twice for some reason
 
         if (session.Player.Guide == null)
         {

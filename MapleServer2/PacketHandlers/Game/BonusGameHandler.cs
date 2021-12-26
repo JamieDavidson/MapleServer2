@@ -17,7 +17,7 @@ internal sealed class BonusGameHandler : GamePacketHandler
         public const byte Close = 0x03;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -36,9 +36,9 @@ internal sealed class BonusGameHandler : GamePacketHandler
         }
     }
 
-    private static void HandleOpen(GameSession session, PacketReader packet)
+    private static void HandleOpen(GameSession session, IPacketReader packet)
     {
-        int gameId = packet.ReadInt();
+        var gameId = packet.ReadInt();
 
         // Static data for now
         // Tuple<item id, rarity, quantity>
@@ -77,7 +77,7 @@ internal sealed class BonusGameHandler : GamePacketHandler
             new(11050020, 1, 1),
             new(20300041, 1, 1)
         };
-        int randomIndex = RandomProvider.Get().Next(0, items.Count);
+        var randomIndex = RandomProvider.Get().Next(0, items.Count);
         session.Send(BonusGamePacket.SpinWheel(randomIndex, items[randomIndex]));
     }
 }

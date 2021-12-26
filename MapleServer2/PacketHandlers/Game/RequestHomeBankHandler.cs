@@ -16,7 +16,7 @@ internal sealed class RequestHomeBankHandler : GamePacketHandler
         public const byte Inventory = 0x02;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)

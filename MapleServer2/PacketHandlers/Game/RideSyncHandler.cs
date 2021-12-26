@@ -11,19 +11,19 @@ internal sealed class RideSyncHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.RIDE_SYNC;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
-        byte operation = packet.ReadByte(); // Unknown what this is for
+        var operation = packet.ReadByte(); // Unknown what this is for
         packet.ReadInt(); // ServerTicks
         packet.ReadInt(); // ClientTicks
-        byte segments = packet.ReadByte();
+        var segments = packet.ReadByte();
         if (segments < 1)
         {
             return;
         }
 
-        SyncState[] syncStates = new SyncState[segments];
-        for (int i = 0; i < segments; i++)
+        var syncStates = new SyncState[segments];
+        for (var i = 0; i < segments; i++)
         {
             syncStates[i] = packet.ReadSyncState();
 
@@ -31,7 +31,7 @@ internal sealed class RideSyncHandler : GamePacketHandler
             packet.ReadInt(); // ServerTicks
         }
 
-        PacketWriter syncPacket = SyncStatePacket.RideSync(session.Player.FieldPlayer, syncStates);
+        var syncPacket = SyncStatePacket.RideSync(session.Player.FieldPlayer, syncStates);
         session.FieldManager.BroadcastPacket(syncPacket, session);
         UserSyncHandler.UpdatePlayer(session, syncStates);
     }

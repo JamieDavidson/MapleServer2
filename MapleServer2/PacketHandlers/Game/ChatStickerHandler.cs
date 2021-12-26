@@ -19,7 +19,7 @@ internal sealed class ChatStickerHandler : GamePacketHandler
         public const byte Unfavorite = 0x6;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -52,12 +52,12 @@ internal sealed class ChatStickerHandler : GamePacketHandler
         //session.Send(ChatStickerPacket.ExpiredStickerNotification());
     }
 
-    private static void HandleUseSticker(GameSession session, PacketReader packet)
+    private static void HandleUseSticker(GameSession session, IPacketReader packet)
     {
-        int stickerId = packet.ReadInt();
-        string script = packet.ReadUnicodeString();
+        var stickerId = packet.ReadInt();
+        var script = packet.ReadUnicodeString();
 
-        byte groupId = ChatStickerMetadataStorage.GetGroupId(stickerId);
+        var groupId = ChatStickerMetadataStorage.GetGroupId(stickerId);
 
         if (!session.Player.ChatSticker.Any(p => p.GroupId == groupId))
         {
@@ -67,12 +67,12 @@ internal sealed class ChatStickerHandler : GamePacketHandler
         session.Send(ChatStickerPacket.UseSticker(stickerId, script));
     }
 
-    private static void HandleGroupChatSticker(GameSession session, PacketReader packet)
+    private static void HandleGroupChatSticker(GameSession session, IPacketReader packet)
     {
-        int stickerId = packet.ReadInt();
-        string groupChatName = packet.ReadUnicodeString();
+        var stickerId = packet.ReadInt();
+        var groupChatName = packet.ReadUnicodeString();
 
-        byte groupId = ChatStickerMetadataStorage.GetGroupId(stickerId);
+        var groupId = ChatStickerMetadataStorage.GetGroupId(stickerId);
 
         if (!session.Player.ChatSticker.Any(p => p.GroupId == groupId))
         {
@@ -82,9 +82,9 @@ internal sealed class ChatStickerHandler : GamePacketHandler
         session.Send(ChatStickerPacket.GroupChatSticker(stickerId, groupChatName));
     }
 
-    private static void HandleFavorite(GameSession session, PacketReader packet)
+    private static void HandleFavorite(GameSession session, IPacketReader packet)
     {
-        int stickerId = packet.ReadInt();
+        var stickerId = packet.ReadInt();
 
         if (session.Player.FavoriteStickers.Contains(stickerId))
         {
@@ -94,9 +94,9 @@ internal sealed class ChatStickerHandler : GamePacketHandler
         session.Send(ChatStickerPacket.Favorite(stickerId));
     }
 
-    private static void HandleUnfavorite(GameSession session, PacketReader packet)
+    private static void HandleUnfavorite(GameSession session, IPacketReader packet)
     {
-        int stickerId = packet.ReadInt();
+        var stickerId = packet.ReadInt();
 
         if (!session.Player.FavoriteStickers.Contains(stickerId))
         {

@@ -21,7 +21,7 @@ internal sealed class InteractObjectHandler : GamePacketHandler
         public const byte Interact = 0x0C;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var mode = packet.ReadByte();
 
@@ -36,10 +36,10 @@ internal sealed class InteractObjectHandler : GamePacketHandler
         }
     }
 
-    private static void HandleCast(GameSession session, PacketReader packet)
+    private static void HandleCast(GameSession session, IPacketReader packet)
     {
-        string id = packet.ReadString();
-        InteractObject interactObject = session.FieldManager.State.InteractObjects[id];
+        var id = packet.ReadString();
+        var interactObject = session.FieldManager.State.InteractObjects[id];
         if (interactObject == null)
         {
             return;
@@ -48,16 +48,16 @@ internal sealed class InteractObjectHandler : GamePacketHandler
         // TODO: Change state of object only if player succeeds in the cast.
     }
 
-    private static void HandleInteract(GameSession session, PacketReader packet)
+    private static void HandleInteract(GameSession session, IPacketReader packet)
     {
-        string id = packet.ReadString();
-        InteractObject interactObject = session.FieldManager.State.InteractObjects[id];
+        var id = packet.ReadString();
+        var interactObject = session.FieldManager.State.InteractObjects[id];
         if (interactObject == null)
         {
             return;
         }
 
-        InteractObjectMetadata metadata = InteractObjectMetadataStorage.GetInteractObjectMetadata(interactObject.InteractId);
+        var metadata = InteractObjectMetadataStorage.GetInteractObjectMetadata(interactObject.InteractId);
 
         switch (interactObject.Type)
         {
@@ -75,13 +75,13 @@ internal sealed class InteractObjectHandler : GamePacketHandler
                 session.Send(PlayerHostPacket.AdBalloonWindow((AdBalloon) interactObject));
                 break;
             case InteractObjectType.Gathering:
-                GatheringHelper.HandleGathering(session, metadata.Gathering.RecipeId, out int numDrop);
+                GatheringHelper.HandleGathering(session, metadata.Gathering.RecipeId, out var numDrop);
                 session.Send(InteractObjectPacket.Use(interactObject, (short) (numDrop > 0 ? 0 : 1), numDrop));
                 break;
             case InteractObjectType.Common:
-                foreach ((int questId, QuestState state) in metadata.Quests)
+                foreach ((var questId, var state) in metadata.Quests)
                 {
-                    if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State != state)
+                    if (!session.Player.QuestData.TryGetValue(questId, out var questStatus) || questStatus.State != state)
                     {
                         continue;
                     }
@@ -90,19 +90,19 @@ internal sealed class InteractObjectHandler : GamePacketHandler
                     session.Send(InteractObjectPacket.QuestUse(interactObject));
                     session.Send(InteractObjectPacket.Interact(interactObject));
 
-                    foreach (int boxId in metadata.Drop.IndividualDropBoxId)
+                    foreach (var boxId in metadata.Drop.IndividualDropBoxId)
                     {
-                        ItemDropMetadata itemDropMetadataStorage = ItemDropMetadataStorage.GetItemDropMetadata(boxId);
+                        var itemDropMetadataStorage = ItemDropMetadataStorage.GetItemDropMetadata(boxId);
                         if (itemDropMetadataStorage is null)
                         {
                             continue;
                         }
 
-                        foreach (DropGroup dropGroup in itemDropMetadataStorage.DropGroups)
+                        foreach (var dropGroup in itemDropMetadataStorage.DropGroups)
                         {
-                            foreach (DropGroupContent dropGroupContent in dropGroup.Contents)
+                            foreach (var dropGroupContent in dropGroup.Contents)
                             {
-                                foreach (int itemId in dropGroupContent.ItemIds)
+                                foreach (var itemId in dropGroupContent.ItemIds)
                                 {
                                     Item item = new(itemId)
                                     {

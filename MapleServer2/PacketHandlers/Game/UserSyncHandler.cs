@@ -15,20 +15,20 @@ internal sealed class UserSyncHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.USER_SYNC;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
-        byte function = packet.ReadByte(); // Unknown what this is for
+        var function = packet.ReadByte(); // Unknown what this is for
         session.ServerTick = packet.ReadInt();
         session.ClientTick = packet.ReadInt();
 
-        byte segments = packet.ReadByte();
+        var segments = packet.ReadByte();
         if (segments < 1)
         {
             return;
         }
 
-        SyncState[] syncStates = new SyncState[segments];
-        for (int i = 0; i < segments; i++)
+        var syncStates = new SyncState[segments];
+        for (var i = 0; i < segments; i++)
         {
             syncStates[i] = packet.ReadSyncState();
 
@@ -36,25 +36,25 @@ internal sealed class UserSyncHandler : GamePacketHandler
             packet.ReadInt(); // ServerTicks
         }
 
-        PacketWriter syncPacket = SyncStatePacket.UserSync(session.Player.FieldPlayer, syncStates);
+        var syncPacket = SyncStatePacket.UserSync(session.Player.FieldPlayer, syncStates);
         session.FieldManager.BroadcastPacket(syncPacket, session);
         UpdatePlayer(session, syncStates);
     }
 
     public static void UpdatePlayer(GameSession session, SyncState[] syncStates)
     {
-        Player player = session.Player;
-        IFieldActor<Player> fieldPlayer = player.FieldPlayer;
+        var player = session.Player;
+        var fieldPlayer = player.FieldPlayer;
 
-        CoordF coord = syncStates[0].Coord.ToFloat();
+        var coord = syncStates[0].Coord.ToFloat();
 
-        CoordF coordUnderneath = coord;
+        var coordUnderneath = coord;
         coordUnderneath.Z -= 50;
 
-        CoordF blockUnderneath = Block.ClosestBlock(coordUnderneath);
+        var blockUnderneath = Block.ClosestBlock(coordUnderneath);
         if (IsCoordSafe(player, syncStates[0].Coord, blockUnderneath))
         {
-            CoordF safeBlock = Block.ClosestBlock(coord);
+            var safeBlock = Block.ClosestBlock(coord);
             // TODO: Knowing the state of the player using the animation is probably not the correct way to do this
             // we will need to know the state of the player for other things like counting time spent on ropes/running/walking/swimming
             if (syncStates[0].Animation2 is 7 or 132) // swimming
@@ -85,17 +85,17 @@ internal sealed class UserSyncHandler : GamePacketHandler
 
     private static bool IsOutOfBounds(CoordF coord, CoordS[] boundingBox)
     {
-        CoordS box1 = boundingBox[0];
-        CoordS box2 = boundingBox[1];
+        var box1 = boundingBox[0];
+        var box2 = boundingBox[1];
 
-        short higherBoundZ = Math.Max(box1.Z, box2.Z);
-        short lowerBoundZ = Math.Min(box2.Z, box1.Z);
+        var higherBoundZ = Math.Max(box1.Z, box2.Z);
+        var lowerBoundZ = Math.Min(box2.Z, box1.Z);
 
-        short higherBoundY = Math.Max(box1.Y, box2.Y);
-        short lowerBoundY = Math.Min(box2.Y, box1.Y);
+        var higherBoundY = Math.Max(box1.Y, box2.Y);
+        var lowerBoundY = Math.Min(box2.Y, box1.Y);
 
-        short higherBoundX = Math.Max(box1.X, box2.X);
-        short lowerBoundX = Math.Min(box2.X, box1.X);
+        var higherBoundX = Math.Max(box1.X, box2.X);
+        var lowerBoundX = Math.Min(box2.X, box1.X);
 
         if (coord.Z > higherBoundZ || coord.Z < lowerBoundZ)
         {

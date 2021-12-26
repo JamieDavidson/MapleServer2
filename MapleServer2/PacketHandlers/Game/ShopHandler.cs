@@ -23,7 +23,7 @@ internal sealed class ShopHandler : GamePacketHandler
         public const byte OpenViaItem = 0x0A;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -49,9 +49,9 @@ internal sealed class ShopHandler : GamePacketHandler
 
     public static void HandleOpen(GameSession session, IFieldObject<NpcMetadata> npcFieldObject)
     {
-        NpcMetadata metadata = npcFieldObject.Value;
+        var metadata = npcFieldObject.Value;
 
-        Shop shop = DatabaseManager.Shops.FindById(metadata.ShopId);
+        var shop = DatabaseManager.Shops.FindById(metadata.ShopId);
         if (shop == null)
         {
             Logger.Warn($"Unknown shop ID: {metadata.ShopId}");
@@ -59,7 +59,7 @@ internal sealed class ShopHandler : GamePacketHandler
         }
 
         session.Send(ShopPacket.Open(shop));
-        foreach (ShopItem shopItem in shop.Items)
+        foreach (var shopItem in shop.Items)
         {
             session.Send(ShopPacket.LoadProducts(shopItem));
         }
@@ -74,11 +74,11 @@ internal sealed class ShopHandler : GamePacketHandler
         session.Player.ShopId = 0;
     }
 
-    private static void HandleSell(GameSession session, PacketReader packet)
+    private static void HandleSell(GameSession session, IPacketReader packet)
     {
         // sell to shop
-        long itemUid = packet.ReadLong();
-        int quantity = packet.ReadInt();
+        var itemUid = packet.ReadLong();
+        var quantity = packet.ReadInt();
 
         var inventory = session.Player.Inventory;
         var item = inventory.GetItemByUid(itemUid);
@@ -87,7 +87,7 @@ internal sealed class ShopHandler : GamePacketHandler
             return;
         }
 
-        int price = ItemMetadataStorage.GetCustomSellPrice(item.Id);
+        var price = ItemMetadataStorage.GetCustomSellPrice(item.Id);
         session.Player.Wallet.Meso.Modify(price * quantity);
 
         session.Player.Inventory.ConsumeItem(session, item.Uid, quantity);
@@ -95,12 +95,12 @@ internal sealed class ShopHandler : GamePacketHandler
         session.Send(ShopPacket.Sell(item, quantity));
     }
 
-    private static void HandleBuy(GameSession session, PacketReader packet)
+    private static void HandleBuy(GameSession session, IPacketReader packet)
     {
-        int itemUid = packet.ReadInt();
-        int quantity = packet.ReadInt();
+        var itemUid = packet.ReadInt();
+        var quantity = packet.ReadInt();
 
-        ShopItem shopItem = DatabaseManager.ShopItems.FindByUid(itemUid);
+        var shopItem = DatabaseManager.ShopItems.FindByUid(itemUid);
 
         switch (shopItem.TokenType)
         {
@@ -150,10 +150,10 @@ internal sealed class ShopHandler : GamePacketHandler
         session.Send(ShopPacket.Buy(shopItem.ItemId, quantity, shopItem.Price, shopItem.TokenType));
     }
 
-    private static void HandleOpenViaItem(GameSession session, PacketReader packet)
+    private static void HandleOpenViaItem(GameSession session, IPacketReader packet)
     {
-        byte unk = packet.ReadByte();
-        int itemId = packet.ReadInt();
+        var unk = packet.ReadByte();
+        var itemId = packet.ReadInt();
 
         var inventory = session.Player.Inventory;
         var item = inventory.GetItemByItemId(itemId);
@@ -162,7 +162,7 @@ internal sealed class ShopHandler : GamePacketHandler
             return;
         }
 
-        Shop shop = DatabaseManager.Shops.FindById(item.ShopID);
+        var shop = DatabaseManager.Shops.FindById(item.ShopID);
         if (shop == null)
         {
             Logger.Warn($"Unknown shop ID: {item.ShopID}");
@@ -170,7 +170,7 @@ internal sealed class ShopHandler : GamePacketHandler
         }
 
         session.Send(ShopPacket.Open(shop));
-        foreach (ShopItem shopItem in shop.Items)
+        foreach (var shopItem in shop.Items)
         {
             session.Send(ShopPacket.LoadProducts(shopItem));
         }

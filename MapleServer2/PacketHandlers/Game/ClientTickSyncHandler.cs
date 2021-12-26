@@ -8,7 +8,7 @@ internal sealed class ClientTickSyncHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.RESPONSE_CLIENTTICK_SYNC;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         session.ClientTick = packet.ReadInt();
         session.ServerTick = packet.ReadInt();

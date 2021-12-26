@@ -11,7 +11,7 @@ internal abstract class LoginPacketHandler : IPacketHandler<LoginSession>
 
     protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    public abstract void Handle(LoginSession session, PacketReader packet);
+    public abstract void Handle(LoginSession session, IPacketReader packet);
 
     public override string ToString()
     {

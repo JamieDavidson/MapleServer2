@@ -29,7 +29,7 @@ internal sealed class ServerEnterPacketHandler : LoginPacketHandler
         ServerName = Environment.GetEnvironmentVariable("NAME");
     }
 
-    public override void Handle(LoginSession session, PacketReader packet)
+    public override void Handle(LoginSession session, IPacketReader packet)
     {
         List<Banner> banners = DatabaseManager.Banners.FindAllBanners();
         session.Send(BannerListPacket.SetBanner(banners));

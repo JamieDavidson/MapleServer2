@@ -17,7 +17,7 @@ internal sealed class TriggerHandler : GamePacketHandler
         public const byte UpdateWidget = 0x8;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -40,10 +40,10 @@ internal sealed class TriggerHandler : GamePacketHandler
         session.FieldManager.Triggers.FirstOrDefault(x => x.HasSkipScene())?.SkipScene();
     }
 
-    private static void HandleUpdateWidget(GameSession session, PacketReader packet)
+    private static void HandleUpdateWidget(GameSession session, IPacketReader packet)
     {
-        TriggerUIMode submode = (TriggerUIMode) packet.ReadByte();
-        int arg = packet.ReadInt();
+        var submode = (TriggerUIMode) packet.ReadByte();
+        var arg = packet.ReadInt();
 
         Widget widget;
         switch (submode)

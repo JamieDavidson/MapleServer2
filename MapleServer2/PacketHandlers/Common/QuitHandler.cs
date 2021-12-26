@@ -25,7 +25,7 @@ internal sealed class QuitHandler : CommonPacketHandler
         Quit = 0x01
     }
 
-    protected override void HandleCommon(Session session, PacketReader packet)
+    protected override void HandleCommon(Session session, IPacketReader packet)
     {
         QuitMode mode = (QuitMode) packet.ReadByte();
 

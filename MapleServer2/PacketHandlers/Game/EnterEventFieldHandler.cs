@@ -10,9 +10,9 @@ internal sealed class EnterEventFieldHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.ENTER_EVENTFIELD;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
-        FieldPopupEvent fieldPopupEvent = DatabaseManager.Events.FindFieldPopupEvent();
+        var fieldPopupEvent = DatabaseManager.Events.FindFieldPopupEvent();
         if (fieldPopupEvent == null)
         {
             return;

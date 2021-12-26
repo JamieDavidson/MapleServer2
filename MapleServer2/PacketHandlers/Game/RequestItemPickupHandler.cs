@@ -10,11 +10,11 @@ internal sealed class RequestItemPickupHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_PICKUP;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
-        int objectId = packet.ReadInt();
+        var objectId = packet.ReadInt();
 
-        if (!session.FieldManager.State.TryGetItem(objectId, out IFieldObject<Item> fieldItem))
+        if (!session.FieldManager.State.TryGetItem(objectId, out var fieldItem))
         {
             return;
         }
@@ -49,14 +49,14 @@ internal sealed class RequestItemPickupHandler : GamePacketHandler
                 break;
         }
 
-        if (session.FieldManager.RemoveItem(objectId, out Item item))
+        if (session.FieldManager.RemoveItem(objectId, out var item))
         {
             session.FieldManager.BroadcastPacket(FieldItemPacket.PickupItem(objectId, item, session.Player.FieldPlayer.ObjectId));
             session.FieldManager.BroadcastPacket(FieldItemPacket.RemoveItem(objectId));
         }
 
         int countExtra = packet.ReadByte();
-        for (int i = 0; i < countExtra; i++)
+        for (var i = 0; i < countExtra; i++)
         {
         }
     }

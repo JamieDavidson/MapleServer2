@@ -13,17 +13,17 @@ internal abstract class CommonPacketHandler : IPacketHandler<LoginSession>, IPac
 
     protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    public virtual void Handle(GameSession session, PacketReader packet)
+    public virtual void Handle(GameSession session, IPacketReader packet)
     {
         HandleCommon(session, packet);
     }
 
-    public virtual void Handle(LoginSession session, PacketReader packet)
+    public virtual void Handle(LoginSession session, IPacketReader packet)
     {
         HandleCommon(session, packet);
     }
 
-    protected abstract void HandleCommon(Session session, PacketReader packet);
+    protected abstract void HandleCommon(Session session, IPacketReader packet);
 
     public override string ToString()
     {

@@ -16,7 +16,7 @@ internal sealed class RequestItemLockHandler : GamePacketHandler
         public const byte Update = 0x03;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -39,24 +39,24 @@ internal sealed class RequestItemLockHandler : GamePacketHandler
         }
     }
 
-    private static void HandleAdd(GameSession session, PacketReader packet)
+    private static void HandleAdd(GameSession session, IPacketReader packet)
     {
-        byte mode = packet.ReadByte();
-        long uid = packet.ReadLong();
+        var mode = packet.ReadByte();
+        var uid = packet.ReadLong();
 
         session.Player.LockInventory.Add(session, mode, uid);
     }
 
-    private static void HandleRemove(GameSession session, PacketReader packet)
+    private static void HandleRemove(GameSession session, IPacketReader packet)
     {
-        long uid = packet.ReadLong();
+        var uid = packet.ReadLong();
 
         session.Player.LockInventory.Remove(session, uid);
     }
 
-    private static void HandleUpdateItem(GameSession session, PacketReader packet)
+    private static void HandleUpdateItem(GameSession session, IPacketReader packet)
     {
-        byte operation = packet.ReadByte();
+        var operation = packet.ReadByte();
 
         session.Player.LockInventory.Update(session, operation);
     }

@@ -18,7 +18,7 @@ internal sealed class ChangeAttributesHandler : GamePacketHandler
         public const byte SelectNewAttributes = 0x02;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -36,31 +36,31 @@ internal sealed class ChangeAttributesHandler : GamePacketHandler
         }
     }
 
-    private static void HandleChangeAttributes(GameSession session, PacketReader packet)
+    private static void HandleChangeAttributes(GameSession session, IPacketReader packet)
     {
         short lockStatId = -1;
-        bool isSpecialStat = false;
-        long itemUid = packet.ReadLong();
+        var isSpecialStat = false;
+        var itemUid = packet.ReadLong();
         packet.Skip(8);
-        bool useLock = packet.ReadBool();
+        var useLock = packet.ReadBool();
         if (useLock)
         {
             isSpecialStat = packet.ReadBool();
             lockStatId = packet.ReadShort();
         }
 
-        Inventory inventory = session.Player.Inventory;
+        var inventory = session.Player.Inventory;
 
         // There are multiple ids for each type of material
         var greenCrystals = inventory.GetItemsByTag("GreenCrystal").ToArray();
         var metaCells = inventory.GetItemsByTag("MetaCell").ToArray();
         var crystalFragments = inventory.GetItemsByTag("CrystalPiece").ToArray();
 
-        int greenCrystalTotalAmount = greenCrystals.Sum(i => i.Value.Amount);
-        int metacellTotalAmount = metaCells.Sum(i => i.Value.Amount);
-        int crystalFragmentTotalAmount = crystalFragments.Sum(i => i.Value.Amount);
+        var greenCrystalTotalAmount = greenCrystals.Sum(i => i.Value.Amount);
+        var metacellTotalAmount = metaCells.Sum(i => i.Value.Amount);
+        var crystalFragmentTotalAmount = crystalFragments.Sum(i => i.Value.Amount);
         
-        Item gear = inventory.GetItemByUid(itemUid);
+        var gear = inventory.GetItemByUid(itemUid);
         Item scrollLock = null;
 
         // Check if gear exist in inventory
@@ -69,7 +69,7 @@ internal sealed class ChangeAttributesHandler : GamePacketHandler
             return;
         }
 
-        string tag = "";
+        var tag = "";
         if (Item.IsAccessory(gear.ItemSlot))
         {
             tag = "LockItemOptionAccessory";
@@ -97,15 +97,15 @@ internal sealed class ChangeAttributesHandler : GamePacketHandler
             }
         }
 
-        int greenCrystalCost = 5;
-        int metacellCosts = Math.Min(11 + gear.TimesAttributesChanged, 25);
+        var greenCrystalCost = 5;
+        var metacellCosts = Math.Min(11 + gear.TimesAttributesChanged, 25);
 
         // Relation between TimesAttributesChanged to amount of crystalFragments for epic gear
         int[] crystalFragmentsEpicGear = {
             200, 250, 312, 390, 488, 610, 762, 953, 1192, 1490, 1718, 2131, 2642, 3277, 4063
         };
 
-        int crystalFragmentsCosts = crystalFragmentsEpicGear[Math.Min(gear.TimesAttributesChanged, 14)];
+        var crystalFragmentsCosts = crystalFragmentsEpicGear[Math.Min(gear.TimesAttributesChanged, 14)];
 
         if (gear.Rarity > (short) RarityType.Epic)
         {
@@ -132,9 +132,9 @@ internal sealed class ChangeAttributesHandler : GamePacketHandler
         Item newItem = new(gear);
 
         // Get random stats except stat that is locked
-        List<ItemStat> randomList = ItemStats.RollBonusStatsWithStatLocked(newItem, lockStatId, isSpecialStat);
+        var randomList = ItemStats.RollBonusStatsWithStatLocked(newItem, lockStatId, isSpecialStat);
 
-        for (int i = 0; i < newItem.Stats.BonusStats.Count; i++)
+        for (var i = 0; i < newItem.Stats.BonusStats.Count; i++)
         {
             // Check if BonusStats[i] is NormalStat and isSpecialStat is false
             // Check if BonusStats[i] is SpecialStat and isSpecialStat is true
@@ -142,7 +142,7 @@ internal sealed class ChangeAttributesHandler : GamePacketHandler
             {
                 case NormalStat when !isSpecialStat:
                 case SpecialStat when isSpecialStat:
-                    ItemStat stat = newItem.Stats.BonusStats[i];
+                    var stat = newItem.Stats.BonusStats[i];
                     switch (stat)
                     {
                         case NormalStat ns when ns.ItemAttribute == (StatId) lockStatId:
@@ -167,12 +167,12 @@ internal sealed class ChangeAttributesHandler : GamePacketHandler
         session.Send(ChangeAttributesPacket.PreviewNewItem(newItem));
     }
 
-    private static void HandleSelectNewAttributes(GameSession session, PacketReader packet)
+    private static void HandleSelectNewAttributes(GameSession session, IPacketReader packet)
     {
-        long itemUid = packet.ReadLong();
+        var itemUid = packet.ReadLong();
 
-        Inventory inventory = session.Player.Inventory;
-        Item gear = inventory.TemporaryStorage.FirstOrDefault(x => x.Key == itemUid).Value;
+        var inventory = session.Player.Inventory;
+        var gear = inventory.TemporaryStorage.FirstOrDefault(x => x.Key == itemUid).Value;
         if (gear == null)
         {
             return;
@@ -185,8 +185,8 @@ internal sealed class ChangeAttributesHandler : GamePacketHandler
 
     private static void ConsumeMaterials(GameSession session, int greenCrystalCost, int metacellCosts, int crystalFragmentsCosts, IEnumerable<KeyValuePair<long, Item>> greenCrystals, IEnumerable<KeyValuePair<long, Item>> metacells, IEnumerable<KeyValuePair<long, Item>> crystalFragments)
     {
-        Inventory inventory = session.Player.Inventory;
-        foreach ((long key, Item value) in greenCrystals)
+        var inventory = session.Player.Inventory;
+        foreach ((var key, var value) in greenCrystals)
         {
             if (value.Amount >= greenCrystalCost)
             {
@@ -198,7 +198,7 @@ internal sealed class ChangeAttributesHandler : GamePacketHandler
             inventory.ConsumeItem(session, key, value.Amount);
         }
 
-        foreach ((long key, Item value) in metacells)
+        foreach ((var key, var value) in metacells)
         {
             if (value.Amount >= metacellCosts)
             {
@@ -210,7 +210,7 @@ internal sealed class ChangeAttributesHandler : GamePacketHandler
             inventory.ConsumeItem(session, key, value.Amount);
         }
 
-        foreach ((long key, Item value) in crystalFragments)
+        foreach ((var key, var value) in crystalFragments)
         {
             if (value.Amount >= crystalFragmentsCosts)
             {

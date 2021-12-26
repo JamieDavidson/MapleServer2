@@ -19,7 +19,7 @@ internal sealed class JobHandler : GamePacketHandler
         public const byte Preset = 0x0B;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
         switch (operation)
@@ -47,19 +47,19 @@ internal sealed class JobHandler : GamePacketHandler
         session.Send(JobPacket.Close());
     }
 
-    private static void HandleSaveSkillTree(GameSession session, PacketReader packet)
+    private static void HandleSaveSkillTree(GameSession session, IPacketReader packet)
     {
         // Get skill tab to update
-        SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == session.Player.ActiveSkillTabId);
+        var skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == session.Player.ActiveSkillTabId);
 
         // Read skills
-        int count = packet.ReadInt(); // Number of skills
-        for (int i = 0; i < count; i++)
+        var count = packet.ReadInt(); // Number of skills
+        for (var i = 0; i < count; i++)
         {
             // Read skill info
-            int id = packet.ReadInt(); // Skill id
-            short level = packet.ReadShort(); // Skill level
-            byte learned = packet.ReadByte(); // 00 if unlearned 01 if learned
+            var id = packet.ReadInt(); // Skill id
+            var level = packet.ReadShort(); // Skill level
+            var learned = packet.ReadByte(); // 00 if unlearned 01 if learned
 
             // Update current character skill tree data with new skill
             skillTab.AddOrUpdate(id, level, learned > 0);
@@ -71,25 +71,25 @@ internal sealed class JobHandler : GamePacketHandler
         DatabaseManager.SkillTabs.Update(skillTab);
     }
 
-    private static void HandleResetSkillTree(GameSession session, PacketReader packet)
+    private static void HandleResetSkillTree(GameSession session, IPacketReader packet)
     {
-        int unknown = packet.ReadInt();
+        var unknown = packet.ReadInt();
 
-        SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == session.Player.ActiveSkillTabId);
+        var skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == session.Player.ActiveSkillTabId);
         skillTab.ResetSkillTree(session.Player.Job);
         session.Send(JobPacket.Save(session.Player, session.Player.FieldPlayer.ObjectId));
         DatabaseManager.SkillTabs.Update(skillTab);
     }
 
-    private static void HandlePresetSkillTree(GameSession session, PacketReader packet)
+    private static void HandlePresetSkillTree(GameSession session, IPacketReader packet)
     {
-        SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == session.Player.ActiveSkillTabId);
-        int skillCount = packet.ReadInt();
-        for (int i = 0; i < skillCount; i++)
+        var skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == session.Player.ActiveSkillTabId);
+        var skillCount = packet.ReadInt();
+        for (var i = 0; i < skillCount; i++)
         {
-            int skillId = packet.ReadInt();
-            short skillLevel = packet.ReadShort();
-            bool learned = packet.ReadBool();
+            var skillId = packet.ReadInt();
+            var skillLevel = packet.ReadShort();
+            var learned = packet.ReadBool();
             skillTab.AddOrUpdate(skillId, skillLevel, learned);
         }
 

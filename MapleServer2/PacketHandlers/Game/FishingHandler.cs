@@ -34,7 +34,7 @@ internal sealed class FishingHandler : GamePacketHandler
         public const short GearOrMiscInventoryFull = 0x7;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -61,10 +61,10 @@ internal sealed class FishingHandler : GamePacketHandler
         }
     }
 
-    private static void HandlePrepareFishing(GameSession session, PacketReader packet)
+    private static void HandlePrepareFishing(GameSession session, IPacketReader packet)
     {
-        long fishingRodUid = packet.ReadLong();
-        MasteryExp masteryExp = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == MasteryType.Fishing);
+        var fishingRodUid = packet.ReadLong();
+        var masteryExp = session.Player.Levels.MasteryExp.FirstOrDefault(x => x.Type == MasteryType.Fishing);
 
         if (!FishingSpotMetadataStorage.CanFish(session.Player.MapId, masteryExp.CurrentExp))
         {
@@ -79,18 +79,18 @@ internal sealed class FishingHandler : GamePacketHandler
             return;
         }
 
-        Item fishingRod = inventory.GetItemByUid(fishingRodUid);
-        FishingRodMetadata rodMetadata = FishingRodMetadataStorage.GetMetadata(fishingRod.Function.Id);
+        var fishingRod = inventory.GetItemByUid(fishingRodUid);
+        var rodMetadata = FishingRodMetadataStorage.GetMetadata(fishingRod.Function.Id);
 
         if (rodMetadata.MasteryLimit < masteryExp.CurrentExp)
         {
             session.Send(FishingPacket.Notice(FishingNotices.MasteryTooLowForRod));
         }
 
-        int direction = Direction.GetClosestDirection(session.Player.FieldPlayer.Rotation);
-        CoordF startCoord = Block.ClosestBlock(session.Player.FieldPlayer.Coord);
+        var direction = Direction.GetClosestDirection(session.Player.FieldPlayer.Rotation);
+        var startCoord = Block.ClosestBlock(session.Player.FieldPlayer.Coord);
 
-        List<MapBlock> fishingBlocks = CollectFishingBlocks(startCoord, direction, session.Player.MapId);
+        var fishingBlocks = CollectFishingBlocks(startCoord, direction, session.Player.MapId);
         if (fishingBlocks.Count == 0)
         {
             session.Send(FishingPacket.Notice(FishingNotices.CanOnlyFishNearWater));
@@ -99,10 +99,10 @@ internal sealed class FishingHandler : GamePacketHandler
         session.Player.FishingRod = fishingRod;
 
         // Adding GuideObject
-        CoordF guideBlock = GetObjectBlock(fishingBlocks, session.Player.FieldPlayer.Coord);
+        var guideBlock = GetObjectBlock(fishingBlocks, session.Player.FieldPlayer.Coord);
         guideBlock.Z += Block.BLOCK_SIZE; // sits on top of the block
         GuideObject guide = new(1, session.Player.CharacterId);
-        IFieldObject<GuideObject> fieldGuide = session.FieldManager.RequestFieldObject(guide);
+        var fieldGuide = session.FieldManager.RequestFieldObject(guide);
         fieldGuide.Coord = guideBlock;
         session.Player.Guide = fieldGuide;
         session.FieldManager.AddGuide(fieldGuide);
@@ -114,7 +114,7 @@ internal sealed class FishingHandler : GamePacketHandler
 
     private static CoordF GetObjectBlock(List<MapBlock> blocks, CoordF playerCoord)
     {
-        MapBlock guideBlock = blocks.OrderBy(o => Math.Sqrt(Math.Pow(playerCoord.X - o.Coord.X, 2) + Math.Pow(playerCoord.Y - o.Coord.Y, 2))).First();
+        var guideBlock = blocks.OrderBy(o => Math.Sqrt(Math.Pow(playerCoord.X - o.Coord.X, 2) + Math.Pow(playerCoord.Y - o.Coord.Y, 2))).First();
         return guideBlock.Coord.ToFloat();
     }
 
@@ -123,18 +123,18 @@ internal sealed class FishingHandler : GamePacketHandler
         List<MapBlock> blocks = new();
 
         startCoord.Z -= Block.BLOCK_SIZE;
-        CoordF checkBlock = startCoord;
+        var checkBlock = startCoord;
         if (direction == Direction.NORTH_EAST)
         {
             checkBlock.Y += 2 * Block.BLOCK_SIZE; // start at the corner
 
-            for (int yAxis = 0; yAxis < 5; yAxis++)
+            for (var yAxis = 0; yAxis < 5; yAxis++)
             {
-                for (int xAxis = 0; xAxis < 3; xAxis++)
+                for (var xAxis = 0; xAxis < 3; xAxis++)
                 {
                     checkBlock.X += Block.BLOCK_SIZE;
 
-                    MapBlock block = ScanZAxisForLiquidBlock(checkBlock, mapId);
+                    var block = ScanZAxisForLiquidBlock(checkBlock, mapId);
                     if (block != null)
                     {
                         blocks.Add(block);
@@ -148,12 +148,12 @@ internal sealed class FishingHandler : GamePacketHandler
         {
             checkBlock.X += 2 * Block.BLOCK_SIZE; // start at the corner
 
-            for (int xAxis = 0; xAxis < 5; xAxis++)
+            for (var xAxis = 0; xAxis < 5; xAxis++)
             {
-                for (int yAxis = 0; yAxis < 3; yAxis++)
+                for (var yAxis = 0; yAxis < 3; yAxis++)
                 {
                     checkBlock.Y += Block.BLOCK_SIZE;
-                    MapBlock block = ScanZAxisForLiquidBlock(checkBlock, mapId);
+                    var block = ScanZAxisForLiquidBlock(checkBlock, mapId);
                     if (block != null)
                     {
                         blocks.Add(block);
@@ -167,13 +167,13 @@ internal sealed class FishingHandler : GamePacketHandler
         {
             checkBlock.Y -= 2 * Block.BLOCK_SIZE; // start at the corner
 
-            for (int yAxis = 0; yAxis < 5; yAxis++)
+            for (var yAxis = 0; yAxis < 5; yAxis++)
             {
-                for (int xAxis = 0; xAxis < 3; xAxis++)
+                for (var xAxis = 0; xAxis < 3; xAxis++)
                 {
                     checkBlock.X -= Block.BLOCK_SIZE;
 
-                    MapBlock block = ScanZAxisForLiquidBlock(checkBlock, mapId);
+                    var block = ScanZAxisForLiquidBlock(checkBlock, mapId);
                     if (block != null)
                     {
                         blocks.Add(block);
@@ -187,13 +187,13 @@ internal sealed class FishingHandler : GamePacketHandler
         {
             checkBlock.X -= 2 * Block.BLOCK_SIZE; // start at the corner
 
-            for (int xAxis = 0; xAxis < 5; xAxis++)
+            for (var xAxis = 0; xAxis < 5; xAxis++)
             {
-                for (int yAxis = 0; yAxis < 3; yAxis++)
+                for (var yAxis = 0; yAxis < 3; yAxis++)
                 {
                     checkBlock.Y -= Block.BLOCK_SIZE;
 
-                    MapBlock block = ScanZAxisForLiquidBlock(checkBlock, mapId);
+                    var block = ScanZAxisForLiquidBlock(checkBlock, mapId);
                     if (block != null)
                     {
                         blocks.Add(block);
@@ -224,14 +224,14 @@ internal sealed class FishingHandler : GamePacketHandler
 
     private static MapBlock ScanZAxisForLiquidBlock(CoordF checkBlock, int mapId)
     {
-        for (int zAxis = 0; zAxis < 3; zAxis++)
+        for (var zAxis = 0; zAxis < 3; zAxis++)
         {
             if (MapMetadataStorage.BlockAboveExists(mapId, checkBlock.ToShort()))
             {
                 return null;
             }
 
-            MapBlock block = MapMetadataStorage.GetMapBlock(mapId, checkBlock.ToShort());
+            var block = MapMetadataStorage.GetMapBlock(mapId, checkBlock.ToShort());
             if (block == null || !IsLiquidBlock(block))
             {
                 checkBlock.Z -= Block.BLOCK_SIZE;
@@ -251,24 +251,24 @@ internal sealed class FishingHandler : GamePacketHandler
         session.Player.Guide = null; // remove guide from player
     }
 
-    private static void HandleCatch(GameSession session, PacketReader packet)
+    private static void HandleCatch(GameSession session, IPacketReader packet)
     {
-        bool success = packet.ReadBool();
+        var success = packet.ReadBool();
 
-        CoordF guideBlock = Block.ClosestBlock(session.Player.Guide.Coord);
+        var guideBlock = Block.ClosestBlock(session.Player.Guide.Coord);
         guideBlock.Z -= Block.BLOCK_SIZE; // get liquid block coord
-        MapBlock block = MapMetadataStorage.GetMapBlock(session.Player.MapId, guideBlock.ToShort());
-        List<FishMetadata> fishes = FishMetadataStorage.GetValidFishes(session.Player.MapId, block.Attribute);
+        var block = MapMetadataStorage.GetMapBlock(session.Player.MapId, guideBlock.ToShort());
+        var fishes = FishMetadataStorage.GetValidFishes(session.Player.MapId, block.Attribute);
 
         //determine fish rarity
-        List<FishMetadata> selectedFishRarities = FilterFishesByRarity(fishes);
+        var selectedFishRarities = FilterFishesByRarity(fishes);
 
-        Random rnd = RandomProvider.Get();
-        int randomFishIndex = rnd.Next(selectedFishRarities.Count);
-        FishMetadata fish = selectedFishRarities[randomFishIndex];
+        var rnd = RandomProvider.Get();
+        var randomFishIndex = rnd.Next(selectedFishRarities.Count);
+        var fish = selectedFishRarities[randomFishIndex];
 
         //determine fish size
-        int fishSize = rnd.NextDouble() switch
+        var fishSize = rnd.NextDouble() switch
         {
             >= 0.0 and < 0.03 => rnd.Next(fish.SmallSize[0], fish.SmallSize[1]),
             >= 0.03 and < 0.15 => rnd.Next(fish.SmallSize[1], fish.BigSize[0]),
@@ -317,33 +317,33 @@ internal sealed class FishingHandler : GamePacketHandler
         return selectedFishRarities;
     }
 
-    private static void HandleStart(GameSession session, PacketReader packet)
+    private static void HandleStart(GameSession session, IPacketReader packet)
     {
-        CoordB coord = packet.Read<CoordB>();
-        CoordS fishingBlock = coord.ToShort();
-        MapBlock block = MapMetadataStorage.GetMapBlock(session.Player.MapId, fishingBlock);
+        var coord = packet.Read<CoordB>();
+        var fishingBlock = coord.ToShort();
+        var block = MapMetadataStorage.GetMapBlock(session.Player.MapId, fishingBlock);
         if (block == null || !IsLiquidBlock(block))
         {
             return;
         }
 
-        List<FishMetadata> fishes = FishMetadataStorage.GetValidFishes(session.Player.MapId, block.Attribute);
+        var fishes = FishMetadataStorage.GetValidFishes(session.Player.MapId, block.Attribute);
 
-        bool minigame = false;
-        int fishingTick = 15000; // base fishing tick
+        var minigame = false;
+        var fishingTick = 15000; // base fishing tick
 
-        Random rnd = RandomProvider.Get();
+        var rnd = RandomProvider.Get();
 
-        int successChance = rnd.Next(0, 100);
+        var successChance = rnd.Next(0, 100);
         if (successChance < 90)
         {
-            int minigameChance = rnd.Next(0, 100);
+            var minigameChance = rnd.Next(0, 100);
             if (minigameChance < 20)
             {
                 minigame = true;
             }
-            FishingRodMetadata rodMetadata = FishingRodMetadataStorage.GetMetadata(session.Player.FishingRod.Function.Id);
-            int rodFishingTick = fishingTick - rodMetadata.ReduceTime; // 10000 is the base tick for fishing
+            var rodMetadata = FishingRodMetadataStorage.GetMetadata(session.Player.FishingRod.Function.Id);
+            var rodFishingTick = fishingTick - rodMetadata.ReduceTime; // 10000 is the base tick for fishing
             fishingTick = rnd.Next(rodFishingTick - rodFishingTick / 3, rodFishingTick); // chance for early catch
         }
         else
@@ -360,15 +360,15 @@ internal sealed class FishingHandler : GamePacketHandler
 
     private static void HandleCatchItem(GameSession session)
     {
-        Random rnd = RandomProvider.Get();
+        var rnd = RandomProvider.Get();
 
-        int itemChance = rnd.Next(0, 100);
+        var itemChance = rnd.Next(0, 100);
         if (itemChance > 10)
         {
             return;
         }
 
-        FishingItemType type = rnd.NextDouble() switch
+        var type = rnd.NextDouble() switch
         {
             >= 0 and < 0.825 => FishingItemType.Trash,
             >= 0.825 and < 0.975 => FishingItemType.LightBox,
@@ -377,7 +377,7 @@ internal sealed class FishingHandler : GamePacketHandler
             _ => FishingItemType.Trash
         };
 
-        FishingRewardItem fishingItem = FishingRewardsMetadataStorage.GetFishingRewardItem(type);
+        var fishingItem = FishingRewardsMetadataStorage.GetFishingRewardItem(type);
 
         Item item = new(fishingItem.Id)
         {

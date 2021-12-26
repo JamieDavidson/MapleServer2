@@ -40,7 +40,7 @@ internal sealed class BlackMarketHandler : GamePacketHandler
         public const byte RequiredLevelToBuy = 0x2C;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -72,14 +72,14 @@ internal sealed class BlackMarketHandler : GamePacketHandler
 
     private static void HandleOpen(GameSession session)
     {
-        List<BlackMarketListing> listings = GameServer.BlackMarketManager.GetListingsByCharacterId(session.Player.CharacterId);
+        var listings = GameServer.BlackMarketManager.GetListingsByCharacterId(session.Player.CharacterId);
         session.Send(BlackMarketPacket.Open(listings));
     }
 
-    private static void HandlePrepareListing(GameSession session, PacketReader packet)
+    private static void HandlePrepareListing(GameSession session, IPacketReader packet)
     {
-        int itemId = packet.ReadInt();
-        int rarity = packet.ReadInt();
+        var itemId = packet.ReadInt();
+        var rarity = packet.ReadInt();
 
         var inventory = session.Player.Inventory;
         if (!inventory.HasItemWithRarity(itemId, rarity))
@@ -87,9 +87,9 @@ internal sealed class BlackMarketHandler : GamePacketHandler
             return;
         }
 
-        int npcShopPrice = 0;
+        var npcShopPrice = 0;
 
-        ShopItem shopItem = DatabaseManager.ShopItems.FindByItemId(itemId);
+        var shopItem = DatabaseManager.ShopItems.FindByItemId(itemId);
         if (shopItem != null)
         {
             npcShopPrice = shopItem.Price;
@@ -98,11 +98,11 @@ internal sealed class BlackMarketHandler : GamePacketHandler
         session.Send(BlackMarketPacket.PrepareListing(itemId, rarity, npcShopPrice));
     }
 
-    private static void HandleCreateListing(GameSession session, PacketReader packet)
+    private static void HandleCreateListing(GameSession session, IPacketReader packet)
     {
-        long itemUid = packet.ReadLong();
-        long price = packet.ReadLong();
-        int quantity = packet.ReadInt();
+        var itemUid = packet.ReadLong();
+        var price = packet.ReadLong();
+        var quantity = packet.ReadInt();
 
         var inventory = session.Player.Inventory;
         if (!inventory.HasItemWithUid(itemUid))
@@ -111,11 +111,11 @@ internal sealed class BlackMarketHandler : GamePacketHandler
             return;
         }
 
-        double depositRate = 0.01; // 1% deposit rate
-        int maxDeposit = 100000;
+        var depositRate = 0.01; // 1% deposit rate
+        var maxDeposit = 100000;
 
-        int calculatedDeposit = (int) (depositRate * (price * quantity));
-        int deposit = Math.Min(calculatedDeposit, maxDeposit);
+        var calculatedDeposit = (int) (depositRate * (price * quantity));
+        var deposit = Math.Min(calculatedDeposit, maxDeposit);
 
         if (!session.Player.Wallet.Meso.Modify(-deposit))
         {
@@ -130,7 +130,7 @@ internal sealed class BlackMarketHandler : GamePacketHandler
 
         if (item.Amount > quantity)
         {
-            item.TrySplit(quantity, out Item newStack);
+            item.TrySplit(quantity, out var newStack);
             session.Send(ItemInventoryPacket.Update(item.Uid, item.Amount));
             item = newStack;
         }
@@ -143,11 +143,11 @@ internal sealed class BlackMarketHandler : GamePacketHandler
         session.Send(BlackMarketPacket.CreateListing(listing));
     }
 
-    private static void HandleCancelListing(GameSession session, PacketReader packet)
+    private static void HandleCancelListing(GameSession session, IPacketReader packet)
     {
-        long listingId = packet.ReadLong();
+        var listingId = packet.ReadLong();
 
-        BlackMarketListing listing = GameServer.BlackMarketManager.GetListingById(listingId);
+        var listing = GameServer.BlackMarketManager.GetListingById(listingId);
         if (listing == null)
         {
             return;
@@ -164,38 +164,38 @@ internal sealed class BlackMarketHandler : GamePacketHandler
         MailHelper.BlackMarketCancellation(listing);
     }
 
-    private static void HandleSearch(GameSession session, PacketReader packet)
+    private static void HandleSearch(GameSession session, IPacketReader packet)
     {
-        int minCategoryId = packet.ReadInt();
-        int maxCategoryId = packet.ReadInt();
-        int minLevel = packet.ReadInt();
-        int maxLevel = packet.ReadInt();
-        JobFlag job = (JobFlag) packet.ReadInt();
-        int rarity = packet.ReadInt();
-        int minEnchantLevel = packet.ReadInt();
-        int maxEnchantLevel = packet.ReadInt();
-        byte minSockets = packet.ReadByte();
-        byte maxSockets = packet.ReadByte();
-        string name = packet.ReadUnicodeString();
-        int startPage = packet.ReadInt();
-        long sort = packet.ReadLong();
+        var minCategoryId = packet.ReadInt();
+        var maxCategoryId = packet.ReadInt();
+        var minLevel = packet.ReadInt();
+        var maxLevel = packet.ReadInt();
+        var job = (JobFlag) packet.ReadInt();
+        var rarity = packet.ReadInt();
+        var minEnchantLevel = packet.ReadInt();
+        var maxEnchantLevel = packet.ReadInt();
+        var minSockets = packet.ReadByte();
+        var maxSockets = packet.ReadByte();
+        var name = packet.ReadUnicodeString();
+        var startPage = packet.ReadInt();
+        var sort = packet.ReadLong();
         packet.ReadShort();
-        bool additionalOptionsEnabled = packet.ReadBool();
+        var additionalOptionsEnabled = packet.ReadBool();
 
         List<ItemStat> stats = new();
         if (additionalOptionsEnabled)
         {
             packet.ReadByte(); // always 1
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
-                int statId = packet.ReadInt();
-                int value = packet.ReadInt();
+                var statId = packet.ReadInt();
+                var value = packet.ReadInt();
                 if (value == 0)
                 {
                     continue;
                 }
 
-                ItemStat stat = ReadStat(statId, value);
+                var stat = ReadStat(statId, value);
                 if (stat == null)
                 {
                     continue;
@@ -204,19 +204,19 @@ internal sealed class BlackMarketHandler : GamePacketHandler
             }
         }
 
-        List<string> itemCategories = BlackMarketTableMetadataStorage.GetItemCategories(minCategoryId, maxCategoryId);
-        List<BlackMarketListing> searchResults = GameServer.BlackMarketManager.GetSearchedListings(itemCategories, minLevel, maxLevel, rarity, name, job,
+        var itemCategories = BlackMarketTableMetadataStorage.GetItemCategories(minCategoryId, maxCategoryId);
+        var searchResults = GameServer.BlackMarketManager.GetSearchedListings(itemCategories, minLevel, maxLevel, rarity, name, job,
             minEnchantLevel, maxEnchantLevel, minSockets, maxSockets, startPage, sort, additionalOptionsEnabled, stats);
 
         session.Send(BlackMarketPacket.SearchResults(searchResults));
     }
 
-    private static void HandlePurchase(GameSession session, PacketReader packet)
+    private static void HandlePurchase(GameSession session, IPacketReader packet)
     {
-        long listingId = packet.ReadLong();
-        int amount = packet.ReadInt();
+        var listingId = packet.ReadLong();
+        var amount = packet.ReadInt();
 
-        BlackMarketListing listing = GameServer.BlackMarketManager.GetListingById(listingId);
+        var listing = GameServer.BlackMarketManager.GetListingById(listingId);
         if (listing == null)
         {
             return;
@@ -240,7 +240,7 @@ internal sealed class BlackMarketHandler : GamePacketHandler
         }
 
         Item purchasedItem;
-        bool removeListing = false;
+        var removeListing = false;
         if (listing.Item.Amount == amount)
         {
             purchasedItem = listing.Item;
@@ -268,16 +268,16 @@ internal sealed class BlackMarketHandler : GamePacketHandler
         // Normal Stat with percent value
         if (statId >= 1000 && statId < 11000)
         {
-            float percent = (float) (value + 5) / 10000;
-            StatId attribute = (StatId) (statId - 1000);
+            var percent = (float) (value + 5) / 10000;
+            var attribute = (StatId) (statId - 1000);
             return new NormalStat(attribute, 0, percent);
         }
 
         // Special Stat with percent value
         if (statId >= 11000)
         {
-            float percent = (float) (value + 5) / 10000;
-            SpecialStatId attribute = (SpecialStatId) (statId - 11000);
+            var percent = (float) (value + 5) / 10000;
+            var attribute = (SpecialStatId) (statId - 11000);
             return new SpecialStat(attribute, 0, percent);
         }
 

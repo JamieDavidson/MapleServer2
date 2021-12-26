@@ -19,9 +19,9 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_ITEM_USE;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
-        long itemUid = packet.ReadLong();
+        var itemUid = packet.ReadLong();
 
         var inventory = session.Player.Inventory;
         if (!inventory.HasItemWithUid(itemUid))
@@ -29,7 +29,7 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
             return;
         }
 
-        Item item = inventory.GetItemByUid(itemUid);
+        var item = inventory.GetItemByUid(itemUid);
 
         switch (item.Function.Name)
         {
@@ -106,7 +106,7 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
 
     private static void HandleChatEmoticonAdd(GameSession session, Item item)
     {
-        long expiration = TimeInfo.Now() + item.Function.ChatEmoticonAdd.Duration + Environment.TickCount;
+        var expiration = TimeInfo.Now() + item.Function.ChatEmoticonAdd.Duration + Environment.TickCount;
 
         if (item.Function.ChatEmoticonAdd.Duration == 0) // if no duration was set, set it to not expire
         {
@@ -124,29 +124,29 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
     }
 
-    private static void HandleSelectItemBox(GameSession session, PacketReader packet, Item item)
+    private static void HandleSelectItemBox(GameSession session, IPacketReader packet, Item item)
     {
-        short boxType = packet.ReadShort();
-        int index = packet.ReadShort() - 0x30;
+        var boxType = packet.ReadShort();
+        var index = packet.ReadShort() - 0x30;
 
         ItemBoxHelper.GiveItemFromSelectBox(session, item, index);
     }
 
-    private static void HandleOpenItemBox(GameSession session, PacketReader packet, Item item)
+    private static void HandleOpenItemBox(GameSession session, IPacketReader packet, Item item)
     {
-        short boxType = packet.ReadShort();
+        var boxType = packet.ReadShort();
 
         ItemBoxHelper.GiveItemFromOpenBox(session, item);
     }
 
-    private static void HandleOpenMassive(GameSession session, PacketReader packet, Item item)
+    private static void HandleOpenMassive(GameSession session, IPacketReader packet, Item item)
     {
         // Major WIP
 
-        string password = packet.ReadUnicodeString();
-        int duration = item.Function.OpenMassiveEvent.Duration + Environment.TickCount;
-        CoordF portalCoord = session.Player.FieldPlayer.Coord;
-        CoordF portalRotation = session.Player.FieldPlayer.Rotation;
+        var password = packet.ReadUnicodeString();
+        var duration = item.Function.OpenMassiveEvent.Duration + Environment.TickCount;
+        var portalCoord = session.Player.FieldPlayer.Coord;
+        var portalRotation = session.Player.FieldPlayer.Rotation;
 
         session.FieldManager.BroadcastPacket(PlayerHostPacket.StartMinigame(session.Player, item.Function.OpenMassiveEvent.FieldId));
         //  session.FieldManager.BroadcastPacket(FieldPacket.AddPortal()
@@ -208,12 +208,12 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
     }
 
-    private static void HandleOpenGachaBox(GameSession session, PacketReader packet, Item capsule)
+    private static void HandleOpenGachaBox(GameSession session, IPacketReader packet, Item capsule)
     {
-        string amount = packet.ReadUnicodeString();
-        int rollCount = 0;
+        var amount = packet.ReadUnicodeString();
+        var rollCount = 0;
 
-        GachaMetadata gacha = GachaMetadataStorage.GetMetadata(capsule.Function.Id);
+        var gacha = GachaMetadataStorage.GetMetadata(capsule.Function.Id);
 
         List<Item> items = new();
 
@@ -226,11 +226,11 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
             rollCount = 10;
         }
 
-        for (int i = 0; i < rollCount; i++)
+        for (var i = 0; i < rollCount; i++)
         {
-            GachaContent contents = HandleSmartGender(gacha, session.Player.Gender);
+            var contents = HandleSmartGender(gacha, session.Player.Gender);
 
-            int itemAmount = RandomProvider.Get().Next(contents.MinAmount, contents.MaxAmount);
+            var itemAmount = RandomProvider.Get().Next(contents.MinAmount, contents.MaxAmount);
 
             Item gachaItem = new(contents.ItemId)
             {
@@ -244,7 +244,7 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
 
         session.Send(FireWorksPacket.Gacha(items));
 
-        foreach (Item item in items)
+        foreach (var item in items)
         {
             session.Player.Inventory.AddItem(session, item, true);
         }
@@ -252,25 +252,25 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
 
     private static GachaContent HandleSmartGender(GachaMetadata gacha, Gender playerGender)
     {
-        Random random = RandomProvider.Get();
-        int index = random.Next(gacha.Contents.Count);
+        var random = RandomProvider.Get();
+        var index = random.Next(gacha.Contents.Count);
 
-        GachaContent contents = gacha.Contents[index];
+        var contents = gacha.Contents[index];
         if (!contents.SmartGender)
         {
             return contents;
         }
 
-        Gender itemGender = ItemMetadataStorage.GetGender(contents.ItemId);
+        var itemGender = ItemMetadataStorage.GetGender(contents.ItemId);
         if (playerGender != itemGender || itemGender != Gender.Neutral) // if it's not the same gender or unisex, roll again
         {
-            bool sameGender = false;
+            var sameGender = false;
             do
             {
-                int indexReroll = random.Next(gacha.Contents.Count);
+                var indexReroll = random.Next(gacha.Contents.Count);
 
-                GachaContent rerollContents = gacha.Contents[indexReroll];
-                Gender rerollContentsGender = ItemMetadataStorage.GetGender(rerollContents.ItemId);
+                var rerollContents = gacha.Contents[indexReroll];
+                var rerollContentsGender = ItemMetadataStorage.GetGender(rerollContents.ItemId);
 
                 if (rerollContentsGender == playerGender || rerollContentsGender == Gender.Neutral)
                 {
@@ -281,9 +281,9 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
         return contents;
     }
 
-    public static void HandleOpenCoupleEffectBox(GameSession session, PacketReader packet, Item item)
+    public static void HandleOpenCoupleEffectBox(GameSession session, IPacketReader packet, Item item)
     {
-        string targetUser = packet.ReadUnicodeString();
+        var targetUser = packet.ReadUnicodeString();
 
         if (targetUser == session.Player.Name)
         {
@@ -297,7 +297,7 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
             return;
         }
 
-        Player otherPlayer = GameServer.PlayerManager.GetPlayerByName(targetUser);
+        var otherPlayer = GameServer.PlayerManager.GetPlayerByName(targetUser);
         if (otherPlayer == null)
         {
             otherPlayer = DatabaseManager.Characters.FindPartialPlayerByName(targetUser);
@@ -333,7 +333,7 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
                             "",
                             $"<ms2><v str=\"{session.Player.Name}\" ></v></ms2>",
                             items,
-                            0, 0, out Mail mail);
+                            0, 0, out var mail);
 
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         session.Player.Inventory.AddItem(session, badge, true);
@@ -345,16 +345,16 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
         session.Send(NoticePacket.Notice(SystemNotice.BuddyBadgeMailedToUser, NoticeType.ChatAndFastText, noticeParameters));
     }
 
-    public static void HandlePetExtraction(GameSession session, PacketReader packet, Item item)
+    public static void HandlePetExtraction(GameSession session, IPacketReader packet, Item item)
     {
-        long petUid = long.Parse(packet.ReadUnicodeString());
+        var petUid = long.Parse(packet.ReadUnicodeString());
         var inventory = session.Player.Inventory;
         if (!inventory.HasItemWithUid(petUid))
         {
             return;
         }
 
-        Item pet = inventory.GetItemByUid(petUid);
+        var pet = inventory.GetItemByUid(petUid);
 
         Item badge = new(70100000)
         {
@@ -367,22 +367,22 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
         session.Send(PetSkinPacket.Extract(petUid, badge));
     }
 
-    public static void HandleCallAirTaxi(GameSession session, PacketReader packet, Item item)
+    public static void HandleCallAirTaxi(GameSession session, IPacketReader packet, Item item)
     {
-        int fieldID = int.Parse(packet.ReadUnicodeString());
+        var fieldID = int.Parse(packet.ReadUnicodeString());
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
         session.Player.Warp(fieldID);
     }
 
-    public static void HandleInstallBillBoard(GameSession session, PacketReader packet, Item item)
+    public static void HandleInstallBillBoard(GameSession session, IPacketReader packet, Item item)
     {
-        string[] parameters = packet.ReadUnicodeString().Split("'");
-        string title = parameters[0];
-        string description = parameters[1];
-        bool publicHouse = parameters[2].Equals("1");
+        var parameters = packet.ReadUnicodeString().Split("'");
+        var title = parameters[0];
+        var description = parameters[1];
+        var publicHouse = parameters[2].Equals("1");
 
-        int balloonUid = GuidGenerator.Int();
-        string id = "AdBalloon_" + balloonUid;
+        var balloonUid = GuidGenerator.Int();
+        var id = "AdBalloon_" + balloonUid;
         AdBalloon balloon = new(id, item.Function.InstallBillboard.InteractId, InteractObjectState.Default, InteractObjectType.AdBalloon, session.Player.FieldPlayer, item.Function.InstallBillboard, title, description, publicHouse);
         session.FieldManager.State.AddInteractObject(balloon);
         session.FieldManager.BroadcastPacket(InteractObjectPacket.LoadAdBallon(balloon));
@@ -391,8 +391,8 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
 
     public static void HandleExpandCharacterSlot(GameSession session, Item item)
     {
-        Account account = DatabaseManager.Accounts.FindById(session.Player.AccountId);
-        int maxSlots = int.Parse(ConstantsMetadataStorage.GetConstant("MaxCharacterSlots"));
+        var account = DatabaseManager.Accounts.FindById(session.Player.AccountId);
+        var maxSlots = int.Parse(ConstantsMetadataStorage.GetConstant("MaxCharacterSlots"));
         if (account.CharacterSlots >= maxSlots)
         {
             session.Send(CouponUsePacket.MaxCharacterSlots());
@@ -420,9 +420,9 @@ internal sealed class RequestItemUseHandler : GamePacketHandler
         session.Send(ItemRepackagePacket.Open(item.Uid));
     }
 
-    public static void HandleNameVoucher(GameSession session, PacketReader packet, Item item)
+    public static void HandleNameVoucher(GameSession session, IPacketReader packet, Item item)
     {
-        string characterName = packet.ReadUnicodeString();
+        var characterName = packet.ReadUnicodeString();
         session.Player.Name = characterName;
 
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);

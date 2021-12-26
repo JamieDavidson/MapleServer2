@@ -17,7 +17,7 @@ internal sealed class RequestGemEquipmentHandler : GamePacketHandler
         public const byte Transprency = 0x03;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -38,12 +38,12 @@ internal sealed class RequestGemEquipmentHandler : GamePacketHandler
         }
     }
 
-    private static void HandleEquipItem(GameSession session, PacketReader packet)
+    private static void HandleEquipItem(GameSession session, IPacketReader packet)
     {
-        long itemUid = packet.ReadLong();
+        var itemUid = packet.ReadLong();
 
         // Remove from inventory
-        bool success = session.Player.Inventory.RemoveItem(session, itemUid, out Item item);
+        var success = session.Player.Inventory.RemoveItem(session, itemUid, out var item);
 
         if (!success)
         {
@@ -51,8 +51,8 @@ internal sealed class RequestGemEquipmentHandler : GamePacketHandler
         }
 
         // Unequip existing item in slot
-        Item[] badges = session.Player.Inventory.Badges;
-        int index = Array.FindIndex(badges, x => x != null && x.GemSlot == item.GemSlot);
+        var badges = session.Player.Inventory.Badges;
+        var index = Array.FindIndex(badges, x => x != null && x.GemSlot == item.GemSlot);
         if (index >= 0)
         {
             // Add to inventory
@@ -66,7 +66,7 @@ internal sealed class RequestGemEquipmentHandler : GamePacketHandler
 
         // Equip
         item.IsEquipped = true;
-        int emptyIndex = Array.FindIndex(badges, x => x == default);
+        var emptyIndex = Array.FindIndex(badges, x => x == default);
         if (emptyIndex == -1)
         {
             return;
@@ -75,13 +75,13 @@ internal sealed class RequestGemEquipmentHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(GemPacket.EquipItem(session, item, emptyIndex));
     }
 
-    private static void HandleUnequipItem(GameSession session, PacketReader packet)
+    private static void HandleUnequipItem(GameSession session, IPacketReader packet)
     {
-        byte index = packet.ReadByte();
+        var index = packet.ReadByte();
 
-        Item[] badges = session.Player.Inventory.Badges;
+        var badges = session.Player.Inventory.Badges;
 
-        Item item = badges[index];
+        var item = badges[index];
         if (item == null)
         {
             return;
@@ -95,12 +95,12 @@ internal sealed class RequestGemEquipmentHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(GemPacket.UnequipItem(session, item.GemSlot));
     }
 
-    private static void HandleTransparency(GameSession session, PacketReader packet)
+    private static void HandleTransparency(GameSession session, IPacketReader packet)
     {
-        byte index = packet.ReadByte();
-        byte[] transparencyBools = packet.ReadBytes(10);
+        var index = packet.ReadByte();
+        var transparencyBools = packet.ReadBytes(10);
 
-        Item item = session.Player.Inventory.Badges[index];
+        var item = session.Player.Inventory.Badges[index];
 
         item.TransparencyBadgeBools = transparencyBools;
 

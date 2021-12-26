@@ -14,10 +14,10 @@ internal sealed class LoadUgcMapHandler : GamePacketHandler
 {
     public override RecvOp OpCode => RecvOp.REQUEST_LOAD_UGC_MAP;
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
-        bool mapIsHome = session.Player.MapId == (int) Map.PrivateResidence;
-        UGCMapMetadata ugcMapMetadata = UGCMapMetadataStorage.GetMetadata(session.Player.MapId);
+        var mapIsHome = session.Player.MapId == (int) Map.PrivateResidence;
+        var ugcMapMetadata = UGCMapMetadataStorage.GetMetadata(session.Player.MapId);
         List<byte> plots = new();
         if (ugcMapMetadata != null)
         {
@@ -27,7 +27,7 @@ internal sealed class LoadUgcMapHandler : GamePacketHandler
         List<Home> homes;
         if (mapIsHome)
         {
-            Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
+            var home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
             if (home == null)
             {
                 session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(false));
@@ -42,13 +42,13 @@ internal sealed class LoadUgcMapHandler : GamePacketHandler
             session.Send(ResponseLoadUGCMapPacket.LoadUGCMap(mapIsHome, home, session.Player.IsInDecorPlanner));
 
             // Find spawning coords for home
-            int cubePortalId = 50400190;
-            List<Cube> portals = home.FurnishingInventory.Values.Where(x => x.Item != null && x.Item.Id == cubePortalId).ToList();
+            var cubePortalId = 50400190;
+            var portals = home.FurnishingInventory.Values.Where(x => x.Item != null && x.Item.Id == cubePortalId).ToList();
             CoordF coord;
             CoordF rotation;
             if (portals.Count > 0)
             {
-                Cube portal = portals.OrderBy(x => RandomProvider.Get().Next()).Take(1).First();
+                var portal = portals.OrderBy(x => RandomProvider.Get().Next()).Take(1).First();
                 coord = portal.CoordF;
                 coord.Z += 1;
                 rotation = portal.Rotation;
@@ -56,8 +56,8 @@ internal sealed class LoadUgcMapHandler : GamePacketHandler
             }
             else
             {
-                byte homeSize = (byte) (home.Size - 1);
-                int x = -1 * Block.BLOCK_SIZE * homeSize;
+                var homeSize = (byte) (home.Size - 1);
+                var x = -1 * Block.BLOCK_SIZE * homeSize;
                 coord = CoordF.From(x, x, 151);
                 rotation = CoordF.From(0, 0, 0);
             }
@@ -77,7 +77,7 @@ internal sealed class LoadUgcMapHandler : GamePacketHandler
         {
             homes.ForEach(h =>
             {
-                int plotNumber = mapIsHome ? 1 : h.PlotNumber;
+                var plotNumber = mapIsHome ? 1 : h.PlotNumber;
                 cubes.AddRange(h.FurnishingInventory.Values.Where(x => x.Item.Id != 0 && x.PlotNumber == plotNumber).ToList());
             });
         }

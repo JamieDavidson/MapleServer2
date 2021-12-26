@@ -57,7 +57,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         public const byte RemoveBuildingPermission = 0x3A;
     }
 
-    public override void Handle(GameSession session, PacketReader packet)
+    public override void Handle(GameSession session, IPacketReader packet)
     {
         var operation = packet.ReadByte();
 
@@ -158,36 +158,36 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         }
     }
 
-    private static void HandleLoadFurnishingItem(GameSession session, PacketReader packet)
+    private static void HandleLoadFurnishingItem(GameSession session, IPacketReader packet)
     {
-        int itemId = packet.ReadInt();
-        long itemUid = packet.ReadLong();
+        var itemId = packet.ReadInt();
+        var itemUid = packet.ReadLong();
         session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadFurnishingItem(session.Player.FieldPlayer, itemId, itemUid));
     }
 
-    private static void HandleBuyPlot(GameSession session, PacketReader packet)
+    private static void HandleBuyPlot(GameSession session, IPacketReader packet)
     {
-        int groupId = packet.ReadInt();
-        int homeTemplate = packet.ReadInt();
-        Player player = session.Player;
+        var groupId = packet.ReadInt();
+        var homeTemplate = packet.ReadInt();
+        var player = session.Player;
 
         if (player.Account.Home != null && player.Account.Home.PlotMapId != 0)
         {
             return;
         }
 
-        UGCMapGroup land = UGCMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) groupId);
+        var land = UGCMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) groupId);
         if (land == null)
         {
             return;
         }
 
         //Check if sale event is active
-        int price = land.Price;
-        UGCMapContractSaleEvent ugcMapContractSale = DatabaseManager.Events.FindUGCMapContractSaleEvent();
+        var price = land.Price;
+        var ugcMapContractSale = DatabaseManager.Events.FindUGCMapContractSaleEvent();
         if (ugcMapContractSale != null)
         {
-            int markdown = land.Price * (ugcMapContractSale.DiscountAmount / 100 / 100);
+            var markdown = land.Price * (ugcMapContractSale.DiscountAmount / 100 / 100);
             price = land.Price - markdown;
         }
 
@@ -214,7 +214,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
             player.Account.Home.PlotNumber = land.Id;
             player.Account.Home.Expiration = TimeInfo.Now() + Environment.TickCount + land.ContractDate * 24 * 60 * 60;
 
-            Home home = GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
+            var home = GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
             home.PlotMapId = player.Account.Home.PlotMapId;
             home.PlotNumber = player.Account.Home.PlotNumber;
             home.Expiration = player.Account.Home.Expiration;
@@ -229,29 +229,29 @@ internal sealed class RequestCubeHandler : GamePacketHandler
 
     private static void HandleForfeitPlot(GameSession session)
     {
-        Player player = session.Player;
+        var player = session.Player;
         if (player.Account.Home == null || player.Account.Home.PlotMapId == 0)
         {
             return;
         }
 
-        int plotMapId = player.Account.Home.PlotMapId;
-        int plotNumber = player.Account.Home.PlotNumber;
-        int apartmentNumber = player.Account.Home.ApartmentNumber;
+        var plotMapId = player.Account.Home.PlotMapId;
+        var plotNumber = player.Account.Home.PlotNumber;
+        var apartmentNumber = player.Account.Home.ApartmentNumber;
 
         player.Account.Home.PlotMapId = 0;
         player.Account.Home.PlotNumber = 0;
         player.Account.Home.ApartmentNumber = 0;
         player.Account.Home.Expiration = 32503561200; // year 2999
 
-        Home home = GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
+        var home = GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
         home.PlotMapId = 0;
         home.PlotNumber = 0;
         home.ApartmentNumber = 0;
         home.Expiration = 32503561200; // year 2999
 
-        IEnumerable<IFieldObject<Cube>> cubes = session.FieldManager.State.Cubes.Values.Where(x => x.Value.PlotNumber == plotNumber);
-        foreach (IFieldObject<Cube> cube in cubes)
+        var cubes = session.FieldManager.State.Cubes.Values.Where(x => x.Value.PlotNumber == plotNumber);
+        foreach (var cube in cubes)
         {
             RemoveCube(session, session.Player.FieldPlayer, cube, home);
         }
@@ -263,45 +263,45 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         // 54 00 0E 01 00 00 00 01 01 00 00 00, send mail
     }
 
-    private static void HandleAddFurnishing(GameSession session, PacketReader packet)
+    private static void HandleAddFurnishing(GameSession session, IPacketReader packet)
     {
-        CoordB coord = packet.Read<CoordB>();
-        byte padding = packet.ReadByte();
-        int itemId = packet.ReadInt();
-        long itemUid = packet.ReadLong();
-        byte padding2 = packet.ReadByte();
-        CoordF rotation = packet.Read<CoordF>();
+        var coord = packet.Read<CoordB>();
+        var padding = packet.ReadByte();
+        var itemId = packet.ReadInt();
+        var itemUid = packet.ReadLong();
+        var padding2 = packet.ReadByte();
+        var rotation = packet.Read<CoordF>();
 
-        CoordF coordF = coord.ToFloat();
-        Player player = session.Player;
+        var coordF = coord.ToFloat();
+        var player = session.Player;
 
-        LiftableObject liftable = session.FieldManager.State.LiftableObjects.Values.FirstOrDefault(x => x.ItemId == itemId);
+        var liftable = session.FieldManager.State.LiftableObjects.Values.FirstOrDefault(x => x.ItemId == itemId);
         if (liftable is not null)
         {
             HandleAddLiftable(player, session.FieldManager, liftable, coord, rotation);
             return;
         }
 
-        bool mapIsHome = player.MapId == (int) Map.PrivateResidence;
-        Home home = mapIsHome ? GameServer.HomeManager.GetHomeById(player.VisitingHomeId) : GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
+        var mapIsHome = player.MapId == (int) Map.PrivateResidence;
+        var home = mapIsHome ? GameServer.HomeManager.GetHomeById(player.VisitingHomeId) : GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
 
-        int plotNumber = MapMetadataStorage.GetPlotNumber(player.MapId, coord);
+        var plotNumber = MapMetadataStorage.GetPlotNumber(player.MapId, coord);
         if (plotNumber <= 0)
         {
             session.Send(ResponseCubePacket.CantPlaceHere(session.Player.FieldPlayer.ObjectId));
             return;
         }
 
-        UGCMapGroup plot = UGCMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) plotNumber);
-        byte height = mapIsHome ? home.Height : plot.HeightLimit;
-        int size = mapIsHome ? home.Size : plot.Area / 2;
+        var plot = UGCMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) plotNumber);
+        var height = mapIsHome ? home.Height : plot.HeightLimit;
+        var size = mapIsHome ? home.Size : plot.Area / 2;
         if (IsCoordOutsideHeightLimit(coord.ToShort(), player.MapId, height) || mapIsHome && IsCoordOutsideSizeLimit(coord, size))
         {
             session.Send(ResponseCubePacket.CantPlaceHere(session.Player.FieldPlayer.ObjectId));
             return;
         }
 
-        FurnishingShopMetadata shopMetadata = FurnishingShopMetadataStorage.GetMetadata(itemId);
+        var shopMetadata = FurnishingShopMetadataStorage.GetMetadata(itemId);
         if (shopMetadata == null || !shopMetadata.Buyable)
         {
             return;
@@ -342,8 +342,8 @@ internal sealed class RequestCubeHandler : GamePacketHandler
             }
         }
 
-        Dictionary<long, Item> warehouseItems = home.WarehouseInventory;
-        Dictionary<long, Cube> furnishingInventory = home.FurnishingInventory;
+        var warehouseItems = home.WarehouseInventory;
+        var furnishingInventory = home.FurnishingInventory;
         Item item;
         if (player.Account.Id != home.AccountId)
         {
@@ -378,7 +378,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         liftable.State = LiftableState.Active;
         liftable.Enabled = true;
 
-        MapLiftableTarget target = MapEntityStorage.GetLiftablesTargets(player.MapId)?.FirstOrDefault(x => x.Position == liftable.Position);
+        var target = MapEntityStorage.GetLiftablesTargets(player.MapId)?.FirstOrDefault(x => x.Position == liftable.Position);
         if (target is not null)
         {
             liftable.State = LiftableState.Disabled;
@@ -391,13 +391,13 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         fieldManager.BroadcastPacket(LiftablePacket.UpdateEntityByCoord(liftable));
     }
 
-    private static void HandleRemoveCube(GameSession session, PacketReader packet)
+    private static void HandleRemoveCube(GameSession session, IPacketReader packet)
     {
-        CoordB coord = packet.Read<CoordB>();
-        Player player = session.Player;
+        var coord = packet.Read<CoordB>();
+        var player = session.Player;
 
-        bool mapIsHome = player.MapId == (int) Map.PrivateResidence;
-        Home home = mapIsHome ? GameServer.HomeManager.GetHomeById(player.VisitingHomeId) : GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
+        var mapIsHome = player.MapId == (int) Map.PrivateResidence;
+        var home = mapIsHome ? GameServer.HomeManager.GetHomeById(player.VisitingHomeId) : GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
 
         IFieldObject<Player> homeOwner = session.FieldManager.State.Players.Values.FirstOrDefault(x => x.Value.AccountId == home.AccountId);
         if (player.Account.Id != home.AccountId)
@@ -415,7 +415,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
             }
         }
 
-        IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord.ToFloat());
+        var cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord.ToFloat());
         if (cube == default || cube.Value.Item == null)
         {
             return;
@@ -424,64 +424,64 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         RemoveCube(session, homeOwner, cube, home);
     }
 
-    private static void HandleRotateCube(GameSession session, PacketReader packet)
+    private static void HandleRotateCube(GameSession session, IPacketReader packet)
     {
-        CoordB coord = packet.Read<CoordB>();
-        Player player = session.Player;
+        var coord = packet.Read<CoordB>();
+        var player = session.Player;
 
-        bool mapIsHome = player.MapId == (int) Map.PrivateResidence;
-        Home home = mapIsHome ? GameServer.HomeManager.GetHomeById(player.VisitingHomeId) : GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
+        var mapIsHome = player.MapId == (int) Map.PrivateResidence;
+        var home = mapIsHome ? GameServer.HomeManager.GetHomeById(player.VisitingHomeId) : GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
         if (player.Account.Id != home.AccountId && !home.BuildingPermissions.Contains(player.Account.Id))
         {
             return;
         }
 
-        IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord.ToFloat());
+        var cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord.ToFloat());
         if (cube == default)
         {
             return;
         }
 
         cube.Rotation -= CoordF.From(0, 0, 90);
-        Dictionary<long, Cube> inventory = player.IsInDecorPlanner ? home.DecorPlannerInventory : home.FurnishingInventory;
+        var inventory = player.IsInDecorPlanner ? home.DecorPlannerInventory : home.FurnishingInventory;
         inventory[cube.Value.Uid].Rotation = cube.Rotation;
 
         session.Send(ResponseCubePacket.RotateCube(session.Player.FieldPlayer, cube));
     }
 
-    private static void HandleReplaceCube(GameSession session, PacketReader packet)
+    private static void HandleReplaceCube(GameSession session, IPacketReader packet)
     {
-        CoordB coord = packet.Read<CoordB>();
+        var coord = packet.Read<CoordB>();
         packet.Skip(1);
-        int replacementItemId = packet.ReadInt();
-        long replacementItemUid = packet.ReadLong();
-        byte unk = packet.ReadByte();
-        long unk2 = packet.ReadLong(); // maybe part of rotation?
-        float zRotation = packet.ReadFloat();
-        CoordF rotation = CoordF.From(0, 0, zRotation);
+        var replacementItemId = packet.ReadInt();
+        var replacementItemUid = packet.ReadLong();
+        var unk = packet.ReadByte();
+        var unk2 = packet.ReadLong(); // maybe part of rotation?
+        var zRotation = packet.ReadFloat();
+        var rotation = CoordF.From(0, 0, zRotation);
 
-        Player player = session.Player;
+        var player = session.Player;
 
-        bool mapIsHome = player.MapId == (int) Map.PrivateResidence;
-        Home home = mapIsHome ? GameServer.HomeManager.GetHomeById(player.VisitingHomeId) : GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
+        var mapIsHome = player.MapId == (int) Map.PrivateResidence;
+        var home = mapIsHome ? GameServer.HomeManager.GetHomeById(player.VisitingHomeId) : GameServer.HomeManager.GetHomeById(player.Account.Home.Id);
 
-        int plotNumber = MapMetadataStorage.GetPlotNumber(player.MapId, coord);
+        var plotNumber = MapMetadataStorage.GetPlotNumber(player.MapId, coord);
         if (plotNumber <= 0)
         {
             session.Send(ResponseCubePacket.CantPlaceHere(session.Player.FieldPlayer.ObjectId));
             return;
         }
 
-        UGCMapGroup plot = UGCMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) plotNumber);
-        byte height = mapIsHome ? home.Height : plot.HeightLimit;
-        int size = mapIsHome ? home.Size : plot.Area / 2;
-        CoordB? groundHeight = GetGroundCoord(coord, player.MapId, height);
+        var plot = UGCMapMetadataStorage.GetGroupMetadata(player.MapId, (byte) plotNumber);
+        var height = mapIsHome ? home.Height : plot.HeightLimit;
+        var size = mapIsHome ? home.Size : plot.Area / 2;
+        var groundHeight = GetGroundCoord(coord, player.MapId, height);
         if (groundHeight == null)
         {
             return;
         }
 
-        bool isCubeSolid = ItemMetadataStorage.GetIsCubeSolid(replacementItemId);
+        var isCubeSolid = ItemMetadataStorage.GetIsCubeSolid(replacementItemId);
         if (!isCubeSolid && coord.Z == groundHeight?.Z)
         {
             session.Send(ResponseCubePacket.CantPlaceHere(session.Player.FieldPlayer.ObjectId));
@@ -494,14 +494,14 @@ internal sealed class RequestCubeHandler : GamePacketHandler
             return;
         }
 
-        FurnishingShopMetadata shopMetadata = FurnishingShopMetadataStorage.GetMetadata(replacementItemId);
+        var shopMetadata = FurnishingShopMetadataStorage.GetMetadata(replacementItemId);
         if (shopMetadata == null || !shopMetadata.Buyable)
         {
             return;
         }
 
         // Not checking if oldFieldCube is null on ground height because default blocks don't have IFieldObjects.
-        IFieldObject<Cube> oldFieldCube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord.ToFloat());
+        var oldFieldCube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord.ToFloat());
         if (oldFieldCube == default && coord.Z != groundHeight?.Z)
         {
             return;
@@ -541,8 +541,8 @@ internal sealed class RequestCubeHandler : GamePacketHandler
             }
         }
 
-        Dictionary<long, Item> warehouseItems = home.WarehouseInventory;
-        Dictionary<long, Cube> furnishingInventory = home.FurnishingInventory;
+        var warehouseItems = home.WarehouseInventory;
+        var furnishingInventory = home.FurnishingInventory;
         Item item;
         if (player.Account.Id != home.AccountId)
         {
@@ -583,11 +583,11 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         AddFunctionCube(session, coord, newFieldCube);
     }
 
-    private static void HandlePickup(GameSession session, PacketReader packet)
+    private static void HandlePickup(GameSession session, IPacketReader packet)
     {
-        CoordB coords = packet.Read<CoordB>();
+        var coords = packet.Read<CoordB>();
 
-        int weaponId = MapEntityStorage.GetWeaponObjectItemId(session.Player.MapId, coords);
+        var weaponId = MapEntityStorage.GetWeaponObjectItemId(session.Player.MapId, coords);
         if (weaponId == 0)
         {
             return;
@@ -604,12 +604,12 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(session.Player.FieldPlayer, false));
     }
 
-    private static void HandleHomeName(GameSession session, PacketReader packet)
+    private static void HandleHomeName(GameSession session, IPacketReader packet)
     {
-        string name = packet.ReadUnicodeString();
+        var name = packet.ReadUnicodeString();
 
-        Player player = session.Player;
-        Home home = player.Account.Home;
+        var player = session.Player;
+        var home = player.Account.Home;
         if (player.AccountId != home.AccountId)
         {
             return;
@@ -621,12 +621,12 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(ResponseCubePacket.LoadHome(session.Player.FieldPlayer.ObjectId, session.Player.Account.Home));
     }
 
-    private static void HandleHomePassword(GameSession session, PacketReader packet)
+    private static void HandleHomePassword(GameSession session, IPacketReader packet)
     {
         packet.ReadByte();
-        string password = packet.ReadUnicodeString();
+        var password = packet.ReadUnicodeString();
 
-        Home home = session.Player.Account.Home;
+        var home = session.Player.Account.Home;
         if (session.Player.AccountId != home.AccountId)
         {
             return;
@@ -640,8 +640,8 @@ internal sealed class RequestCubeHandler : GamePacketHandler
 
     private static void HandleNominateHouse(GameSession session)
     {
-        Player player = session.Player;
-        Home home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
+        var player = session.Player;
+        var home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
 
         home.ArchitectScoreCurrent++;
         home.ArchitectScoreTotal++;
@@ -656,11 +656,11 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.Send(ResponseCubePacket.ArchitectScoreExpiration(player.AccountId, TimeInfo.Now()));
     }
 
-    private static void HandleHomeDescription(GameSession session, PacketReader packet)
+    private static void HandleHomeDescription(GameSession session, IPacketReader packet)
     {
-        string description = packet.ReadUnicodeString();
+        var description = packet.ReadUnicodeString();
 
-        Home home = session.Player.Account.Home;
+        var home = session.Player.Account.Home;
         if (session.Player.AccountId != home.AccountId)
         {
             return;
@@ -673,13 +673,13 @@ internal sealed class RequestCubeHandler : GamePacketHandler
 
     private static void HandleClearInterior(GameSession session)
     {
-        Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
+        var home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
         if (home == null)
         {
             return;
         }
 
-        foreach (IFieldObject<Cube> cube in session.FieldManager.State.Cubes.Values)
+        foreach (var cube in session.FieldManager.State.Cubes.Values)
         {
             RemoveCube(session, session.Player.FieldPlayer, cube, home);
         }
@@ -687,9 +687,9 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.SendNotice("The interior has been cleared!"); // TODO: use notice packet
     }
 
-    private static void HandleRequestLayout(GameSession session, PacketReader packet)
+    private static void HandleRequestLayout(GameSession session, IPacketReader packet)
     {
-        int layoutId = packet.ReadInt();
+        var layoutId = packet.ReadInt();
 
         if (!session.FieldManager.State.Cubes.IsEmpty)
         {
@@ -697,28 +697,28 @@ internal sealed class RequestCubeHandler : GamePacketHandler
             return;
         }
 
-        Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
+        var home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
         if (home == null)
         {
             return;
         }
 
-        HomeLayout layout = home.Layouts.FirstOrDefault(x => x.Id == layoutId);
+        var layout = home.Layouts.FirstOrDefault(x => x.Id == layoutId);
         if (layout == default)
         {
             return;
         }
 
-        Dictionary<int, int> groupedCubes = layout.Cubes.GroupBy(x => x.Item.Id).ToDictionary(x => x.Key, x => x.Count()); // Dictionary<item id, count> 
+        var groupedCubes = layout.Cubes.GroupBy(x => x.Item.Id).ToDictionary(x => x.Key, x => x.Count()); // Dictionary<item id, count> 
 
-        int cubeCount = 0;
+        var cubeCount = 0;
         Dictionary<byte, long> cubeCosts = new();
-        foreach (KeyValuePair<int, int> cube in groupedCubes)
+        foreach (var cube in groupedCubes)
         {
-            Item item = home.WarehouseInventory.Values.FirstOrDefault(x => x.Id == cube.Key);
+            var item = home.WarehouseInventory.Values.FirstOrDefault(x => x.Id == cube.Key);
             if (item == null)
             {
-                FurnishingShopMetadata shopMetadata = FurnishingShopMetadataStorage.GetMetadata(cube.Key);
+                var shopMetadata = FurnishingShopMetadataStorage.GetMetadata(cube.Key);
                 if (cubeCosts.ContainsKey(shopMetadata.FurnishingTokenType))
                 {
                     cubeCosts[shopMetadata.FurnishingTokenType] += shopMetadata.Price * cube.Value;
@@ -734,8 +734,8 @@ internal sealed class RequestCubeHandler : GamePacketHandler
 
             if (item.Amount < cube.Value)
             {
-                FurnishingShopMetadata shopMetadata = FurnishingShopMetadataStorage.GetMetadata(cube.Key);
-                int missingCubes = cube.Value - item.Amount;
+                var shopMetadata = FurnishingShopMetadataStorage.GetMetadata(cube.Key);
+                var missingCubes = cube.Value - item.Amount;
                 if (cubeCosts.ContainsKey(shopMetadata.FurnishingTokenType))
                 {
                     cubeCosts[shopMetadata.FurnishingTokenType] += shopMetadata.Price * missingCubes;
@@ -752,12 +752,12 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.Send(ResponseCubePacket.BillPopup(cubeCosts, cubeCount));
     }
 
-    private static void HandleDecorPlannerLoadLayout(GameSession session, PacketReader packet)
+    private static void HandleDecorPlannerLoadLayout(GameSession session, IPacketReader packet)
     {
-        int layoutId = packet.ReadInt();
+        var layoutId = packet.ReadInt();
 
-        Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
-        HomeLayout layout = home.Layouts.FirstOrDefault(x => x.Id == layoutId);
+        var home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
+        var layout = home.Layouts.FirstOrDefault(x => x.Id == layoutId);
 
         if (layout == default)
         {
@@ -768,16 +768,16 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         home.Height = layout.Height;
         session.Send(ResponseCubePacket.UpdateHomeSizeAndHeight(layout.Size, layout.Height));
 
-        int x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
+        var x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
         foreach (IFieldObject<Player> fieldPlayer in session.FieldManager.State.Players.Values)
         {
             fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
         }
 
-        foreach (Cube layoutCube in layout.Cubes)
+        foreach (var layoutCube in layout.Cubes)
         {
             Cube cube = new(new(layoutCube.Item.Id), layoutCube.PlotNumber, layoutCube.CoordF, layoutCube.Rotation);
-            IFieldObject<Cube> fieldCube = session.FieldManager.RequestFieldObject(layoutCube);
+            var fieldCube = session.FieldManager.RequestFieldObject(layoutCube);
             fieldCube.Coord = layoutCube.CoordF;
             fieldCube.Rotation = layoutCube.Rotation;
             home.DecorPlannerInventory.Add(layoutCube.Uid, layoutCube);
@@ -788,12 +788,12 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.SendNotice("Layout loaded succesfully!"); // TODO: Use notice packet
     }
 
-    private static void HandleLoadLayout(GameSession session, PacketReader packet)
+    private static void HandleLoadLayout(GameSession session, IPacketReader packet)
     {
-        int layoutId = packet.ReadInt();
+        var layoutId = packet.ReadInt();
 
-        Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
-        HomeLayout layout = home.Layouts.FirstOrDefault(x => x.Id == layoutId);
+        var home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
+        var layout = home.Layouts.FirstOrDefault(x => x.Id == layoutId);
 
         if (layout == default)
         {
@@ -804,16 +804,16 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         home.Height = layout.Height;
         session.Send(ResponseCubePacket.UpdateHomeSizeAndHeight(layout.Size, layout.Height));
 
-        int x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
+        var x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
         foreach (IFieldObject<Player> fieldPlayer in session.FieldManager.State.Players.Values)
         {
             fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
         }
 
-        foreach (Cube cube in layout.Cubes)
+        foreach (var cube in layout.Cubes)
         {
-            Item item = home.WarehouseInventory.Values.FirstOrDefault(x => x.Id == cube.Item.Id);
-            IFieldObject<Cube> fieldCube = AddCube(session, item, cube.Item.Id, cube.Rotation, cube.CoordF, cube.PlotNumber, session.Player.FieldPlayer, home);
+            var item = home.WarehouseInventory.Values.FirstOrDefault(x => x.Id == cube.Item.Id);
+            var fieldCube = AddCube(session, item, cube.Item.Id, cube.Rotation, cube.CoordF, cube.PlotNumber, session.Player.FieldPlayer, home);
             session.Send(FurnishingInventoryPacket.Load(fieldCube.Value));
             if (fieldCube.Coord.Z == 0)
             {
@@ -829,7 +829,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
 
     private static void HandleModifySize(GameSession session, byte operation)
     {
-        Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
+        var home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
         if (session.Player.AccountId != home.AccountId)
         {
             return;
@@ -904,13 +904,13 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         }
     }
 
-    private static void HandleSaveLayout(GameSession session, PacketReader packet)
+    private static void HandleSaveLayout(GameSession session, IPacketReader packet)
     {
-        int layoutId = packet.ReadInt();
-        string layoutName = packet.ReadUnicodeString();
+        var layoutId = packet.ReadInt();
+        var layoutName = packet.ReadUnicodeString();
 
-        Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
-        HomeLayout layout = home.Layouts.FirstOrDefault(x => x.Id == layoutId);
+        var home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
+        var layout = home.Layouts.FirstOrDefault(x => x.Id == layoutId);
         if (layout != default)
         {
             DatabaseManager.HomeLayouts.Delete(layout.Uid);
@@ -947,20 +947,20 @@ internal sealed class RequestCubeHandler : GamePacketHandler
             { ItemHousingCategory.NaturalTerrain, 4 }
         };
 
-        Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
+        var home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
         if (home == null || session.Player.AccountId != home.AccountId)
         {
             return;
         }
 
-        List<Item> items = home.FurnishingInventory.Values.Select(x => x.Item).ToList();
+        var items = home.FurnishingInventory.Values.Select(x => x.Item).ToList();
         items.ForEach(x => x.HousingCategory = ItemMetadataStorage.GetHousingCategory(x.Id));
-        Dictionary<ItemHousingCategory, int> current = items.GroupBy(x => x.HousingCategory).ToDictionary(x => x.Key, x => x.Count());
+        var current = items.GroupBy(x => x.HousingCategory).ToDictionary(x => x.Key, x => x.Count());
 
-        int decorationScore = 0;
-        foreach (ItemHousingCategory category in goals.Keys)
+        var decorationScore = 0;
+        foreach (var category in goals.Keys)
         {
-            current.TryGetValue(category, out int currentCount);
+            current.TryGetValue(category, out var currentCount);
             if (currentCount == 0)
             {
                 continue;
@@ -1023,10 +1023,10 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.Send(ResponseCubePacket.DecorationScore(home));
     }
 
-    private static void HandleInteriorDesingReward(GameSession session, PacketReader packet)
+    private static void HandleInteriorDesingReward(GameSession session, IPacketReader packet)
     {
-        byte rewardId = packet.ReadByte();
-        Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
+        var rewardId = packet.ReadByte();
+        var home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
         if (home == null || session.Player.AccountId != home.AccountId)
         {
             return;
@@ -1037,7 +1037,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
             return;
         }
 
-        MasteryUGCHousingMetadata metadata = MasteryUGCHousingMetadataStorage.GetMetadata(rewardId);
+        var metadata = MasteryUGCHousingMetadataStorage.GetMetadata(rewardId);
         if (metadata == null)
         {
             return;
@@ -1050,13 +1050,13 @@ internal sealed class RequestCubeHandler : GamePacketHandler
 
     private static void HandleKickEveryone(GameSession session)
     {
-        Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
+        var home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
         if (session.Player.AccountId != home.AccountId)
         {
             return;
         }
 
-        List<IFieldActor<Player>> players = session.FieldManager.State.Players.Values.Where(p => p.Value.CharacterId != session.Player.CharacterId).ToList();
+        var players = session.FieldManager.State.Players.Values.Where(p => p.Value.CharacterId != session.Player.CharacterId).ToList();
         foreach (IFieldObject<Player> fieldPlayer in players)
         {
             fieldPlayer.Value.Session.Send(ResponseCubePacket.KickEveryone());
@@ -1069,18 +1069,18 @@ internal sealed class RequestCubeHandler : GamePacketHandler
 
             foreach (IFieldObject<Player> fieldPlayer in players)
             {
-                Player player = fieldPlayer.Value;
+                var player = fieldPlayer.Value;
                 player.Warp(player.ReturnMapId, player.ReturnCoord);
             }
         });
     }
 
-    private static void HandleEnablePermission(GameSession session, PacketReader packet)
+    private static void HandleEnablePermission(GameSession session, IPacketReader packet)
     {
-        HomePermission permission = (HomePermission) packet.ReadByte();
-        bool enabled = packet.ReadBool();
+        var permission = (HomePermission) packet.ReadByte();
+        var enabled = packet.ReadBool();
 
-        Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
+        var home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
         if (session.Player.AccountId != home.AccountId)
         {
             return;
@@ -1098,12 +1098,12 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(ResponseCubePacket.EnablePermission(permission, enabled));
     }
 
-    private static void HandleSetPermission(GameSession session, PacketReader packet)
+    private static void HandleSetPermission(GameSession session, IPacketReader packet)
     {
-        HomePermission permission = (HomePermission) packet.ReadByte();
-        byte setting = packet.ReadByte();
+        var permission = (HomePermission) packet.ReadByte();
+        var setting = packet.ReadByte();
 
-        Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
+        var home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
         if (session.Player.AccountId != home.AccountId)
         {
             return;
@@ -1117,12 +1117,12 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(ResponseCubePacket.SetPermission(permission, setting));
     }
 
-    private static void HandleUpdateBudget(GameSession session, PacketReader packet)
+    private static void HandleUpdateBudget(GameSession session, IPacketReader packet)
     {
-        long mesos = packet.ReadLong();
-        long merets = packet.ReadLong();
+        var mesos = packet.ReadLong();
+        var merets = packet.ReadLong();
 
-        Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
+        var home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
         if (home == null || session.Player.AccountId != home.AccountId)
         {
             return;
@@ -1134,11 +1134,11 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.FieldManager.BroadcastPacket(ResponseCubePacket.UpdateBudget(home));
     }
 
-    private static void HandleModifyInteriorSettings(GameSession session, byte operation, PacketReader packet)
+    private static void HandleModifyInteriorSettings(GameSession session, byte operation, IPacketReader packet)
     {
-        byte value = packet.ReadByte();
+        var value = packet.ReadByte();
 
-        Home home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
+        var home = GameServer.HomeManager.GetHomeById(session.Player.VisitingHomeId);
         switch (operation)
         {
             case RequestCubeOperations.ChangeBackground:
@@ -1156,18 +1156,18 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         }
     }
 
-    private static void HandleGiveBuildingPermission(GameSession session, PacketReader packet)
+    private static void HandleGiveBuildingPermission(GameSession session, IPacketReader packet)
     {
-        string characterName = packet.ReadUnicodeString();
+        var characterName = packet.ReadUnicodeString();
 
-        Player player = session.Player;
-        Home home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
+        var player = session.Player;
+        var home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
         if (player.AccountId != home.AccountId)
         {
             return;
         }
 
-        Player target = GameServer.PlayerManager.GetPlayerByName(characterName);
+        var target = GameServer.PlayerManager.GetPlayerByName(characterName);
         if (home.BuildingPermissions.Contains(target.AccountId))
         {
             return;
@@ -1181,18 +1181,18 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         target.Session.SendNotice("You have been granted furnishing rights."); // TODO: use the notice packet
     }
 
-    private static void HandleRemoveBuildingPermission(GameSession session, PacketReader packet)
+    private static void HandleRemoveBuildingPermission(GameSession session, IPacketReader packet)
     {
-        string characterName = packet.ReadUnicodeString();
+        var characterName = packet.ReadUnicodeString();
 
-        Player player = session.Player;
-        Home home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
+        var player = session.Player;
+        var home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
         if (player.AccountId != home.AccountId)
         {
             return;
         }
 
-        Player target = GameServer.PlayerManager.GetPlayerByName(characterName);
+        var target = GameServer.PlayerManager.GetPlayerByName(characterName);
         if (!home.BuildingPermissions.Contains(target.AccountId))
         {
             return;
@@ -1276,10 +1276,10 @@ internal sealed class RequestCubeHandler : GamePacketHandler
 
     private static bool IsCoordOutsideHeightLimit(CoordS coordS, int mapId, byte height)
     {
-        Dictionary<CoordS, MapBlock> mapBlocks = MapMetadataStorage.GetMetadata(mapId).Blocks;
-        for (int i = 0; i <= height; i++) // checking blocks in the same Z axis
+        var mapBlocks = MapMetadataStorage.GetMetadata(mapId).Blocks;
+        for (var i = 0; i <= height; i++) // checking blocks in the same Z axis
         {
-            mapBlocks.TryGetValue(coordS, out MapBlock block);
+            mapBlocks.TryGetValue(coordS, out var block);
             if (block == null)
             {
                 coordS.Z -= Block.BLOCK_SIZE;
@@ -1294,17 +1294,17 @@ internal sealed class RequestCubeHandler : GamePacketHandler
 
     private static bool IsCoordOutsideSizeLimit(CoordB cubeCoord, int homeSize)
     {
-        int size = (homeSize - 1) * -1;
+        var size = (homeSize - 1) * -1;
 
         return cubeCoord.Y < size || cubeCoord.Y > 0 || cubeCoord.X < size || cubeCoord.X > 0;
     }
 
     private static CoordB? GetGroundCoord(CoordB coord, int mapId, byte height)
     {
-        Dictionary<CoordS, MapBlock> mapBlocks = MapMetadataStorage.GetMetadata(mapId).Blocks;
-        for (int i = 0; i <= height; i++)
+        var mapBlocks = MapMetadataStorage.GetMetadata(mapId).Blocks;
+        for (var i = 0; i <= height; i++)
         {
-            mapBlocks.TryGetValue(coord.ToShort(), out MapBlock block);
+            mapBlocks.TryGetValue(coord.ToShort(), out var block);
             if (block == null)
             {
                 coord -= CoordB.From(0, 0, 1);
@@ -1321,13 +1321,13 @@ internal sealed class RequestCubeHandler : GamePacketHandler
     {
         if (operation == RequestCubeOperations.DecreaseSize)
         {
-            int maxSize = (home.Size - 1) * Block.BLOCK_SIZE * -1;
-            for (int i = 0; i < home.Size; i++)
+            var maxSize = (home.Size - 1) * Block.BLOCK_SIZE * -1;
+            for (var i = 0; i < home.Size; i++)
             {
-                for (int j = 0; j <= home.Height; j++)
+                for (var j = 0; j <= home.Height; j++)
                 {
-                    CoordF coord = CoordF.From(maxSize, i * Block.BLOCK_SIZE * -1, j * Block.BLOCK_SIZE);
-                    IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
+                    var coord = CoordF.From(maxSize, i * Block.BLOCK_SIZE * -1, j * Block.BLOCK_SIZE);
+                    var cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
                     if (cube != default)
                     {
                         RemoveCube(session, session.Player.FieldPlayer, cube, home);
@@ -1335,12 +1335,12 @@ internal sealed class RequestCubeHandler : GamePacketHandler
                 }
             }
 
-            for (int i = 0; i < home.Size; i++)
+            for (var i = 0; i < home.Size; i++)
             {
-                for (int j = 0; j <= home.Height; j++)
+                for (var j = 0; j <= home.Height; j++)
                 {
-                    CoordF coord = CoordF.From(i * Block.BLOCK_SIZE * -1, maxSize, j * Block.BLOCK_SIZE);
-                    IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
+                    var coord = CoordF.From(i * Block.BLOCK_SIZE * -1, maxSize, j * Block.BLOCK_SIZE);
+                    var cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
                     if (cube != default)
                     {
                         RemoveCube(session, session.Player.FieldPlayer, cube, home);
@@ -1351,12 +1351,12 @@ internal sealed class RequestCubeHandler : GamePacketHandler
 
         if (operation == RequestCubeOperations.DecreaseHeight)
         {
-            for (int i = 0; i < home.Size; i++)
+            for (var i = 0; i < home.Size; i++)
             {
-                for (int j = 0; j < home.Size; j++)
+                for (var j = 0; j < home.Size; j++)
                 {
-                    CoordF coord = CoordF.From(i * Block.BLOCK_SIZE * -1, j * Block.BLOCK_SIZE * -1, home.Height * Block.BLOCK_SIZE);
-                    IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
+                    var coord = CoordF.From(i * Block.BLOCK_SIZE * -1, j * Block.BLOCK_SIZE * -1, home.Height * Block.BLOCK_SIZE);
+                    var cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
                     if (cube != default)
                     {
                         RemoveCube(session, session.Player.FieldPlayer, cube, home);
@@ -1369,8 +1369,8 @@ internal sealed class RequestCubeHandler : GamePacketHandler
     private static IFieldObject<Cube> AddCube(GameSession session, Item item, int itemId, CoordF rotation, CoordF coordF, int plotNumber, IFieldObject<Player> homeOwner, Home home)
     {
         IFieldObject<Cube> fieldCube;
-        Dictionary<long, Item> warehouseItems = home.WarehouseInventory;
-        Dictionary<long, Cube> furnishingInventory = home.FurnishingInventory;
+        var warehouseItems = home.WarehouseInventory;
+        var furnishingInventory = home.FurnishingInventory;
         if (item == null || item.Amount <= 0)
         {
             Cube cube = new(new(itemId), plotNumber, coordF, rotation, homeId: home.Id);
@@ -1411,8 +1411,8 @@ internal sealed class RequestCubeHandler : GamePacketHandler
 
     private static void RemoveCube(GameSession session, IFieldObject<Player> homeOwner, IFieldObject<Cube> cube, Home home)
     {
-        Dictionary<long, Item> warehouseItems = home.WarehouseInventory;
-        Dictionary<long, Cube> furnishingInventory = home.FurnishingInventory;
+        var warehouseItems = home.WarehouseInventory;
+        var furnishingInventory = home.FurnishingInventory;
 
         if (session.Player.IsInDecorPlanner)
         {
@@ -1429,14 +1429,14 @@ internal sealed class RequestCubeHandler : GamePacketHandler
         session.FieldManager.RemoveCube(cube, homeOwner.ObjectId, session.Player.FieldPlayer.ObjectId);
         if (cube.Value.Item.Id == 50400158) // portal cube
         {
-            session.FieldManager.State.Portals.TryGetValue(cube.Value.PortalSettings.PortalObjectId, out IFieldObject<Portal> fieldPortal);
+            session.FieldManager.State.Portals.TryGetValue(cube.Value.PortalSettings.PortalObjectId, out var fieldPortal);
             session.FieldManager.RemovePortal(fieldPortal);
         }
     }
 
     private static void NotEnoughMoney(GameSession session, FurnishingShopMetadata shopMetadata)
     {
-        string currency = "";
+        var currency = "";
         switch (shopMetadata.FurnishingTokenType)
         {
             case 1:
@@ -1452,7 +1452,7 @@ internal sealed class RequestCubeHandler : GamePacketHandler
 
     private static void NotEnoughMoneyInBudget(GameSession session, FurnishingShopMetadata shopMetadata)
     {
-        string currency = "";
+        var currency = "";
         switch (shopMetadata.FurnishingTokenType)
         {
             case 1:
