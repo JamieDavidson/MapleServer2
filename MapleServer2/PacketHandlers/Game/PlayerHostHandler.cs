@@ -32,9 +32,9 @@ internal sealed class PlayerHostHandler : GamePacketHandler
 
     private static void HandleClaim(GameSession session, IPacketReader packet)
     {
-        int hongBaoId = packet.ReadInt();
+        var hongBaoId = packet.ReadInt();
 
-        HongBao hongBao = GameServer.HongBaoManager.GetHongBaoById(hongBaoId);
+        var hongBao = GameServer.HongBaoManager.GetHongBaoById(hongBaoId);
         if (hongBao == null)
         {
             return;

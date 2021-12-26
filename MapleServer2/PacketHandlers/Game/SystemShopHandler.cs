@@ -42,14 +42,14 @@ internal sealed class SystemShopHandler : GamePacketHandler
 
     private static void HandleViaItem(GameSession session, IPacketReader packet)
     {
-        bool openShop = packet.ReadBool();
+        var openShop = packet.ReadBool();
 
         if (!openShop)
         {
             return;
         }
 
-        int itemId = packet.ReadInt();
+        var itemId = packet.ReadInt();
 
         var inventory = session.Player.Inventory;
         var item = inventory.GetItemByItemId(itemId);
@@ -58,7 +58,7 @@ internal sealed class SystemShopHandler : GamePacketHandler
             return;
         }
 
-        Shop shop = DatabaseManager.Shops.FindById(item.ShopID);
+        var shop = DatabaseManager.Shops.FindById(item.ShopID);
         if (shop == null)
         {
             Logger.Warn($"Unknown shop ID: {item.ShopID}");
@@ -66,7 +66,7 @@ internal sealed class SystemShopHandler : GamePacketHandler
         }
 
         session.Send(ShopPacket.Open(shop));
-        foreach (ShopItem shopItem in shop.Items)
+        foreach (var shopItem in shop.Items)
         {
             session.Send(ShopPacket.LoadProducts(shopItem));
         }
@@ -75,7 +75,7 @@ internal sealed class SystemShopHandler : GamePacketHandler
     }
     private static void HandleFishingShop(GameSession session, IPacketReader packet)
     {
-        bool openShop = packet.ReadBool();
+        var openShop = packet.ReadBool();
 
         if (!openShop)
         {
@@ -87,7 +87,7 @@ internal sealed class SystemShopHandler : GamePacketHandler
 
     private static void HandleMapleArenaShop(GameSession session, IPacketReader packet)
     {
-        bool openShop = packet.ReadBool();
+        var openShop = packet.ReadBool();
 
         if (!openShop)
         {
@@ -99,10 +99,10 @@ internal sealed class SystemShopHandler : GamePacketHandler
 
     private static void OpenSystemShop(GameSession session, int shopId)
     {
-        Shop shop = DatabaseManager.Shops.FindById(shopId);
+        var shop = DatabaseManager.Shops.FindById(shopId);
 
         session.Send(ShopPacket.Open(shop));
-        foreach (ShopItem shopItem in shop.Items)
+        foreach (var shopItem in shop.Items)
         {
             session.Send(ShopPacket.LoadProducts(shopItem));
         }

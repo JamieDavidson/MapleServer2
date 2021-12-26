@@ -14,20 +14,20 @@ internal static class ItemBoxHelper
     public static List<Item> GetItemsFromDropGroup(DropGroupContent dropContent, Gender playerGender, Job job)
     {
         List<Item> items = new();
-        Random rng = RandomProvider.Get();
-        int amount = rng.Next((int) dropContent.MinAmount, (int) dropContent.MaxAmount);
-        foreach (int id in dropContent.ItemIds)
+        var rng = RandomProvider.Get();
+        var amount = rng.Next((int) dropContent.MinAmount, (int) dropContent.MaxAmount);
+        foreach (var id in dropContent.ItemIds)
         {
             if (dropContent.SmartGender)
             {
-                Gender itemGender = ItemMetadataStorage.GetGender(id);
+                var itemGender = ItemMetadataStorage.GetGender(id);
                 if (itemGender != playerGender && itemGender is not Gender.Neutral)
                 {
                     continue;
                 }
             }
 
-            List<Job> recommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
+            var recommendJobs = ItemMetadataStorage.GetRecommendJobs(id);
             if (recommendJobs.Contains(job) || recommendJobs.Contains(Job.None))
             {
                 Item newItem = new(id)
@@ -44,26 +44,26 @@ internal static class ItemBoxHelper
 
     public static void GiveItemFromSelectBox(GameSession session, Item sourceItem, int index)
     {
-        SelectItemBox box = sourceItem.Function.SelectItemBox;
-        ItemDropMetadata metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
+        var box = sourceItem.Function.SelectItemBox;
+        var metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
         if (metadata == null)
         {
             session.Send(NoticePacket.Notice("No items found", NoticeType.Chat));
             return;
         }
 
-        Inventory inventory = session.Player.Inventory;
+        var inventory = session.Player.Inventory;
         inventory.ConsumeItem(session, sourceItem.Uid, 1);
 
         // Select boxes disregards group ID. Adding these all to a filtered list
         List<DropGroupContent> dropContentsList = new();
-        foreach (DropGroup group in metadata.DropGroups)
+        foreach (var group in metadata.DropGroups)
         {
-            foreach (DropGroupContent dropGroupContent in group.Contents)
+            foreach (var dropGroupContent in group.Contents)
             {
                 if (dropGroupContent.SmartDropRate == 100)
                 {
-                    List<Job> recommendJobs = ItemMetadataStorage.GetRecommendJobs(dropGroupContent.ItemIds.First());
+                    var recommendJobs = ItemMetadataStorage.GetRecommendJobs(dropGroupContent.ItemIds.First());
                     if (recommendJobs.Contains(session.Player.Job) || recommendJobs.Contains(Job.None))
                     {
                         dropContentsList.Add(dropGroupContent);
@@ -74,11 +74,11 @@ internal static class ItemBoxHelper
             }
         }
 
-        DropGroupContent dropContents = dropContentsList[index];
+        var dropContents = dropContentsList[index];
 
-        Random rng = RandomProvider.Get();
-        int amount = rng.Next((int) dropContents.MinAmount, (int) dropContents.MaxAmount);
-        foreach (int id in dropContents.ItemIds)
+        var rng = RandomProvider.Get();
+        var amount = rng.Next((int) dropContents.MinAmount, (int) dropContents.MaxAmount);
+        foreach (var id in dropContents.ItemIds)
         {
             Item newItem = new(id)
             {
@@ -93,8 +93,8 @@ internal static class ItemBoxHelper
 
     public static void GiveItemFromOpenBox(GameSession session, Item item)
     {
-        OpenItemBox box = item.Function.OpenItemBox;
-        ItemDropMetadata metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
+        var box = item.Function.OpenItemBox;
+        var metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
         if (metadata == null)
         {
             session.Send(NoticePacket.Notice("No items found", NoticeType.Chat));
@@ -106,7 +106,7 @@ internal static class ItemBoxHelper
             return;
         }
 
-        Inventory inventory = session.Player.Inventory;
+        var inventory = session.Player.Inventory;
         if (box.RequiredItemId > 0)
         {
             var requiredItem = inventory.GetItemByItemId(box.RequiredItemId);
@@ -120,19 +120,19 @@ internal static class ItemBoxHelper
 
         inventory.ConsumeItem(session, item.Uid, box.AmountRequired);
 
-        Random rng = RandomProvider.Get();
+        var rng = RandomProvider.Get();
 
         // Receive one item from each drop group
         if (box.ReceiveOneItem)
         {
-            foreach (DropGroup group in metadata.DropGroups)
+            foreach (var group in metadata.DropGroups)
             {
                 //randomize the contents
-                List<DropGroupContent> contentList = group.Contents.OrderBy(x => rng.Next()).ToList();
-                foreach (DropGroupContent dropContent in contentList)
+                var contentList = group.Contents.OrderBy(x => rng.Next()).ToList();
+                foreach (var dropContent in contentList)
                 {
-                    List<Item> items = GetItemsFromDropGroup(dropContent, session.Player.Gender, session.Player.Job);
-                    foreach (Item newItem in items)
+                    var items = GetItemsFromDropGroup(dropContent, session.Player.Gender, session.Player.Job);
+                    foreach (var newItem in items)
                     {
                         inventory.AddItem(session, newItem, true);
                     }
@@ -142,12 +142,12 @@ internal static class ItemBoxHelper
         }
 
         // receive all items from each drop group
-        foreach (DropGroup group in metadata.DropGroups)
+        foreach (var group in metadata.DropGroups)
         {
-            foreach (DropGroupContent dropContent in group.Contents)
+            foreach (var dropContent in group.Contents)
             {
-                List<Item> items = GetItemsFromDropGroup(dropContent, session.Player.Gender, session.Player.Job);
-                foreach (Item newItem in items)
+                var items = GetItemsFromDropGroup(dropContent, session.Player.Gender, session.Player.Job);
+                foreach (var newItem in items)
                 {
                     inventory.AddItem(session, newItem, true);
                 }

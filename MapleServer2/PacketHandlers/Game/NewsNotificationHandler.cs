@@ -17,7 +17,7 @@ internal sealed class NewsNotificationHandler : GamePacketHandler
 
     public override void Handle(GameSession session, IPacketReader packet)
     {
-        short unk = packet.ReadShort();
+        var unk = packet.ReadShort();
         var mode = packet.ReadByte();
 
         switch (mode)

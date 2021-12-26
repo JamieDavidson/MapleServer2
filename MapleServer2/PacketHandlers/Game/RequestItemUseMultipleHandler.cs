@@ -21,12 +21,12 @@ internal sealed class RequestItemUseMultipleHandler : GamePacketHandler
 
     public override void Handle(GameSession session, IPacketReader packet)
     {
-        int itemId = packet.ReadInt();
+        var itemId = packet.ReadInt();
         packet.ReadShort(); // Unknown
-        int amount = packet.ReadInt();
+        var amount = packet.ReadInt();
         var boxType = packet.ReadShort();
 
-        string functionName = ItemMetadataStorage.GetFunction(itemId).Name;
+        var functionName = ItemMetadataStorage.GetFunction(itemId).Name;
         if (functionName != "SelectItemBox" && functionName != "OpenItemBox")
         {
             return;
@@ -39,7 +39,7 @@ internal sealed class RequestItemUseMultipleHandler : GamePacketHandler
             return;
         }
 
-        int index = 0;
+        var index = 0;
         if (boxType == BoxType.Select)
         {
             index = packet.ReadShort() - 0x30; // Starts at 0x30 for some reason
@@ -47,22 +47,22 @@ internal sealed class RequestItemUseMultipleHandler : GamePacketHandler
             {
                 return;
             }
-            SelectItemBox selectBox = ItemMetadataStorage.GetFunction(itemId).SelectItemBox;
+            var selectBox = ItemMetadataStorage.GetFunction(itemId).SelectItemBox;
             HandleSelectBox(session, items, selectBox, index, amount);
             return;
         }
 
-        OpenItemBox openBox = ItemMetadataStorage.GetFunction(itemId).OpenItemBox;
+        var openBox = ItemMetadataStorage.GetFunction(itemId).OpenItemBox;
         HandleOpenBox(session, items, /*openBox,*/ amount);
     }
 
     private static void HandleSelectBox(GameSession session, IEnumerable<Item> items, SelectItemBox box, int index, int amount)
     {
-        ItemDropMetadata metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
-        int opened = 0;
+        var metadata = ItemDropMetadataStorage.GetItemDropMetadata(box.BoxId);
+        var opened = 0;
         foreach (var item in items)
         {
-            for (int i = opened; i < amount; i++)
+            for (var i = opened; i < amount; i++)
             {
                 if (item.Amount <= 0)
                 {
@@ -79,10 +79,10 @@ internal sealed class RequestItemUseMultipleHandler : GamePacketHandler
 
     private static void HandleOpenBox(GameSession session, IEnumerable<Item> items, /*OpenItemBox box,*/ int amount)
     {
-        int opened = 0;
+        var opened = 0;
         foreach (var item in items)
         {
-            for (int i = opened; i < amount; i++)
+            for (var i = opened; i < amount; i++)
             {
                 if (item.Amount <= 0)
                 {

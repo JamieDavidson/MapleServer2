@@ -58,13 +58,13 @@ internal sealed class ClubHandler : GamePacketHandler
     private static void HandleCreate(GameSession session, IPacketReader packet)
     {
         // TODO fix creating for a party of more than 2. Currently if a member does not respond, despite atleast one other member accepting, it does not get created.
-        Party party = GameServer.PartyManager.GetPartyByLeader(session.Player);
+        var party = GameServer.PartyManager.GetPartyByLeader(session.Player);
         if (party == null)
         {
             return;
         }
 
-        string clubName = packet.ReadUnicodeString();
+        var clubName = packet.ReadUnicodeString();
 
         Club club = new(party, clubName);
         GameServer.ClubManager.AddClub(club);
@@ -74,15 +74,15 @@ internal sealed class ClubHandler : GamePacketHandler
 
     private static void HandleJoin(GameSession session, IPacketReader packet)
     {
-        Party party = session.Player.Party;
+        var party = session.Player.Party;
         if (party == null)
         {
             return;
         }
 
-        long clubId = packet.ReadLong();
+        var clubId = packet.ReadLong();
 
-        Club club = GameServer.ClubManager.GetClubById(clubId);
+        var club = GameServer.ClubManager.GetClubById(clubId);
         if (club == null)
         {
             return;
@@ -94,7 +94,7 @@ internal sealed class ClubHandler : GamePacketHandler
         }
         else
         {
-            int response = packet.ReadInt(); // 0 = accept, 76 (0x4C) = reject
+            var response = packet.ReadInt(); // 0 = accept, 76 (0x4C) = reject
 
             if (response == 0)
             {
@@ -113,16 +113,16 @@ internal sealed class ClubHandler : GamePacketHandler
 
     private static void HandleSendInvite(GameSession session, IPacketReader packet)
     {
-        long clubId = packet.ReadLong();
-        string invitee = packet.ReadUnicodeString();
+        var clubId = packet.ReadLong();
+        var invitee = packet.ReadUnicodeString();
 
-        Player other = GameServer.PlayerManager.GetPlayerByName(invitee);
+        var other = GameServer.PlayerManager.GetPlayerByName(invitee);
         if (other == null)
         {
             return;
         }
 
-        Club club = GameServer.ClubManager.GetClubById(clubId);
+        var club = GameServer.ClubManager.GetClubById(clubId);
         if (club == null)
         {
             return;
@@ -136,19 +136,19 @@ internal sealed class ClubHandler : GamePacketHandler
 
     private static void HandleInviteResponse(GameSession session, IPacketReader packet)
     {
-        long clubId = packet.ReadLong();
-        string clubName = packet.ReadUnicodeString();
-        string clubLeader = packet.ReadUnicodeString();
-        string invitee = packet.ReadUnicodeString(); //playerName. TODO: verify player name
-        byte response = packet.ReadByte(); // 1 = accept
+        var clubId = packet.ReadLong();
+        var clubName = packet.ReadUnicodeString();
+        var clubLeader = packet.ReadUnicodeString();
+        var invitee = packet.ReadUnicodeString(); //playerName. TODO: verify player name
+        var response = packet.ReadByte(); // 1 = accept
 
-        Club club = GameServer.ClubManager.GetClubById(clubId);
+        var club = GameServer.ClubManager.GetClubById(clubId);
         if (club == null)
         {
             return;
         }
 
-        Player other = GameServer.PlayerManager.GetPlayerByName(invitee);
+        var other = GameServer.PlayerManager.GetPlayerByName(invitee);
         if (other == null)
         {
             return;
@@ -173,9 +173,9 @@ internal sealed class ClubHandler : GamePacketHandler
 
     private static void HandleLeave(GameSession session, IPacketReader packet)
     {
-        long clubId = packet.ReadLong();
+        var clubId = packet.ReadLong();
 
-        Club club = GameServer.ClubManager.GetClubById(clubId);
+        var club = GameServer.ClubManager.GetClubById(clubId);
         if (club == null)
         {
             return;
@@ -207,10 +207,10 @@ internal sealed class ClubHandler : GamePacketHandler
 
     private static void HandleBuff(IPacketReader packet)
     {
-        long clubId = packet.ReadLong();
-        int buffId = packet.ReadInt();
+        var clubId = packet.ReadLong();
+        var buffId = packet.ReadInt();
 
-        Club club = GameServer.ClubManager.GetClubById(clubId);
+        var club = GameServer.ClubManager.GetClubById(clubId);
         if (club == null)
         {
             return;
@@ -223,10 +223,10 @@ internal sealed class ClubHandler : GamePacketHandler
 
     private static void HandleRename(IPacketReader packet)
     {
-        long clubId = packet.ReadLong();
-        string clubNewName = packet.ReadUnicodeString();
+        var clubId = packet.ReadLong();
+        var clubNewName = packet.ReadUnicodeString();
 
-        Club club = GameServer.ClubManager.GetClubById(clubId);
+        var club = GameServer.ClubManager.GetClubById(clubId);
         if (club == null)
         {
             return;

@@ -34,8 +34,8 @@ internal sealed class ItemEquipHandler : GamePacketHandler
 
     private static void HandleEquipItem(GameSession session, IPacketReader packet)
     {
-        long itemUid = packet.ReadLong();
-        string equipSlotStr = packet.ReadUnicodeString();
+        var itemUid = packet.ReadLong();
+        var equipSlotStr = packet.ReadUnicodeString();
         if (!Enum.TryParse(equipSlotStr, out ItemSlot equipSlot))
         {
             Logger.Warn($"Unknown equip slot: {equipSlotStr}");
@@ -43,15 +43,15 @@ internal sealed class ItemEquipHandler : GamePacketHandler
         }
 
         // Remove the item from the users inventory
-        Inventory inventory = session.Player.Inventory;
-        inventory.RemoveItem(session, itemUid, out Item item);
+        var inventory = session.Player.Inventory;
+        inventory.RemoveItem(session, itemUid, out var item);
         if (item == null)
         {
             return;
         }
 
         // Get correct equipped inventory
-        Dictionary<ItemSlot, Item> equippedInventory = session.Player.GetEquippedInventory(item.InventoryTab);
+        var equippedInventory = session.Player.GetEquippedInventory(item.InventoryTab);
         if (equippedInventory == null)
         {
             Logger.Warn($"equippedInventory was null: {item.InventoryTab}");
@@ -59,7 +59,7 @@ internal sealed class ItemEquipHandler : GamePacketHandler
         }
 
         // Move previously equipped item back to inventory
-        if (equippedInventory.Remove(equipSlot, out Item prevItem))
+        if (equippedInventory.Remove(equipSlot, out var prevItem))
         {
             prevItem.Slot = item.Slot;
             prevItem.IsEquipped = false;
@@ -76,7 +76,7 @@ internal sealed class ItemEquipHandler : GamePacketHandler
         // Handle unequipping off-hand when equipping two-handed weapons
         if (item.IsDress || item.IsTwoHand)
         {
-            if (equippedInventory.Remove(item.IsDress ? ItemSlot.PA : ItemSlot.LH, out Item prevItem2))
+            if (equippedInventory.Remove(item.IsDress ? ItemSlot.PA : ItemSlot.LH, out var prevItem2))
             {
                 prevItem2.Slot = -1;
                 if (prevItem == null)
@@ -93,12 +93,12 @@ internal sealed class ItemEquipHandler : GamePacketHandler
         // Handle unequipping two-handed main-hands when equipping off-hand weapons
         if (item.ItemSlot == ItemSlot.PA || item.ItemSlot == ItemSlot.LH)
         {
-            ItemSlot prevItemSlot = item.ItemSlot == ItemSlot.PA ? ItemSlot.CL : ItemSlot.RH;
+            var prevItemSlot = item.ItemSlot == ItemSlot.PA ? ItemSlot.CL : ItemSlot.RH;
             if (equippedInventory.ContainsKey(prevItemSlot))
             {
                 if (equippedInventory[prevItemSlot] != null && equippedInventory[prevItemSlot].IsDress)
                 {
-                    if (equippedInventory.Remove(prevItemSlot, out Item prevItem2))
+                    if (equippedInventory.Remove(prevItemSlot, out var prevItem2))
                     {
                         prevItem2.Slot = item.Slot;
                         prevItem2.IsEquipped = false;
@@ -124,14 +124,14 @@ internal sealed class ItemEquipHandler : GamePacketHandler
 
     private static void HandleUnequipItem(GameSession session, IPacketReader packet)
     {
-        long itemUid = packet.ReadLong();
-        Inventory inventory = session.Player.Inventory;
+        var itemUid = packet.ReadLong();
+        var inventory = session.Player.Inventory;
 
         // Unequip gear
-        KeyValuePair<ItemSlot, Item> kvpEquips = inventory.Equips.FirstOrDefault(x => x.Value.Uid == itemUid);
+        var kvpEquips = inventory.Equips.FirstOrDefault(x => x.Value.Uid == itemUid);
         if (kvpEquips.Value != null)
         {
-            if (inventory.Equips.Remove(kvpEquips.Key, out Item unequipItem))
+            if (inventory.Equips.Remove(kvpEquips.Key, out var unequipItem))
             {
                 unequipItem.Slot = -1;
                 unequipItem.IsEquipped = false;
@@ -145,10 +145,10 @@ internal sealed class ItemEquipHandler : GamePacketHandler
         }
 
         // Unequip cosmetics
-        KeyValuePair<ItemSlot, Item> kvpCosmetics = inventory.Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid);
+        var kvpCosmetics = inventory.Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid);
         if (kvpCosmetics.Value != null)
         {
-            if (inventory.Cosmetics.Remove(kvpCosmetics.Key, out Item unequipItem))
+            if (inventory.Cosmetics.Remove(kvpCosmetics.Key, out var unequipItem))
             {
                 unequipItem.Slot = -1;
                 unequipItem.IsEquipped = false;
@@ -162,7 +162,7 @@ internal sealed class ItemEquipHandler : GamePacketHandler
     {
         if (item.Stats.BasicStats.Count != 0)
         {
-            foreach (NormalStat stat in item.Stats.BasicStats.OfType<NormalStat>())
+            foreach (var stat in item.Stats.BasicStats.OfType<NormalStat>())
             {
                 session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat);
             }
@@ -170,7 +170,7 @@ internal sealed class ItemEquipHandler : GamePacketHandler
 
         if (item.Stats.BonusStats.Count != 0)
         {
-            foreach (NormalStat stat in item.Stats.BonusStats.OfType<NormalStat>())
+            foreach (var stat in item.Stats.BonusStats.OfType<NormalStat>())
             {
                 session.Player.Stats[stat.ItemAttribute].DecreaseBonus(stat.Flat);
             }
@@ -183,7 +183,7 @@ internal sealed class ItemEquipHandler : GamePacketHandler
     {
         if (item.Stats.BasicStats.Count != 0)
         {
-            foreach (NormalStat stat in item.Stats.BasicStats.OfType<NormalStat>())
+            foreach (var stat in item.Stats.BasicStats.OfType<NormalStat>())
             {
                 session.Player.Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat);
             }
@@ -191,7 +191,7 @@ internal sealed class ItemEquipHandler : GamePacketHandler
 
         if (item.Stats.BonusStats.Count != 0)
         {
-            foreach (NormalStat stat in item.Stats.BonusStats.OfType<NormalStat>())
+            foreach (var stat in item.Stats.BonusStats.OfType<NormalStat>())
             {
                 session.Player.Stats[stat.ItemAttribute].IncreaseBonus(stat.Flat);
             }

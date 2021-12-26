@@ -41,22 +41,22 @@ internal sealed class RequestItemLockHandler : GamePacketHandler
 
     private static void HandleAdd(GameSession session, IPacketReader packet)
     {
-        byte mode = packet.ReadByte();
-        long uid = packet.ReadLong();
+        var mode = packet.ReadByte();
+        var uid = packet.ReadLong();
 
         session.Player.LockInventory.Add(session, mode, uid);
     }
 
     private static void HandleRemove(GameSession session, IPacketReader packet)
     {
-        long uid = packet.ReadLong();
+        var uid = packet.ReadLong();
 
         session.Player.LockInventory.Remove(session, uid);
     }
 
     private static void HandleUpdateItem(GameSession session, IPacketReader packet)
     {
-        byte operation = packet.ReadByte();
+        var operation = packet.ReadByte();
 
         session.Player.LockInventory.Update(session, operation);
     }

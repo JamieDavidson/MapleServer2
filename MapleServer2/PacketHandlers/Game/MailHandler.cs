@@ -83,9 +83,9 @@ internal sealed class MailHandler : GamePacketHandler
     {
         session.Send(MailPacket.StartOpen());
 
-        IEnumerable<List<Mail>> packetCount = session.Player.Mailbox.SplitList(5);
+        var packetCount = session.Player.Mailbox.SplitList(5);
 
-        foreach (List<Mail> mails in packetCount)
+        foreach (var mails in packetCount)
         {
             session.Send(MailPacket.Open(mails));
         }
@@ -95,9 +95,9 @@ internal sealed class MailHandler : GamePacketHandler
 
     private static void HandleSend(GameSession session, IPacketReader packet)
     {
-        string recipientName = packet.ReadUnicodeString();
-        string title = packet.ReadUnicodeString();
-        string body = packet.ReadUnicodeString();
+        var recipientName = packet.ReadUnicodeString();
+        var title = packet.ReadUnicodeString();
+        var body = packet.ReadUnicodeString();
 
         if (recipientName == session.Player.Name)
         {
@@ -111,22 +111,22 @@ internal sealed class MailHandler : GamePacketHandler
             return;
         }
 
-        Player recipient = GameServer.PlayerManager.GetPlayerByName(recipientName);
+        var recipient = GameServer.PlayerManager.GetPlayerByName(recipientName);
         if (recipient == null)
         {
             recipient = DatabaseManager.Characters.FindPartialPlayerByName(recipientName);
         }
 
-        MailHelper.SendMail(MailType.Player, recipient.CharacterId, session.Player.CharacterId, session.Player.Name, title, body, "", "", new(), 0, 0, out Mail mail);
+        MailHelper.SendMail(MailType.Player, recipient.CharacterId, session.Player.CharacterId, session.Player.Name, title, body, "", "", new(), 0, 0, out var mail);
 
         session.Send(MailPacket.Send(mail));
     }
 
     private static void HandleRead(GameSession session, IPacketReader packet)
     {
-        long id = packet.ReadLong();
+        var id = packet.ReadLong();
 
-        Mail mail = session.Player.Mailbox.FirstOrDefault(x => x.Id == id);
+        var mail = session.Player.Mailbox.FirstOrDefault(x => x.Id == id);
         if (mail == null)
         {
             return;
@@ -140,8 +140,8 @@ internal sealed class MailHandler : GamePacketHandler
 
     private static void HandleCollect(GameSession session, IPacketReader packet)
     {
-        long id = packet.ReadLong();
-        Mail mail = session.Player.Mailbox.FirstOrDefault(x => x.Id == id);
+        var id = packet.ReadLong();
+        var mail = session.Player.Mailbox.FirstOrDefault(x => x.Id == id);
         if (mail == null)
         {
             return;
@@ -154,7 +154,7 @@ internal sealed class MailHandler : GamePacketHandler
 
         if (mail.Items.Count > 0)
         {
-            foreach (Item item in mail.Items)
+            foreach (var item in mail.Items)
             {
                 item.MailId = 0;
                 DatabaseManager.Items.Update(item);
@@ -188,11 +188,11 @@ internal sealed class MailHandler : GamePacketHandler
 
     private static void HandleDelete(GameSession session, IPacketReader packet)
     {
-        int count = packet.ReadInt();
-        for (int i = 0; i < count; i++)
+        var count = packet.ReadInt();
+        for (var i = 0; i < count; i++)
         {
-            long mailId = packet.ReadLong();
-            Mail mail = session.Player.Mailbox.FirstOrDefault(x => x.Id == mailId);
+            var mailId = packet.ReadLong();
+            var mail = session.Player.Mailbox.FirstOrDefault(x => x.Id == mailId);
             if (mail == null)
             {
                 continue;
@@ -204,9 +204,9 @@ internal sealed class MailHandler : GamePacketHandler
 
     private static void HandleReadBatch(GameSession session, IPacketReader packet)
     {
-        int count = packet.ReadInt();
+        var count = packet.ReadInt();
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             HandleRead(session, packet);
         }
@@ -214,9 +214,9 @@ internal sealed class MailHandler : GamePacketHandler
 
     private static void HandleCollectBatch(GameSession session, IPacketReader packet)
     {
-        int count = packet.ReadInt();
+        var count = packet.ReadInt();
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             HandleCollect(session, packet);
         }

@@ -14,8 +14,8 @@ internal sealed class ItemExtractionHandler : GamePacketHandler
 
     public override void Handle(GameSession session, IPacketReader packet)
     {
-        long anvilItemUid = packet.ReadLong();
-        long sourceItemUid = packet.ReadLong();
+        var anvilItemUid = packet.ReadLong();
+        var sourceItemUid = packet.ReadLong();
 
         var inventory = session.Player.Inventory;
         if (!inventory.HasItemWithUid(sourceItemUid) || !inventory.HasItemWithUid(anvilItemUid))
@@ -25,14 +25,14 @@ internal sealed class ItemExtractionHandler : GamePacketHandler
 
         var sourceItem = inventory.GetItemByUid(sourceItemUid);
 
-        ItemExtractionMetadata metadata = ItemExtractionMetadataStorage.GetMetadata(sourceItem.Id);
+        var metadata = ItemExtractionMetadataStorage.GetMetadata(sourceItem.Id);
         if (metadata == null)
         {
             return;
         }
 
         var anvils = inventory.GetItemsByTag("ItemExtraction").ToArray();
-        int anvilAmount = anvils.Sum(a => a.Value.Amount);
+        var anvilAmount = anvils.Sum(a => a.Value.Amount);
 
         if (anvilAmount < metadata.ScrollCount)
         {

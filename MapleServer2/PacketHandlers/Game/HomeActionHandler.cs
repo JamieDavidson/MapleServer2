@@ -56,15 +56,15 @@ internal sealed class HomeActionHandler : GamePacketHandler
     {
         packet.ReadByte();
         packet.ReadLong(); // character id
-        long surveyId = packet.ReadLong();
-        byte responseIndex = packet.ReadByte();
+        var surveyId = packet.ReadLong();
+        var responseIndex = packet.ReadByte();
 
-        Player player = session.Player;
+        var player = session.Player;
 
-        Home home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
-        HomeSurvey homeSurvey = home.Survey;
+        var home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
+        var homeSurvey = home.Survey;
 
-        string option = homeSurvey.Options.Keys.ToList()[responseIndex];
+        var option = homeSurvey.Options.Keys.ToList()[responseIndex];
         if (!homeSurvey.Started || homeSurvey.Ended || homeSurvey.Id != surveyId || option is null || homeSurvey.Options[option].Contains(player.Name) || !homeSurvey.AvailableCharacters.Contains(player.Name))
         {
             return;
@@ -87,8 +87,8 @@ internal sealed class HomeActionHandler : GamePacketHandler
 
     private static void HandleKick(IPacketReader packet)
     {
-        string characterName = packet.ReadUnicodeString();
-        Player target = GameServer.PlayerManager.GetPlayerByName(characterName);
+        var characterName = packet.ReadUnicodeString();
+        var target = GameServer.PlayerManager.GetPlayerByName(characterName);
         if (target == null)
         {
             return;
@@ -102,15 +102,15 @@ internal sealed class HomeActionHandler : GamePacketHandler
     private static void HandleChangePortalSettings(GameSession session, IPacketReader packet)
     {
         packet.ReadByte();
-        CoordB coordB = packet.Read<CoordB>();
+        var coordB = packet.Read<CoordB>();
         packet.ReadByte();
 
-        IFieldObject<Cube> fieldCube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coordB.ToFloat());
+        var fieldCube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coordB.ToFloat());
         if (fieldCube is null)
         {
             return;
         }
-        Cube cube = fieldCube.Value;
+        var cube = fieldCube.Value;
 
         cube.PortalSettings.PortalName = packet.ReadUnicodeString();
         cube.PortalSettings.Method = (UGCPortalMethod) packet.ReadByte();
@@ -124,12 +124,12 @@ internal sealed class HomeActionHandler : GamePacketHandler
 
     private static void HandleUpdateBallCoord(GameSession session, IPacketReader packet)
     {
-        byte mode = packet.ReadByte(); // 2 move, 3 hit ball
-        int objectId = packet.ReadInt();
-        CoordF coord = packet.Read<CoordF>();
-        CoordF velocity1 = packet.Read<CoordF>();
+        var mode = packet.ReadByte(); // 2 move, 3 hit ball
+        var objectId = packet.ReadInt();
+        var coord = packet.Read<CoordF>();
+        var velocity1 = packet.Read<CoordF>();
 
-        if (!session.FieldManager.State.Guide.TryGetValue(objectId, out IFieldObject<GuideObject> ball))
+        if (!session.FieldManager.State.Guide.TryGetValue(objectId, out var ball))
         {
             return;
         }
@@ -139,7 +139,7 @@ internal sealed class HomeActionHandler : GamePacketHandler
         switch (mode)
         {
             case 2:
-                CoordF velocity2 = packet.Read<CoordF>();
+                var velocity2 = packet.Read<CoordF>();
 
                 session.FieldManager.BroadcastPacket(HomeActionPacket.UpdateBall(ball, velocity1, velocity2), session);
                 break;
@@ -151,17 +151,17 @@ internal sealed class HomeActionHandler : GamePacketHandler
 
     private static void HandleSendPortalSettings(GameSession session, IPacketReader packet)
     {
-        CoordB coordB = packet.Read<CoordB>();
+        var coordB = packet.Read<CoordB>();
 
         // 50400158 = Portal Cube
-        IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values
+        var cube = session.FieldManager.State.Cubes.Values
             .FirstOrDefault(x => x.Coord == coordB.ToFloat() && x.Value.Item.Id == 50400158);
         if (cube is null)
         {
             return;
         }
 
-        List<Cube> otherPortals = session.FieldManager.State.Cubes.Values
+        var otherPortals = session.FieldManager.State.Cubes.Values
             .Where(x => x.Value.Item.Id == 50400158 && x.Value.Uid != cube.Value.Uid)
             .Select(x => x.Value).ToList();
         session.Send(HomeActionPacket.SendCubePortalSettings(cube.Value, otherPortals));
@@ -169,16 +169,16 @@ internal sealed class HomeActionHandler : GamePacketHandler
 
     private static void UpdateAllPortals(GameSession session)
     {
-        foreach (IFieldObject<Portal> fieldPortal in session.FieldManager.State.Portals.Values)
+        foreach (var fieldPortal in session.FieldManager.State.Portals.Values)
         {
             session.FieldManager.RemovePortal(fieldPortal);
         }
 
         // Re-add cube portals in map
-        IEnumerable<IFieldObject<Cube>> fieldCubePortals = session.FieldManager.State.Cubes.Values.Where(x => x.Value.Item.Id == 50400158);
-        foreach (IFieldObject<Cube> fieldCubePortal in fieldCubePortals)
+        var fieldCubePortals = session.FieldManager.State.Cubes.Values.Where(x => x.Value.Item.Id == 50400158);
+        foreach (var fieldCubePortal in fieldCubePortals)
         {
-            Cube cubePortal = fieldCubePortal.Value;
+            var cubePortal = fieldCubePortal.Value;
             Portal portal = new(GuidGenerator.Int())
             {
                 IsVisible = true,
@@ -189,7 +189,7 @@ internal sealed class HomeActionHandler : GamePacketHandler
                 UGCPortalMethod = cubePortal.PortalSettings.Method
             };
 
-            IFieldObject<Portal> fieldPortal = session.FieldManager.RequestFieldObject(portal);
+            var fieldPortal = session.FieldManager.RequestFieldObject(portal);
             fieldPortal.Coord = cubePortal.CoordF;
             if (!string.IsNullOrEmpty(cubePortal.PortalSettings.DestinationTarget))
             {

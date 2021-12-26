@@ -12,8 +12,8 @@ internal sealed class CharacterNameChangeHandler : GamePacketHandler
 
     public override void Handle(GameSession session, IPacketReader packet)
     {
-        string characterName = packet.ReadUnicodeString();
-        long itemUid = packet.ReadLong();
+        var characterName = packet.ReadUnicodeString();
+        var itemUid = packet.ReadLong();
 
         if (DatabaseManager.Characters.NameExists(characterName))
         {

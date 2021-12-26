@@ -11,12 +11,12 @@ internal sealed class BreakableHandler : GamePacketHandler
 
     public override void Handle(GameSession session, IPacketReader packet)
     {
-        string entityId = packet.ReadString();
-        long someId = packet.ReadLong();
-        int randId = packet.ReadInt(); //unk
-        int unk = packet.ReadInt();
+        var entityId = packet.ReadString();
+        var someId = packet.ReadLong();
+        var randId = packet.ReadInt(); //unk
+        var unk = packet.ReadInt();
 
-        BreakableActorObject breakable = session.FieldManager.State.BreakableActors.GetValueOrDefault(entityId);
+        var breakable = session.FieldManager.State.BreakableActors.GetValueOrDefault(entityId);
         if (breakable == null)
         {
             return;

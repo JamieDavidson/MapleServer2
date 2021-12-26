@@ -35,19 +35,19 @@ internal sealed class FunctionCubeHandler : GamePacketHandler
 
     private static void HandleUseCube(GameSession session, IPacketReader packet)
     {
-        string coord = packet.ReadUnicodeString();
-        byte unk = packet.ReadByte();
+        var coord = packet.ReadUnicodeString();
+        var unk = packet.ReadByte();
 
-        string coordHexa = long.Parse(coord.Split('_')[1]).ToString("X2");
+        var coordHexa = long.Parse(coord.Split('_')[1]).ToString("X2");
         if (coordHexa.Length == 5)
         {
             coordHexa = "0" + coordHexa;
         }
-        CoordB coordB = CoordB.From((sbyte) Convert.ToByte(coordHexa[4..], 16),
+        var coordB = CoordB.From((sbyte) Convert.ToByte(coordHexa[4..], 16),
                                     (sbyte) Convert.ToByte(coordHexa.Substring(2, 2), 16),
                                     (sbyte) Convert.ToByte(coordHexa[..2], 16));
 
-        IFieldObject<Cube> fieldCube = session.FieldManager.State.Cubes.FirstOrDefault(cube => cube.Value.Coord == coordB.ToFloat()).Value;
+        var fieldCube = session.FieldManager.State.Cubes.FirstOrDefault(cube => cube.Value.Coord == coordB.ToFloat()).Value;
         if (fieldCube is null)
         {
             return;
@@ -57,9 +57,9 @@ internal sealed class FunctionCubeHandler : GamePacketHandler
         {
             case ItemHousingCategory.Ranching:
             case ItemHousingCategory.Farming:
-                int objectId = ItemMetadataStorage.GetObjectId(fieldCube.Value.Item.Id);
-                int recipeId = FunctionCubeMetadataStorage.GetRecipeId(objectId);
-                GatheringHelper.HandleGathering(session, recipeId, out int numDrops);
+                var objectId = ItemMetadataStorage.GetObjectId(fieldCube.Value.Item.Id);
+                var recipeId = FunctionCubeMetadataStorage.GetRecipeId(objectId);
+                GatheringHelper.HandleGathering(session, recipeId, out var numDrops);
                 session.FieldManager.BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(coordB, 1, 1));
                 if (numDrops > 0)
                 {
@@ -72,7 +72,7 @@ internal sealed class FunctionCubeHandler : GamePacketHandler
                 session.FieldManager.BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(coordB, 2, 1));
                 break;
             default:
-                Cube cube = fieldCube.Value;
+                var cube = fieldCube.Value;
                 cube.InUse = !cube.InUse;
 
                 session.FieldManager.BroadcastPacket(FunctionCubePacket.UpdateFunctionCube(coordB, cube.InUse ? 1 : 0, 1));

@@ -50,9 +50,9 @@ internal sealed class MapleopolyHandler : GamePacketHandler
 
     private static void HandleOpen(GameSession session)
     {
-        List<MapleopolyTile> tiles = DatabaseManager.Mapleopoly.FindAllTiles();
+        var tiles = DatabaseManager.Mapleopoly.FindAllTiles();
 
-        int tokenAmount = 0;
+        var tokenAmount = 0;
         var inventory = session.Player.Inventory;
         var token = inventory.GetItemByItemId(Mapleopoly.TOKEN_ITEM_ID);
         if (token != null)
@@ -83,12 +83,12 @@ internal sealed class MapleopolyHandler : GamePacketHandler
             return;
         }
 
-        Random rnd = RandomProvider.Get();
+        var rnd = RandomProvider.Get();
 
         // roll two dice
-        int roll1 = rnd.Next(1, 6);
-        int roll2 = rnd.Next(1, 6);
-        int totalRoll = roll1 + roll2;
+        var roll1 = rnd.Next(1, 6);
+        var roll2 = rnd.Next(1, 6);
+        var totalRoll = roll1 + roll2;
 
         mapleopoly.TotalTileCount += totalRoll;
         if (roll1 == roll2)
@@ -100,9 +100,9 @@ internal sealed class MapleopolyHandler : GamePacketHandler
 
     private static void HandleProcessTile(GameSession session)
     {
-        int currentTilePosition = session.Player.Mapleopoly.TotalTileCount % Mapleopoly.TILE_AMOUNT;
+        var currentTilePosition = session.Player.Mapleopoly.TotalTileCount % Mapleopoly.TILE_AMOUNT;
 
-        MapleopolyTile currentTile = DatabaseManager.Mapleopoly.FindTileByPosition(currentTilePosition + 1);
+        var currentTile = DatabaseManager.Mapleopoly.FindTileByPosition(currentTilePosition + 1);
 
         switch (currentTile.Type)
         {
@@ -125,7 +125,7 @@ internal sealed class MapleopolyHandler : GamePacketHandler
                 session.Player.Mapleopoly.TotalTileCount += Mapleopoly.TILE_AMOUNT;
                 break;
             case MapleopolyTileType.GoToStart:
-                int tileToStart = Mapleopoly.TILE_AMOUNT - currentTilePosition;
+                var tileToStart = Mapleopoly.TILE_AMOUNT - currentTilePosition;
                 session.Player.Mapleopoly.TotalTileCount += tileToStart;
                 break;
             case MapleopolyTileType.Start:
@@ -141,21 +141,21 @@ internal sealed class MapleopolyHandler : GamePacketHandler
 
     private static void ProcessTrip(GameSession session)
     {
-        int newTotalTrips = session.Player.Mapleopoly.TotalTileCount / Mapleopoly.TILE_AMOUNT;
+        var newTotalTrips = session.Player.Mapleopoly.TotalTileCount / Mapleopoly.TILE_AMOUNT;
         if (newTotalTrips <= session.Player.Mapleopoly.TotalTrips)
         {
             return;
         }
 
-        int difference = newTotalTrips - session.Player.Mapleopoly.TotalTrips;
+        var difference = newTotalTrips - session.Player.Mapleopoly.TotalTrips;
 
-        List<MapleopolyEvent> items = DatabaseManager.Events.FindAllMapleopolyEvents();
-        for (int i = 0; i < difference; i++)
+        var items = DatabaseManager.Events.FindAllMapleopolyEvents();
+        for (var i = 0; i < difference; i++)
         {
             session.Player.Mapleopoly.TotalTrips++;
 
             // Check if there's any item to give for every 1 trip
-            MapleopolyEvent mapleopolyItem1 = items.FirstOrDefault(x => x.TripAmount == 0);
+            var mapleopolyItem1 = items.FirstOrDefault(x => x.TripAmount == 0);
             if (mapleopolyItem1 != null)
             {
                 Item item1 = new(mapleopolyItem1.ItemId)
@@ -167,7 +167,7 @@ internal sealed class MapleopolyHandler : GamePacketHandler
             }
 
             // Check if there's any other item to give for hitting a specific number of trips
-            MapleopolyEvent mapleopolyItem2 = items.FirstOrDefault(x => x.TripAmount == session.Player.Mapleopoly.TotalTrips);
+            var mapleopolyItem2 = items.FirstOrDefault(x => x.TripAmount == session.Player.Mapleopoly.TotalTrips);
             if (mapleopolyItem2 == null)
             {
                 continue;

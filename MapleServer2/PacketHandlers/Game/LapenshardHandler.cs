@@ -56,8 +56,8 @@ internal sealed class LapenshardHandler : GamePacketHandler
 
     private static void HandleEquip(GameSession session, IPacketReader packet)
     {
-        int slotId = packet.ReadInt();
-        long itemUid = packet.ReadLong();
+        var slotId = packet.ReadInt();
+        var itemUid = packet.ReadLong();
 
         var inventory = session.Player.Inventory;
         var item = inventory.GetItemByUid(itemUid);
@@ -92,9 +92,9 @@ internal sealed class LapenshardHandler : GamePacketHandler
 
     private static void HandleUnequip(GameSession session, IPacketReader packet)
     {
-        int slotId = packet.ReadInt();
+        var slotId = packet.ReadInt();
 
-        Item lapenshard = session.Player.Inventory.LapenshardStorage[slotId];
+        var lapenshard = session.Player.Inventory.LapenshardStorage[slotId];
         if (lapenshard is null)
         {
             return;
@@ -109,8 +109,8 @@ internal sealed class LapenshardHandler : GamePacketHandler
 
     private static void HandleAddFusion(GameSession session, IPacketReader packet)
     {
-        long itemUid = packet.ReadLong();
-        int itemId = packet.ReadInt();
+        var itemUid = packet.ReadLong();
+        var itemId = packet.ReadInt();
         packet.ReadInt();
         var inventory = session.Player.Inventory;
 
@@ -124,10 +124,10 @@ internal sealed class LapenshardHandler : GamePacketHandler
 
     private static void HandleAddCatalyst(GameSession session, IPacketReader packet)
     {
-        long itemUid = packet.ReadLong();
-        int itemId = packet.ReadInt();
+        var itemUid = packet.ReadLong();
+        var itemId = packet.ReadInt();
         packet.ReadInt();
-        int amount = packet.ReadInt();
+        var amount = packet.ReadInt();
         var inventory = session.Player.Inventory;
 
         var item = inventory.GetItemByUid(itemUid);
@@ -142,23 +142,23 @@ internal sealed class LapenshardHandler : GamePacketHandler
 
     private static void HandleFusion(GameSession session, IPacketReader packet)
     {
-        long itemUid = packet.ReadLong();
-        int itemId = packet.ReadInt();
+        var itemUid = packet.ReadLong();
+        var itemId = packet.ReadInt();
         packet.ReadInt();
-        int catalystCount = packet.ReadInt();
-        Inventory inventory = session.Player.Inventory;
+        var catalystCount = packet.ReadInt();
+        var inventory = session.Player.Inventory;
 
         List<(long Uid, int Amount)> items = new();
-        for (int i = 0; i < catalystCount; i++)
+        for (var i = 0; i < catalystCount; i++)
         {
-            long uid = packet.ReadLong();
-            int amount = packet.ReadInt();
+            var uid = packet.ReadLong();
+            var amount = packet.ReadInt();
             (long, int) item = new(uid, amount);
             items.Add(item);
         }
 
         // Check if items are in inventory
-        foreach ((long uid, int amount) in items)
+        foreach ((var uid, var amount) in items)
         {
             var item = inventory.GetItemByUid(uid);
             if (item is null || item.Amount < amount)
@@ -168,7 +168,7 @@ internal sealed class LapenshardHandler : GamePacketHandler
         }
 
         var itemType = itemId / 1000000;
-        string crystal = "";
+        var crystal = "";
         switch (itemType)
         {
             case LapenshardColor.Red:
@@ -198,9 +198,9 @@ internal sealed class LapenshardHandler : GamePacketHandler
 
         // There are multiple ids for each type of material
         // Count all items with the same tag in inventory
-        List<KeyValuePair<long, Item>> crystals = inventory.GetItemsByTag(crystal).ToList();
-        int crystalsTotalAmount = crystals.Sum(i => i.Value.Amount);
-        byte tier = (byte) (itemId % 10);
+        var crystals = inventory.GetItemsByTag(crystal).ToList();
+        var crystalsTotalAmount = crystals.Sum(i => i.Value.Amount);
+        var tier = (byte) (itemId % 10);
 
         if (costs[tier].CrystalsAmount > crystalsTotalAmount || !session.Player.Wallet.Meso.Modify(-costs[tier].Mesos))
         {
@@ -210,7 +210,7 @@ internal sealed class LapenshardHandler : GamePacketHandler
         int crystalCost = costs[tier].CrystalsAmount;
 
         // Consume all Crystals
-        foreach ((long key, Item value) in crystals)
+        foreach ((var key, var value) in crystals)
         {
             if (value.Amount >= crystalCost)
             {
@@ -222,7 +222,7 @@ internal sealed class LapenshardHandler : GamePacketHandler
         }
 
         // Consume all Lapenshards
-        foreach ((long uid, int amount) in items)
+        foreach ((var uid, var amount) in items)
         {
             session.Player.Inventory.ConsumeItem(session, uid, amount);
         }

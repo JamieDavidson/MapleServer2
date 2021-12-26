@@ -52,10 +52,10 @@ internal sealed class QuestHandler : GamePacketHandler
 
     private static void HandleAcceptQuest(GameSession session, IPacketReader packet)
     {
-        int questId = packet.ReadInt();
-        int objectId = packet.ReadInt();
+        var questId = packet.ReadInt();
+        var objectId = packet.ReadInt();
 
-        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus))
+        if (!session.Player.QuestData.TryGetValue(questId, out var questStatus))
         {
             return;
         }
@@ -68,10 +68,10 @@ internal sealed class QuestHandler : GamePacketHandler
 
     private static void HandleCompleteQuest(GameSession session, IPacketReader packet)
     {
-        int questId = packet.ReadInt();
-        int objectId = packet.ReadInt();
+        var questId = packet.ReadInt();
+        var objectId = packet.ReadInt();
 
-        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State is QuestState.Finished)
+        if (!session.Player.QuestData.TryGetValue(questId, out var questStatus) || questStatus.State is QuestState.Finished)
         {
             return;
         }
@@ -82,7 +82,7 @@ internal sealed class QuestHandler : GamePacketHandler
         session.Player.Levels.GainExp(questStatus.Reward.Exp);
         session.Player.Wallet.Meso.Modify(questStatus.Reward.Money);
 
-        foreach (QuestRewardItem reward in questStatus.RewardItems)
+        foreach (var reward in questStatus.RewardItems)
         {
             Item newItem = new(reward.Code)
             {
@@ -99,9 +99,9 @@ internal sealed class QuestHandler : GamePacketHandler
         session.Send(QuestPacket.CompleteQuest(questId, true));
 
         // Add next quest
-        IEnumerable<QuestMetadata> questList = QuestMetadataStorage.GetAllQuests().Values
+        var questList = QuestMetadataStorage.GetAllQuests().Values
             .Where(x => x.Require.RequiredQuests.Contains(questId));
-        foreach (QuestMetadata questMetadata in questList)
+        foreach (var questMetadata in questList)
         {
             if (session.Player.QuestData.ContainsKey(questMetadata.Basic.Id))
             {
@@ -114,14 +114,14 @@ internal sealed class QuestHandler : GamePacketHandler
 
     private static void HandleCompleteNavigator(GameSession session, IPacketReader packet)
     {
-        int questId = packet.ReadInt();
+        var questId = packet.ReadInt();
 
-        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus) || questStatus.State is QuestState.Finished)
+        if (!session.Player.QuestData.TryGetValue(questId, out var questStatus) || questStatus.State is QuestState.Finished)
         {
             return;
         }
 
-        foreach (QuestRewardItem rewardItem in questStatus.RewardItems)
+        foreach (var rewardItem in questStatus.RewardItems)
         {
             Item item = new(rewardItem.Code)
             {
@@ -139,16 +139,16 @@ internal sealed class QuestHandler : GamePacketHandler
 
     private static void HandleAddExplorationQuests(GameSession session, IPacketReader packet)
     {
-        int listSize = packet.ReadInt();
-        for (int i = 0; i < listSize; i++)
+        var listSize = packet.ReadInt();
+        for (var i = 0; i < listSize; i++)
         {
-            int questId = packet.ReadInt();
-            session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus);
+            var questId = packet.ReadInt();
+            session.Player.QuestData.TryGetValue(questId, out var questStatus);
 
             session.Send(QuestPacket.AcceptQuest(questId));
             if (questStatus is null)
             {
-                QuestMetadata metadata = QuestMetadataStorage.GetMetadata(questId);
+                var metadata = QuestMetadataStorage.GetMetadata(questId);
                 session.Player.QuestData.Add(questId, new(session.Player, metadata, QuestState.Started, TimeInfo.Now()));
                 return;
             }
@@ -160,10 +160,10 @@ internal sealed class QuestHandler : GamePacketHandler
 
     private static void HandleToggleTracking(GameSession session, IPacketReader packet)
     {
-        int questId = packet.ReadInt();
-        bool tracked = packet.ReadBool();
+        var questId = packet.ReadInt();
+        var tracked = packet.ReadBool();
 
-        if (!session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus))
+        if (!session.Player.QuestData.TryGetValue(questId, out var questStatus))
         {
             return;
         }

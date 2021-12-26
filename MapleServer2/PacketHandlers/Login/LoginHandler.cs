@@ -29,9 +29,9 @@ internal sealed class LoginHandler : LoginPacketHandler
 
     public LoginHandler()
     {
-        ImmutableList<IPEndPoint>.Builder builder = ImmutableList.CreateBuilder<IPEndPoint>();
-        string ipAddress = Environment.GetEnvironmentVariable("IP");
-        int port = int.Parse(Environment.GetEnvironmentVariable("LOGIN_PORT"));
+        var builder = ImmutableList.CreateBuilder<IPEndPoint>();
+        var ipAddress = Environment.GetEnvironmentVariable("IP");
+        var port = int.Parse(Environment.GetEnvironmentVariable("LOGIN_PORT"));
         builder.Add(new(IPAddress.Parse(ipAddress), port));
 
         ServerIPs = builder.ToImmutable();
@@ -41,8 +41,8 @@ internal sealed class LoginHandler : LoginPacketHandler
     public override void Handle(LoginSession session, IPacketReader packet)
     {
         var mode = packet.ReadByte();
-        string username = packet.ReadUnicodeString();
-        string password = packet.ReadUnicodeString();
+        var username = packet.ReadUnicodeString();
+        var password = packet.ReadUnicodeString();
 
         Account account;
         if (DatabaseManager.Accounts.AccountExists(username.ToLower()))
@@ -53,7 +53,7 @@ internal sealed class LoginHandler : LoginPacketHandler
                 return;
             }
 
-            Session loggedInAccount = MapleServer.GetSessions(MapleServer.GetLoginServer(), MapleServer.GetGameServer()).FirstOrDefault(p => p switch
+            var loggedInAccount = MapleServer.GetSessions(MapleServer.GetLoginServer(), MapleServer.GetGameServer()).FirstOrDefault(p => p switch
             {
                 LoginSession s => s.AccountId == account.Id,
                 GameSession s => s.Player.AccountId == account.Id,
@@ -70,7 +70,7 @@ internal sealed class LoginHandler : LoginPacketHandler
         else
         {
             // Hash the password with BCrypt
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
             account = new(username, passwordHash); // Create a new account if username doesn't exist
         }
 
@@ -92,7 +92,7 @@ internal sealed class LoginHandler : LoginPacketHandler
 
     private void SendBanners(LoginSession session, Account account)
     {
-        List<Banner> banners = DatabaseManager.Banners.FindAllBanners();
+        var banners = DatabaseManager.Banners.FindAllBanners();
         session.Send(NpsInfoPacket.SendUsername(account.Username));
         session.Send(BannerListPacket.SetBanner(banners));
         session.SendFinal(ServerListPacket.SetServers(ServerName, ServerIPs), logoutNotice: true);
@@ -100,11 +100,11 @@ internal sealed class LoginHandler : LoginPacketHandler
 
     private void SendCharacters(LoginSession session, Account account)
     {
-        string serverIp = Environment.GetEnvironmentVariable("IP");
-        string webServerPort = Environment.GetEnvironmentVariable("WEB_PORT");
-        string url = $"http://{serverIp}:{webServerPort}";
+        var serverIp = Environment.GetEnvironmentVariable("IP");
+        var webServerPort = Environment.GetEnvironmentVariable("WEB_PORT");
+        var url = $"http://{serverIp}:{webServerPort}";
 
-        List<Player> characters = DatabaseManager.Characters.FindAllByAccountId(session.AccountId);
+        var characters = DatabaseManager.Characters.FindAllByAccountId(session.AccountId);
 
         Logger.Debug("Initializing login with account id: {session.AccountId}", session.AccountId);
         session.Send(LoginResultPacket.InitLogin(session.AccountId));

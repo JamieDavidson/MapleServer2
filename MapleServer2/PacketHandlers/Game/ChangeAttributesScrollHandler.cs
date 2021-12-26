@@ -36,11 +36,11 @@ internal sealed class ChangeAttributesScrollHandler : GamePacketHandler
     private static void HandleChangeAttributes(GameSession session, IPacketReader packet)
     {
         short lockStatId = -1;
-        bool isSpecialStat = false;
-        long scrollUid = packet.ReadLong();
-        long gearUid = packet.ReadLong();
+        var isSpecialStat = false;
+        var scrollUid = packet.ReadLong();
+        var gearUid = packet.ReadLong();
         packet.Skip(9);
-        bool useLock = packet.ReadBool();
+        var useLock = packet.ReadBool();
         if (useLock)
         {
             isSpecialStat = packet.ReadBool();
@@ -48,8 +48,8 @@ internal sealed class ChangeAttributesScrollHandler : GamePacketHandler
         }
 
         var inventory = session.Player.Inventory;
-        Item scroll = inventory.GetItemByUid(scrollUid);
-        Item gear = inventory.GetItemByUid(gearUid);
+        var scroll = inventory.GetItemByUid(scrollUid);
+        var gear = inventory.GetItemByUid(gearUid);
         Item scrollLock = null;
 
         // Check if gear and scroll exists in inventory
@@ -58,7 +58,7 @@ internal sealed class ChangeAttributesScrollHandler : GamePacketHandler
             return;
         }
 
-        string tag = "";
+        var tag = "";
         if (Item.IsAccessory(gear.ItemSlot))
         {
             tag = "LockItemOptionAccessory";
@@ -104,10 +104,10 @@ internal sealed class ChangeAttributesScrollHandler : GamePacketHandler
 
     private static void HandleSelectNewAttributes(GameSession session, IPacketReader packet)
     {
-        long gearUid = packet.ReadLong();
+        var gearUid = packet.ReadLong();
 
-        Inventory inventory = session.Player.Inventory;
-        Item gear = inventory.TemporaryStorage.FirstOrDefault(x => x.Key == gearUid).Value;
+        var inventory = session.Player.Inventory;
+        var gear = inventory.TemporaryStorage.FirstOrDefault(x => x.Key == gearUid).Value;
         if (gear == null)
         {
             return;

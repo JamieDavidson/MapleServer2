@@ -25,7 +25,7 @@ internal sealed class RequestTaxiHandler : GamePacketHandler
     {
         var operation = packet.ReadByte();
 
-        int mapId = 0;
+        var mapId = 0;
         long meretPrice = 15;
 
         if (operation != RequestTaxiOperation.DiscoverTaxi)
@@ -55,7 +55,7 @@ internal sealed class RequestTaxiHandler : GamePacketHandler
 
     private static void HandleCarTaxi(GameSession session, int mapId)
     {
-        if (!WorldMapGraphStorage.CanPathFind(session.Player.MapId.ToString(), mapId.ToString(), out int mapCount))
+        if (!WorldMapGraphStorage.CanPathFind(session.Player.MapId.ToString(), mapId.ToString(), out var mapCount))
         {
             Logger.Warn("Path not found.");
             return;
@@ -63,7 +63,7 @@ internal sealed class RequestTaxiHandler : GamePacketHandler
 
         ScriptLoader scriptLoader = new("Functions/calcTaxiCost");
 
-        DynValue result = scriptLoader.Call("calcTaxiCost", mapCount, session.Player.Levels.Level);
+        var result = scriptLoader.Call("calcTaxiCost", mapCount, session.Player.Levels.Level);
         if (result == null)
         {
             return;
@@ -79,7 +79,7 @@ internal sealed class RequestTaxiHandler : GamePacketHandler
     private static void HandleRotorMeso(GameSession session, int mapId)
     {
         // VIP Travel
-        Account account = session.Player.Account;
+        var account = session.Player.Account;
         if (account.IsVip())
         {
             session.Player.Warp(mapId);
@@ -88,7 +88,7 @@ internal sealed class RequestTaxiHandler : GamePacketHandler
 
         ScriptLoader scriptLoader = new("Functions/calcAirTaxiCost");
 
-        DynValue result = scriptLoader.Call("calcAirTaxiCost", session.Player.Levels.Level);
+        var result = scriptLoader.Call("calcAirTaxiCost", session.Player.Levels.Level);
         if (result == null)
         {
             return;
@@ -114,8 +114,8 @@ internal sealed class RequestTaxiHandler : GamePacketHandler
 
     private static void HandleDiscoverTaxi(GameSession session)
     {
-        List<int> unlockedTaxis = session.Player.UnlockedTaxis;
-        int mapId = session.Player.MapId;
+        var unlockedTaxis = session.Player.UnlockedTaxis;
+        var mapId = session.Player.MapId;
         if (!unlockedTaxis.Contains(mapId))
         {
             unlockedTaxis.Add(mapId);

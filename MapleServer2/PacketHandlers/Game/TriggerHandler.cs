@@ -42,8 +42,8 @@ internal sealed class TriggerHandler : GamePacketHandler
 
     private static void HandleUpdateWidget(GameSession session, IPacketReader packet)
     {
-        TriggerUIMode submode = (TriggerUIMode) packet.ReadByte();
-        int arg = packet.ReadInt();
+        var submode = (TriggerUIMode) packet.ReadByte();
+        var arg = packet.ReadInt();
 
         Widget widget;
         switch (submode)

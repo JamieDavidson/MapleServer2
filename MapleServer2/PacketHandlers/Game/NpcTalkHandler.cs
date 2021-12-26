@@ -56,16 +56,16 @@ internal sealed class NpcTalkHandler : GamePacketHandler
     private static void HandleRespond(GameSession session, IPacketReader packet)
     {
         List<QuestStatus> npcQuests = new();
-        int objectId = packet.ReadInt();
+        var objectId = packet.ReadInt();
 
         // Find if npc object id exists in field manager
-        if (!session.FieldManager.State.Npcs.TryGetValue(objectId, out IFieldActor<NpcMetadata> npc))
+        if (!session.FieldManager.State.Npcs.TryGetValue(objectId, out var npc))
         {
             return;
         }
 
         // Get all quests for this npc
-        foreach (QuestStatus item in session.Player.QuestData.Values.Where(x => x.State is not QuestState.Finished))
+        foreach (var item in session.Player.QuestData.Values.Where(x => x.State is not QuestState.Finished))
         {
             if (npc.Value.Id == item.StartNpcId)
             {
@@ -79,7 +79,7 @@ internal sealed class NpcTalkHandler : GamePacketHandler
         }
 
         session.Player.NpcTalk = new(npc.Value, npcQuests);
-        NpcTalk npcTalk = session.Player.NpcTalk;
+        var npcTalk = session.Player.NpcTalk;
 
         ScriptLoader scriptLoader = new($"Npcs/{npc.Value.Id}", session);
 
@@ -98,7 +98,7 @@ internal sealed class NpcTalkHandler : GamePacketHandler
 
         if (npc.Value.IsBeauty())
         {
-            NpcMetadata npcTarget = NpcMetadataStorage.GetNpcMetadata(npcTalk.Npc.Id);
+            var npcTarget = NpcMetadataStorage.GetNpcMetadata(npcTalk.Npc.Id);
             if (npcTarget.ShopId == 507) // mirror
             {
                 session.Send(NpcTalkPacket.Respond(npc, NpcType.Default, DialogType.Beauty, 0));
@@ -129,7 +129,7 @@ internal sealed class NpcTalkHandler : GamePacketHandler
             npcTalk.IsQuest = true;
             npcTalk.QuestId = npcQuests.First().Id;
 
-            ScriptMetadata questScript = ScriptMetadataStorage.GetQuestScriptMetadata(npcTalk.QuestId);
+            var questScript = ScriptMetadataStorage.GetQuestScriptMetadata(npcTalk.QuestId);
             npcTalk.ScriptId = GetNextScript(questScript, npcTalk, 0, scriptLoader, session.Player);
 
             session.Send(QuestPacket.SendDialogQuest(objectId, npcQuests));
@@ -137,18 +137,18 @@ internal sealed class NpcTalkHandler : GamePacketHandler
             return;
         }
 
-        ScriptMetadata scriptMetadata = ScriptMetadataStorage.GetNpcScriptMetadata(npc.Value.Id);
+        var scriptMetadata = ScriptMetadataStorage.GetNpcScriptMetadata(npc.Value.Id);
         if (!scriptMetadata.Options.Exists(x => x.Type == ScriptType.Script))
         {
             return;
         }
 
-        int firstScriptId = GetFirstScriptId(scriptLoader, scriptMetadata);
+        var firstScriptId = GetFirstScriptId(scriptLoader, scriptMetadata);
         npcTalk.ScriptId = firstScriptId;
 
-        Option option = scriptMetadata.Options.First(x => x.Id == firstScriptId);
+        var option = scriptMetadata.Options.First(x => x.Id == firstScriptId);
 
-        DialogType dialogType = option.Contents[0].Distractor is null ? DialogType.Close1 : DialogType.CloseNextWithDistractor;
+        var dialogType = option.Contents[0].Distractor is null ? DialogType.Close1 : DialogType.CloseNextWithDistractor;
 
         session.Send(NpcTalkPacket.Respond(npc, NpcType.NormalTalk, dialogType, firstScriptId));
 
@@ -162,7 +162,7 @@ internal sealed class NpcTalkHandler : GamePacketHandler
 
     private static void HandleContinue(GameSession session, int index)
     {
-        NpcTalk npcTalk = session.Player.NpcTalk;
+        var npcTalk = session.Player.NpcTalk;
         if (npcTalk.Npc.IsBeauty())
         {
             HandleBeauty(session);
@@ -178,12 +178,12 @@ internal sealed class NpcTalkHandler : GamePacketHandler
             npcTalk.IsQuest = true;
         }
 
-        ScriptMetadata scriptMetadata = npcTalk.IsQuest ? ScriptMetadataStorage.GetQuestScriptMetadata(npcTalk.QuestId) : ScriptMetadataStorage.GetNpcScriptMetadata(npcTalk.Npc.Id);
-        ResponseType responseType = npcTalk.IsQuest ? ResponseType.Quest : ResponseType.Dialog;
+        var scriptMetadata = npcTalk.IsQuest ? ScriptMetadataStorage.GetQuestScriptMetadata(npcTalk.QuestId) : ScriptMetadataStorage.GetNpcScriptMetadata(npcTalk.Npc.Id);
+        var responseType = npcTalk.IsQuest ? ResponseType.Quest : ResponseType.Dialog;
 
         if (npcTalk.ScriptId != 0)
         {
-            Option option = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
+            var option = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
 
             // Find if player has quest condition for type "talk_in" and option id
             QuestHelper.UpdateQuest(session, npcTalk.Npc.Id.ToString(), "talk_in", option.Id.ToString());
@@ -196,7 +196,7 @@ internal sealed class NpcTalkHandler : GamePacketHandler
             }
         }
 
-        int nextScriptId = GetNextScript(scriptMetadata, npcTalk, index, scriptLoader, session.Player);
+        var nextScriptId = GetNextScript(scriptMetadata, npcTalk, index, scriptLoader, session.Player);
 
         // If last script is different from next, reset content index, else increment content index
         if (npcTalk.ScriptId != nextScriptId)
@@ -208,14 +208,14 @@ internal sealed class NpcTalkHandler : GamePacketHandler
             npcTalk.ContentIndex++;
         }
 
-        Option nextScript = scriptMetadata.Options.FirstOrDefault(x => x.Id == nextScriptId);
+        var nextScript = scriptMetadata.Options.FirstOrDefault(x => x.Id == nextScriptId);
         if (nextScript is null)
         {
             session.Send(NpcTalkPacket.Close());
             return;
         }
 
-        bool hasNextScript = nextScript.Contents[npcTalk.ContentIndex].Distractor is not null;
+        var hasNextScript = nextScript.Contents[npcTalk.ContentIndex].Distractor is not null;
         if (nextScript.Contents.Count > npcTalk.ContentIndex + 1)
         {
             hasNextScript = true;
@@ -223,7 +223,7 @@ internal sealed class NpcTalkHandler : GamePacketHandler
 
         npcTalk.ScriptId = nextScriptId;
 
-        DialogType dialogType = GetDialogType(scriptMetadata, npcTalk, hasNextScript);
+        var dialogType = GetDialogType(scriptMetadata, npcTalk, hasNextScript);
 
         session.Send(NpcTalkPacket.ContinueChat(nextScriptId, responseType, dialogType, npcTalk.ContentIndex, npcTalk.QuestId));
         // It appears if content has buttonset roulette, it's send again on every continue chat, unsure why since it doesn't break anything
@@ -231,18 +231,18 @@ internal sealed class NpcTalkHandler : GamePacketHandler
 
     private static void HandleNextQuest(GameSession session, IPacketReader packet)
     {
-        int questId = packet.ReadInt();
-        short mode = packet.ReadShort();
+        var questId = packet.ReadInt();
+        var mode = packet.ReadShort();
 
         // Complete quest
         if (mode == 2)
         {
-            session.Player.QuestData.TryGetValue(questId, out QuestStatus questStatus);
+            session.Player.QuestData.TryGetValue(questId, out var questStatus);
             questStatus?.Condition.ForEach(x => x.Completed = true);
         }
         else
         {
-            session.Player.QuestData.TryGetValue(questId, out QuestStatus quest);
+            session.Player.QuestData.TryGetValue(questId, out var quest);
             session.Player.NpcTalk.Quests = quest is not null
                 ? new() { quest }
                 : new() { new(session.Player, QuestMetadataStorage.GetMetadata(questId)) };
@@ -254,14 +254,14 @@ internal sealed class NpcTalkHandler : GamePacketHandler
 
     private static void HandleBeauty(GameSession session)
     {
-        MapPortal portal = MapEntityStorage.GetPortals(session.Player.MapId).FirstOrDefault(portal => portal.Id == 99); // unsure how the portalId is determined
+        var portal = MapEntityStorage.GetPortals(session.Player.MapId).FirstOrDefault(portal => portal.Id == 99); // unsure how the portalId is determined
         if (portal is null)
         {
             return;
         }
 
         session.Send(NpcTalkPacket.Action(ActionType.Portal, "", "", portal.Id));
-        NpcMetadata npcTarget = NpcMetadataStorage.GetNpcMetadata(session.Player.NpcTalk.Npc.Id);
+        var npcTarget = NpcMetadataStorage.GetNpcMetadata(session.Player.NpcTalk.Npc.Id);
         session.Player.ShopId = npcTarget.ShopId;
 
         switch (npcTarget.ShopId)
@@ -298,8 +298,8 @@ internal sealed class NpcTalkHandler : GamePacketHandler
 
     private static DialogType GetDialogType(ScriptMetadata scriptMetadata, NpcTalk npcTalk, bool hasNextScript)
     {
-        Option option = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
-        Content content = option.Contents[npcTalk.ContentIndex];
+        var option = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
+        var content = option.Contents[npcTalk.ContentIndex];
 
         // If npc has buttonSet by xmls, use it
         if (content.ButtonSet != DialogType.None)
@@ -331,7 +331,7 @@ internal sealed class NpcTalkHandler : GamePacketHandler
     {
         if (npcTalk.IsQuest && npcTalk.ScriptId == 0)
         {
-            QuestStatus questStatus = npcTalk.Quests[index];
+            var questStatus = npcTalk.Quests[index];
             if (questStatus.State is not QuestState.Started)
             {
                 // Talking to npc that start the quest and isn't started
@@ -353,8 +353,8 @@ internal sealed class NpcTalkHandler : GamePacketHandler
             return GetFirstScriptId(scriptLoader, scriptMetadata);
         }
 
-        Option currentOption = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
-        Content content = currentOption.Contents[npcTalk.ContentIndex];
+        var currentOption = scriptMetadata.Options.First(x => x.Id == npcTalk.ScriptId);
+        var content = currentOption.Contents[npcTalk.ContentIndex];
         if (content.Distractor is null || currentOption.Contents.Count > 1 && currentOption.Contents.Count > npcTalk.ContentIndex + 1)
         {
             return npcTalk.ScriptId;
@@ -363,7 +363,7 @@ internal sealed class NpcTalkHandler : GamePacketHandler
         // If content has any goto, use the lua scripts to check the requirements
         if (content.Distractor[index].Goto.Count > 0 && scriptLoader.Script is not null)
         {
-            DynValue result = scriptLoader.Call("handleGoto", content.Distractor[index].Goto[0]);
+            var result = scriptLoader.Call("handleGoto", content.Distractor[index].Goto[0]);
             if (result is not null && (int) result.Number != -1)
             {
                 return (int) result.Number;
@@ -383,7 +383,7 @@ internal sealed class NpcTalkHandler : GamePacketHandler
 
         // Usually hardcoded functions to get the first script id which
         // otherwise wouldn't be possible only with the xml data
-        DynValue firstScriptResult = scriptLoader.Call("getFirstScriptId");
+        var firstScriptResult = scriptLoader.Call("getFirstScriptId");
         if (firstScriptResult is not null && (int) firstScriptResult.Number != -1)
         {
             return (int) firstScriptResult.Number;

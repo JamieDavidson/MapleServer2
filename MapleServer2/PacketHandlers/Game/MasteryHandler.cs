@@ -48,19 +48,19 @@ internal sealed class MasteryHandler : GamePacketHandler
 
     private static void HandleRewardBox(GameSession session, IPacketReader packet)
     {
-        int rewardBoxDetails = packet.ReadInt();
-        int type = rewardBoxDetails / 1000;
-        int grade = rewardBoxDetails % 100;
+        var rewardBoxDetails = packet.ReadInt();
+        var type = rewardBoxDetails / 1000;
+        var grade = rewardBoxDetails % 100;
 
         // get the reward box item ID
-        MasteryMetadata mastery = MasteryMetadataStorage.GetMastery(type);
+        var mastery = MasteryMetadataStorage.GetMastery(type);
         if (mastery == null)
         {
             Logger.Error($"Unknown mastery type {type} from user: {session.Player.Name}");
             return;
         }
 
-        int rewardBoxItemId = mastery.Grades[grade - 1].RewardJobItemID;
+        var rewardBoxItemId = mastery.Grades[grade - 1].RewardJobItemID;
         Item rewardBox = new(rewardBoxItemId)
         {
             Amount = 1
@@ -75,10 +75,10 @@ internal sealed class MasteryHandler : GamePacketHandler
 
     private static void HandleCraftItem(GameSession session, IPacketReader packet)
     {
-        int recipeId = packet.ReadInt();
+        var recipeId = packet.ReadInt();
 
         // attempt to oad the recipe metadata
-        RecipeMetadata recipe = RecipeMetadataStorage.GetRecipe(recipeId);
+        var recipe = RecipeMetadataStorage.GetRecipe(recipeId);
         if (recipe == null)
         {
             Logger.Error($"Unknown recipe ID {recipeId} from user: {session.Player.Name}");
@@ -96,9 +96,9 @@ internal sealed class MasteryHandler : GamePacketHandler
 
         if (recipe.RequireQuest.Count > 0)
         {
-            foreach (int questId in recipe.RequireQuest)
+            foreach (var questId in recipe.RequireQuest)
             {
-                if (session.Player.QuestData.TryGetValue(questId, out QuestStatus quest) && quest.State is not QuestState.Finished)
+                if (session.Player.QuestData.TryGetValue(questId, out var quest) && quest.State is not QuestState.Finished)
                 {
                     session.Send(MasteryPacket.MasteryNotice(MasteryNotices.RequiredQuestIsNotCompleted));
                     return;
@@ -129,12 +129,12 @@ internal sealed class MasteryHandler : GamePacketHandler
 
     private static bool RemoveRequiredItemsFromInventory(GameSession session, RecipeMetadata recipe)
     {
-        List<RecipeItem> ingredients = recipe.RequiredItems;
+        var ingredients = recipe.RequiredItems;
 
         var inventory = session.Player.Inventory;
-        foreach (RecipeItem ingredient in ingredients)
+        foreach (var ingredient in ingredients)
         {
-            Item item = inventory.GetItemByItemIdAndRarity(ingredient.ItemId, ingredient.Rarity);
+            var item = inventory.GetItemByItemIdAndRarity(ingredient.ItemId, ingredient.Rarity);
             if (item == null || item.Amount < ingredient.Amount)
             {
                 return false;
@@ -149,8 +149,8 @@ internal sealed class MasteryHandler : GamePacketHandler
     private static void AddRewardItemsToInventory(GameSession session, RecipeMetadata recipe)
     {
         // award items
-        List<RecipeItem> resultItems = recipe.RewardItems;
-        foreach (RecipeItem resultItem in resultItems)
+        var resultItems = recipe.RewardItems;
+        foreach (var resultItem in resultItems)
         {
             Item rewardItem = new(resultItem.ItemId)
             {
@@ -173,7 +173,7 @@ internal sealed class MasteryHandler : GamePacketHandler
 
     private static bool PlayerHasEnoughMesos(GameSession session, RecipeMetadata recipe)
     {
-        long mesoBalance = session.Player.Wallet.Meso.Amount;
+        var mesoBalance = session.Player.Wallet.Meso.Amount;
         if (mesoBalance == 0)
         {
             return false;
@@ -184,12 +184,12 @@ internal sealed class MasteryHandler : GamePacketHandler
 
     private static bool PlayerHasAllIngredients(GameSession session, RecipeMetadata recipe)
     {
-        List<RecipeItem> ingredients = recipe.RequiredItems;
+        var ingredients = recipe.RequiredItems;
 
         var inventory = session.Player.Inventory;
-        foreach (RecipeItem ingredient in ingredients)
+        foreach (var ingredient in ingredients)
         {
-            Item item = inventory.GetItemByItemIdAndRarity(ingredient.ItemId, ingredient.Rarity);
+            var item = inventory.GetItemByItemIdAndRarity(ingredient.ItemId, ingredient.Rarity);
             if (item == null || item.Amount < ingredient.Amount)
             {
                 return false;

@@ -11,7 +11,7 @@ internal sealed class CharacterInfoHandler : GamePacketHandler
 
     public override void Handle(GameSession session, IPacketReader packet)
     {
-        long characterId = packet.ReadLong();
+        var characterId = packet.ReadLong();
 
         session.Send(CharacterInfoPacket.WriteCharacterInfo(characterId, GameServer.PlayerManager.GetPlayerById(characterId)));
     }

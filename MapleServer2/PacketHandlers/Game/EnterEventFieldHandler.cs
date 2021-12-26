@@ -12,7 +12,7 @@ internal sealed class EnterEventFieldHandler : GamePacketHandler
 
     public override void Handle(GameSession session, IPacketReader packet)
     {
-        FieldPopupEvent fieldPopupEvent = DatabaseManager.Events.FindFieldPopupEvent();
+        var fieldPopupEvent = DatabaseManager.Events.FindFieldPopupEvent();
         if (fieldPopupEvent == null)
         {
             return;

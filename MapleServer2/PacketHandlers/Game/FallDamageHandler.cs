@@ -12,7 +12,7 @@ internal sealed class FallDamageHandler : GamePacketHandler
 
     public override void Handle(GameSession session, IPacketReader packet)
     {
-        float distance = packet.ReadFloat();
+        var distance = packet.ReadFloat();
 
         if (distance > Block.BLOCK_SIZE * 6)
         {

@@ -14,13 +14,13 @@ internal sealed class VibrateHandler : GamePacketHandler
 
     public override void Handle(GameSession session, IPacketReader packet)
     {
-        string entityId = packet.ReadString();
-        long skillSN = packet.ReadLong();
-        int skillId = packet.ReadInt();
-        short skillLevel = packet.ReadShort();
-        short unkShort = packet.ReadShort();
-        int unkInt = packet.ReadInt();
-        CoordF playerCoords = packet.Read<CoordF>();
+        var entityId = packet.ReadString();
+        var skillSN = packet.ReadLong();
+        var skillId = packet.ReadInt();
+        var skillLevel = packet.ReadShort();
+        var unkShort = packet.ReadShort();
+        var unkInt = packet.ReadInt();
+        var playerCoords = packet.Read<CoordF>();
 
         if (!MapEntityStorage.IsVibrateObject(session.Player.MapId, entityId))
         {

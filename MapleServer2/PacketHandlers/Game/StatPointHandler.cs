@@ -36,7 +36,7 @@ internal sealed class StatPointHandler : GamePacketHandler
 
     private static void HandleStatIncrement(GameSession session, IPacketReader packet)
     {
-        byte statTypeIndex = packet.ReadByte();
+        var statTypeIndex = packet.ReadByte();
 
         session.Player.StatPointDistribution.AddPoint(statTypeIndex); // Deprecate?
         session.Player.Stats.Allocate((StatId) statTypeIndex);

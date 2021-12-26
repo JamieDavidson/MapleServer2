@@ -30,7 +30,7 @@ internal sealed class PrestigeHandler : GamePacketHandler
 
     private static void HandleReward(GameSession session, IPacketReader packet)
     {
-        int rank = packet.ReadInt();
+        var rank = packet.ReadInt();
 
         if (session.Player.PrestigeRewardsClaimed.Contains(rank))
         {
@@ -38,7 +38,7 @@ internal sealed class PrestigeHandler : GamePacketHandler
         }
 
         // Get reward data
-        PrestigeReward reward = PrestigeMetadataStorage.GetReward(rank);
+        var reward = PrestigeMetadataStorage.GetReward(rank);
 
         if (reward.Type.Equals("item"))
         {

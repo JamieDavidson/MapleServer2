@@ -12,7 +12,7 @@ internal sealed class InsigniaHandler : GamePacketHandler
 
     public override void Handle(GameSession session, IPacketReader packet)
     {
-        short insigniaId = packet.ReadShort();
+        var insigniaId = packet.ReadShort();
 
         if (insigniaId < 0 && !InsigniaMetadataStorage.IsValid(insigniaId))
         {
@@ -25,7 +25,7 @@ internal sealed class InsigniaHandler : GamePacketHandler
 
     private static bool CanEquipInsignia(GameSession session, short insigniaId)
     {
-        string type = InsigniaMetadataStorage.GetConditionType(insigniaId);
+        var type = InsigniaMetadataStorage.GetConditionType(insigniaId);
 
         switch (type) // TODO: handling survivallevel
         {

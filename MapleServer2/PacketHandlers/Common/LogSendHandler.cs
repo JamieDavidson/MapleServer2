@@ -13,7 +13,7 @@ internal sealed class LogSendHandler : CommonPacketHandler
     protected override void HandleCommon(Session session, IPacketReader packet)
     {
         packet.ReadByte();
-        byte function = packet.ReadByte();
+        var function = packet.ReadByte();
         if (function == 1)
         {
             // Some random data that isn't text...
@@ -25,11 +25,11 @@ internal sealed class LogSendHandler : CommonPacketHandler
             StringBuilder builder = new();
             while (packet.Available > 2)
             {
-                string message = packet.ReadUnicodeString();
+                var message = packet.ReadUnicodeString();
                 if (message.Contains("exception"))
                 {
                     // Read remaining string
-                    string debug = packet.ReadUnicodeString();
+                    var debug = packet.ReadUnicodeString();
                     Logger.Error($"[{message}] {debug}");
 
                     session.OnError?.Invoke(session, debug);

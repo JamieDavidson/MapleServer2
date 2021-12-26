@@ -36,7 +36,7 @@ internal sealed class EmoteHandler : GamePacketHandler
 
     private static void HandleLearnEmote(GameSession session, IPacketReader packet)
     {
-        long itemUid = packet.ReadLong();
+        var itemUid = packet.ReadLong();
 
         var inventory = session.Player.Inventory;
         if (!inventory.HasItemWithUid(itemUid))
@@ -44,7 +44,7 @@ internal sealed class EmoteHandler : GamePacketHandler
             return;
         }
 
-        Item item = inventory.GetItemByUid(itemUid);
+        var item = inventory.GetItemByUid(itemUid);
 
         if (session.Player.Emotes.Contains(item.SkillId))
         {
@@ -60,8 +60,8 @@ internal sealed class EmoteHandler : GamePacketHandler
 
     private static void HandleUseEmote(IPacketReader packet)
     {
-        int emoteId = packet.ReadInt();
-        string animationName = packet.ReadUnicodeString();
+        var emoteId = packet.ReadInt();
+        var animationName = packet.ReadUnicodeString();
         // animationName is the name in /Xml/anikeytext.xml
     }
 }

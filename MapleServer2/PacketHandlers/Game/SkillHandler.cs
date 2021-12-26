@@ -82,23 +82,23 @@ internal sealed class SkillHandler : GamePacketHandler
 
     private static void HandleCast(GameSession session, IPacketReader packet)
     {
-        long skillSN = packet.ReadLong();
-        int serverTick = packet.ReadInt();
-        int skillId = packet.ReadInt();
-        short skillLevel = packet.ReadShort();
-        byte attackPoint = packet.ReadByte();
-        CoordF position = packet.Read<CoordF>();
-        CoordF direction = packet.Read<CoordF>();
-        CoordF rotation = packet.Read<CoordF>();
+        var skillSN = packet.ReadLong();
+        var serverTick = packet.ReadInt();
+        var skillId = packet.ReadInt();
+        var skillLevel = packet.ReadShort();
+        var attackPoint = packet.ReadByte();
+        var position = packet.Read<CoordF>();
+        var direction = packet.Read<CoordF>();
+        var rotation = packet.Read<CoordF>();
         packet.ReadFloat();
-        int clientTick = packet.ReadInt();
+        var clientTick = packet.ReadInt();
         packet.ReadBool();
         packet.ReadLong();
-        bool flag = packet.ReadBool();
+        var flag = packet.ReadBool();
         if (flag)
         {
             packet.ReadInt();
-            string unkString = packet.ReadUnicodeString();
+            var unkString = packet.ReadUnicodeString();
         }
 
         SkillCast skillCast = new(skillId, skillLevel, skillSN, serverTick, session.Player.FieldPlayer.ObjectId, clientTick, attackPoint);
@@ -114,15 +114,15 @@ internal sealed class SkillHandler : GamePacketHandler
 
     private static void HandleSyncSkills(GameSession session, IPacketReader packet)
     {
-        long skillSN = packet.ReadLong();
-        int skillId = packet.ReadInt();
-        short skillLevel = packet.ReadShort();
-        byte motionPoint = packet.ReadByte();
-        CoordF position = packet.Read<CoordF>();
-        CoordF unkCoords = packet.Read<CoordF>();
-        CoordF rotation = packet.Read<CoordF>();
-        CoordF unknown = packet.Read<CoordF>();
-        bool toggle = packet.ReadBool();
+        var skillSN = packet.ReadLong();
+        var skillId = packet.ReadInt();
+        var skillLevel = packet.ReadShort();
+        var motionPoint = packet.ReadByte();
+        var position = packet.Read<CoordF>();
+        var unkCoords = packet.Read<CoordF>();
+        var rotation = packet.Read<CoordF>();
+        var unknown = packet.Read<CoordF>();
+        var toggle = packet.ReadBool();
         packet.ReadInt();
         packet.ReadByte();
 
@@ -131,22 +131,22 @@ internal sealed class SkillHandler : GamePacketHandler
 
     private static void HandleSyncTick(IPacketReader packet)
     {
-        long skillSN = packet.ReadLong();
-        int serverTick = packet.ReadInt();
+        var skillSN = packet.ReadLong();
+        var serverTick = packet.ReadInt();
     }
 
     private static void HandleCancelSkill(IPacketReader packet)
     {
-        long skillSN = packet.ReadLong();
+        var skillSN = packet.ReadLong();
     }
 
     private static void HandleSyncDamage(GameSession session, IPacketReader packet)
     {
-        long skillSN = packet.ReadLong();
-        byte attackPoint = packet.ReadByte();
-        CoordF position = packet.Read<CoordF>();
-        CoordF rotation = packet.Read<CoordF>();
-        byte count = packet.ReadByte();
+        var skillSN = packet.ReadLong();
+        var attackPoint = packet.ReadByte();
+        var position = packet.Read<CoordF>();
+        var rotation = packet.Read<CoordF>();
+        var count = packet.ReadByte();
         packet.ReadInt();
 
         List<int> atkCount = new();
@@ -154,7 +154,7 @@ internal sealed class SkillHandler : GamePacketHandler
         List<int> targetId = new();
         List<short> animation = new();
         // TODO: Handle multiple projectiles
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             atkCount.Add(packet.ReadInt());
             sourceId.Add(packet.ReadInt());
@@ -167,19 +167,19 @@ internal sealed class SkillHandler : GamePacketHandler
 
     private static void HandleDamage(GameSession session, IPacketReader packet)
     {
-        long skillSN = packet.ReadLong();
-        int attackCounter = packet.ReadInt();
-        int playerObjectId = packet.ReadInt();
-        CoordF position = packet.Read<CoordF>();
-        CoordF impactPos = packet.Read<CoordF>();
-        CoordF rotation = packet.Read<CoordF>();
+        var skillSN = packet.ReadLong();
+        var attackCounter = packet.ReadInt();
+        var playerObjectId = packet.ReadInt();
+        var position = packet.Read<CoordF>();
+        var impactPos = packet.Read<CoordF>();
+        var rotation = packet.Read<CoordF>();
         int attackPoint = packet.ReadByte();
-        byte count = packet.ReadByte();
+        var count = packet.ReadByte();
         packet.ReadInt();
 
-        IFieldActor<Player> fieldPlayer = session.Player.FieldPlayer;
+        var fieldPlayer = session.Player.FieldPlayer;
 
-        bool isCrit = DamageHandler.RollCrit(session.Player.Stats[StatId.CritRate].Total);
+        var isCrit = DamageHandler.RollCrit(session.Player.Stats[StatId.CritRate].Total);
 
         // TODO: Check if skillSN matches server's current skill for the player
         // TODO: Verify if its the player or an ally
@@ -196,18 +196,18 @@ internal sealed class SkillHandler : GamePacketHandler
         else
         {
             List<DamageHandler> damages = new();
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
-                int entityId = packet.ReadInt();
+                var entityId = packet.ReadInt();
                 packet.ReadByte();
 
-                IFieldActor<NpcMetadata> mob = session.FieldManager.State.Mobs.GetValueOrDefault(entityId);
+                var mob = session.FieldManager.State.Mobs.GetValueOrDefault(entityId);
                 if (mob == null)
                 {
                     continue;
                 }
 
-                DamageHandler damage = DamageHandler.CalculateDamage(fieldPlayer.SkillCast, fieldPlayer, mob, isCrit);
+                var damage = DamageHandler.CalculateDamage(fieldPlayer.SkillCast, fieldPlayer, mob, isCrit);
 
                 mob.Damage(damage);
                 // TODO: Move logic to Damage()
@@ -220,7 +220,7 @@ internal sealed class SkillHandler : GamePacketHandler
                 damages.Add(damage);
 
                 // TODO: Check if the skill is a debuff for an entity
-                SkillCast skillCast = fieldPlayer.SkillCast;
+                var skillCast = fieldPlayer.SkillCast;
                 if (skillCast.IsDebuffElement() || skillCast.IsDebuffToEntity() || skillCast.IsDebuffElement())
                 {
                     Status status = new(fieldPlayer.SkillCast, mob.ObjectId, fieldPlayer.ObjectId, 1);
@@ -234,23 +234,23 @@ internal sealed class SkillHandler : GamePacketHandler
 
     private static void HandleRegionSkills(GameSession session, IPacketReader packet)
     {
-        long skillSN = packet.ReadLong();
-        byte mode = packet.ReadByte();
-        int unknown = packet.ReadInt();
-        int unknown2 = packet.ReadInt();
-        CoordF position = packet.Read<CoordF>();
-        CoordF rotation = packet.Read<CoordF>();
+        var skillSN = packet.ReadLong();
+        var mode = packet.ReadByte();
+        var unknown = packet.ReadInt();
+        var unknown2 = packet.ReadInt();
+        var position = packet.Read<CoordF>();
+        var rotation = packet.Read<CoordF>();
 
         // TODO: Verify rest of skills to proc correctly.
         // Send status correctly when Region attacks are proc.
-        SkillCast parentSkill = SkillUsePacket.SkillCastMap[skillSN];
+        var parentSkill = SkillUsePacket.SkillCastMap[skillSN];
 
         if (parentSkill.GetConditionSkill() == null)
         {
             return;
         }
 
-        foreach (SkillCondition conditionSkill in parentSkill.GetConditionSkill())
+        foreach (var conditionSkill in parentSkill.GetConditionSkill())
         {
             if (!conditionSkill.Splash)
             {
@@ -266,7 +266,7 @@ internal sealed class SkillHandler : GamePacketHandler
     {
         // TODO: Add trophy + item drops
         // Drop Money
-        bool dropMeso = Rand.Next(2) == 0;
+        var dropMeso = Rand.Next(2) == 0;
         if (dropMeso)
         {
             // TODO: Calculate meso drop rate
@@ -274,21 +274,21 @@ internal sealed class SkillHandler : GamePacketHandler
             session.FieldManager.AddResource(meso, mob, session.Player.FieldPlayer);
         }
         // Drop Meret
-        bool dropMeret = Rand.Next(40) == 0;
+        var dropMeret = Rand.Next(40) == 0;
         if (dropMeret)
         {
             Item meret = new(90000004, 20);
             session.FieldManager.AddResource(meret, mob, session.Player.FieldPlayer);
         }
         // Drop SP
-        bool dropSP = Rand.Next(6) == 0;
+        var dropSP = Rand.Next(6) == 0;
         if (dropSP)
         {
             Item spBall = new(90000009, 20);
             session.FieldManager.AddResource(spBall, mob, session.Player.FieldPlayer);
         }
         // Drop EP
-        bool dropEP = Rand.Next(10) == 0;
+        var dropEP = Rand.Next(10) == 0;
         if (dropEP)
         {
             Item epBall = new(90000010, 20);
@@ -300,7 +300,7 @@ internal sealed class SkillHandler : GamePacketHandler
         session.Player.Levels.GainExp(mob.Value.Experience);
         // Send achieves (2)
 
-        string mapId = session.Player.MapId.ToString();
+        var mapId = session.Player.MapId.ToString();
         // Prepend zero if map id is equal to 7 digits
         if (mapId.Length == 7)
         {

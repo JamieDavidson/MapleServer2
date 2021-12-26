@@ -12,9 +12,9 @@ internal sealed class TutorialHandler : GamePacketHandler
 
     public override void Handle(GameSession session, IPacketReader packet)
     {
-        JobMetadata metadata = JobMetadataStorage.GetJobMetadata((int) session.Player.Job);
+        var metadata = JobMetadataStorage.GetJobMetadata((int) session.Player.Job);
         {
-            foreach (int taxiMapId in metadata.OpenTaxis)
+            foreach (var taxiMapId in metadata.OpenTaxis)
             {
                 if (session.Player.UnlockedTaxis.Contains(taxiMapId))
                 {
@@ -23,7 +23,7 @@ internal sealed class TutorialHandler : GamePacketHandler
                 session.Player.UnlockedTaxis.Add(taxiMapId);
             }
 
-            foreach (int openMapId in metadata.OpenMaps)
+            foreach (var openMapId in metadata.OpenMaps)
             {
                 if (session.Player.UnlockedMaps.Contains(openMapId))
                 {

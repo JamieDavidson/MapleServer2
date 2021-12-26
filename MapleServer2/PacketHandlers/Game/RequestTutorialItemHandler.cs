@@ -13,13 +13,13 @@ internal sealed class RequestTutorialItemHandler : GamePacketHandler
 
     public override void Handle(GameSession session, IPacketReader packet)
     {
-        List<TutorialItemMetadata> metadata = JobMetadataStorage.GetTutorialItems((int) session.Player.Job);
+        var metadata = JobMetadataStorage.GetTutorialItems((int) session.Player.Job);
 
         var inventory = session.Player.Inventory; 
             
-        foreach (TutorialItemMetadata tutorialItem in metadata)
+        foreach (var tutorialItem in metadata)
         {
-            int tutorialItemsCount = inventory.GetItemCount(tutorialItem.ItemId);
+            var tutorialItemsCount = inventory.GetItemCount(tutorialItem.ItemId);
             tutorialItemsCount += inventory.Cosmetics.Where(x => x.Value.Id == tutorialItem.ItemId).Count();
             tutorialItemsCount += inventory.Equips.Where(x => x.Value.Id == tutorialItem.ItemId).Count();
 
@@ -28,7 +28,7 @@ internal sealed class RequestTutorialItemHandler : GamePacketHandler
                 continue;
             }
 
-            int amountRemaining = tutorialItem.Amount - tutorialItemsCount;
+            var amountRemaining = tutorialItem.Amount - tutorialItemsCount;
 
             Item item = new(tutorialItem.ItemId)
             {

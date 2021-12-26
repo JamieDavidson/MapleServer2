@@ -52,10 +52,10 @@ internal sealed class BuddyEmoteHandler : GamePacketHandler
 
     private static void HandleInviteBuddyEmote(GameSession session, IPacketReader packet)
     {
-        int buddyEmoteId = packet.ReadInt();
-        long characterId = packet.ReadLong();
+        var buddyEmoteId = packet.ReadInt();
+        var characterId = packet.ReadLong();
 
-        Player buddy = GameServer.PlayerManager.GetPlayerById(characterId);
+        var buddy = GameServer.PlayerManager.GetPlayerById(characterId);
         if (buddy == null)
         {
             return;
@@ -66,9 +66,9 @@ internal sealed class BuddyEmoteHandler : GamePacketHandler
 
     private static void HandleInviteBuddyEmoteConfirm(GameSession session, IPacketReader packet)
     {
-        long senderCharacterId = packet.ReadLong();
+        var senderCharacterId = packet.ReadLong();
 
-        Player buddy = GameServer.PlayerManager.GetPlayerById(senderCharacterId);
+        var buddy = GameServer.PlayerManager.GetPlayerById(senderCharacterId);
         if (buddy == null)
         {
             return;
@@ -79,20 +79,20 @@ internal sealed class BuddyEmoteHandler : GamePacketHandler
 
     private static void HandleLearnEmote(GameSession session, IPacketReader packet)
     {
-        long emoteItemUid = packet.ReadLong();
+        var emoteItemUid = packet.ReadLong();
         // TODO grab emoteId from emoteItemUid
         session.Send(BuddyEmotePacket.LearnEmote());
     }
 
     private static void HandleAcceptEmote(GameSession session, IPacketReader packet)
     {
-        int buddyEmoteId = packet.ReadInt();
-        long senderCharacterId = packet.ReadLong();
-        CoordF senderCoords = packet.Read<CoordF>();
-        CoordF selfCoords = packet.Read<CoordF>();
-        int rotation = packet.ReadInt();
+        var buddyEmoteId = packet.ReadInt();
+        var senderCharacterId = packet.ReadLong();
+        var senderCoords = packet.Read<CoordF>();
+        var selfCoords = packet.Read<CoordF>();
+        var rotation = packet.ReadInt();
 
-        Player buddy = GameServer.PlayerManager.GetPlayerById(senderCharacterId);
+        var buddy = GameServer.PlayerManager.GetPlayerById(senderCharacterId);
         if (buddy == null)
         {
             return;
@@ -105,10 +105,10 @@ internal sealed class BuddyEmoteHandler : GamePacketHandler
 
     private static void HandleDeclineEmote(GameSession session, IPacketReader packet)
     {
-        int buddyEmoteId = packet.ReadInt();
-        long senderCharacterId = packet.ReadLong();
+        var buddyEmoteId = packet.ReadInt();
+        var senderCharacterId = packet.ReadLong();
 
-        Player other = GameServer.PlayerManager.GetPlayerById(senderCharacterId);
+        var other = GameServer.PlayerManager.GetPlayerById(senderCharacterId);
         if (other == null)
         {
             return;
@@ -119,10 +119,10 @@ internal sealed class BuddyEmoteHandler : GamePacketHandler
 
     private static void HandleStopEmote(GameSession session, IPacketReader packet)
     {
-        int buddyEmoteId = packet.ReadInt();
-        long target = packet.ReadLong();
+        var buddyEmoteId = packet.ReadInt();
+        var target = packet.ReadLong();
 
-        Player buddy = GameServer.PlayerManager.GetPlayerById(target);
+        var buddy = GameServer.PlayerManager.GetPlayerById(target);
         if (buddy == null)
         {
             return;

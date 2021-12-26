@@ -11,7 +11,7 @@ internal sealed class RequestTimeSyncHandler : GamePacketHandler
 
     public override void Handle(GameSession session, IPacketReader packet)
     {
-        int key = packet.ReadInt();
+        var key = packet.ReadInt();
 
         session.Send(TimeSyncPacket.SetSessionServerTick(key));
     }

@@ -11,11 +11,11 @@ internal sealed class MyInfoHandler : GamePacketHandler
 
     public override void Handle(GameSession session, IPacketReader packet)
     {
-        byte mode = packet.ReadByte(); //I don't know any other modes this could have so right now just handle the one.
+        var mode = packet.ReadByte(); //I don't know any other modes this could have so right now just handle the one.
         switch (mode)
         {
             case 0: //Set Motto
-                string newmotto = packet.ReadUnicodeString();
+                var newmotto = packet.ReadUnicodeString();
                 session.Player.Motto = newmotto;
                 session.FieldManager.BroadcastPacket(MyInfoPacket.SetMotto(session.Player.FieldPlayer, newmotto));
                 break;

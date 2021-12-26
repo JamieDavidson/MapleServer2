@@ -54,10 +54,10 @@ internal sealed class ChatStickerHandler : GamePacketHandler
 
     private static void HandleUseSticker(GameSession session, IPacketReader packet)
     {
-        int stickerId = packet.ReadInt();
-        string script = packet.ReadUnicodeString();
+        var stickerId = packet.ReadInt();
+        var script = packet.ReadUnicodeString();
 
-        byte groupId = ChatStickerMetadataStorage.GetGroupId(stickerId);
+        var groupId = ChatStickerMetadataStorage.GetGroupId(stickerId);
 
         if (!session.Player.ChatSticker.Any(p => p.GroupId == groupId))
         {
@@ -69,10 +69,10 @@ internal sealed class ChatStickerHandler : GamePacketHandler
 
     private static void HandleGroupChatSticker(GameSession session, IPacketReader packet)
     {
-        int stickerId = packet.ReadInt();
-        string groupChatName = packet.ReadUnicodeString();
+        var stickerId = packet.ReadInt();
+        var groupChatName = packet.ReadUnicodeString();
 
-        byte groupId = ChatStickerMetadataStorage.GetGroupId(stickerId);
+        var groupId = ChatStickerMetadataStorage.GetGroupId(stickerId);
 
         if (!session.Player.ChatSticker.Any(p => p.GroupId == groupId))
         {
@@ -84,7 +84,7 @@ internal sealed class ChatStickerHandler : GamePacketHandler
 
     private static void HandleFavorite(GameSession session, IPacketReader packet)
     {
-        int stickerId = packet.ReadInt();
+        var stickerId = packet.ReadInt();
 
         if (session.Player.FavoriteStickers.Contains(stickerId))
         {
@@ -96,7 +96,7 @@ internal sealed class ChatStickerHandler : GamePacketHandler
 
     private static void HandleUnfavorite(GameSession session, IPacketReader packet)
     {
-        int stickerId = packet.ReadInt();
+        var stickerId = packet.ReadInt();
 
         if (!session.Player.FavoriteStickers.Contains(stickerId))
         {

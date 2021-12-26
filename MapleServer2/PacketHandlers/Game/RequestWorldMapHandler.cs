@@ -11,7 +11,7 @@ internal sealed class RequestWorldMapHandler : GamePacketHandler
 
     public override void Handle(GameSession session, IPacketReader packet)
     {
-        byte operation = packet.ReadByte();
+        var operation = packet.ReadByte();
         switch (operation)
         {
             case 0: // open
@@ -19,7 +19,7 @@ internal sealed class RequestWorldMapHandler : GamePacketHandler
                 break;
         }
         packet.ReadByte(); // always 0?
-        int tab = packet.ReadInt();
+        var tab = packet.ReadInt();
     }
 
     private static void HandleOpen(GameSession session)

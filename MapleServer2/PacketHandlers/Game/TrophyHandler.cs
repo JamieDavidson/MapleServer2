@@ -40,15 +40,15 @@ internal sealed class TrophyHandler : GamePacketHandler
 
     private static void HandleClaimReward(GameSession session, IPacketReader packet)
     {
-        int id = packet.ReadInt();
-        if (!session.Player.TrophyData.TryGetValue(id, out Trophy trophy))
+        var id = packet.ReadInt();
+        if (!session.Player.TrophyData.TryGetValue(id, out var trophy))
         {
             return;
         }
 
-        TrophyMetadata metadata = TrophyMetadataStorage.GetMetadata(trophy.Id);
-        List<TrophyGradeMetadata> grades = metadata.Grades.Where(x => x.Grade <= trophy.LastReward).ToList();
-        foreach (TrophyGradeMetadata grade in grades)
+        var metadata = TrophyMetadataStorage.GetMetadata(trophy.Id);
+        var grades = metadata.Grades.Where(x => x.Grade <= trophy.LastReward).ToList();
+        foreach (var grade in grades)
         {
             if (grade.Grade >= trophy.LastReward)
             {
@@ -62,9 +62,9 @@ internal sealed class TrophyHandler : GamePacketHandler
 
     private static void HandleFavorite(GameSession session, IPacketReader packet)
     {
-        int id = packet.ReadInt();
-        bool favorited = packet.ReadBool();
-        if (!session.Player.TrophyData.TryGetValue(id, out Trophy trophy))
+        var id = packet.ReadInt();
+        var favorited = packet.ReadBool();
+        if (!session.Player.TrophyData.TryGetValue(id, out var trophy))
         {
             return;
         }

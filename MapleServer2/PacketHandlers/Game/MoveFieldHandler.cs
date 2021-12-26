@@ -54,27 +54,27 @@ internal sealed class MoveFieldHandler : GamePacketHandler
 
     private static void HandleMove(GameSession session, IPacketReader packet)
     {
-        int srcMapId = packet.ReadInt();
+        var srcMapId = packet.ReadInt();
         if (srcMapId != session.FieldManager.MapId)
         {
             return;
         }
 
-        int portalId = packet.ReadInt();
-        IFieldObject<Portal> fieldPortal = session.FieldManager.State.Portals.Values.FirstOrDefault(x => x.Value.Id == portalId);
+        var portalId = packet.ReadInt();
+        var fieldPortal = session.FieldManager.State.Portals.Values.FirstOrDefault(x => x.Value.Id == portalId);
         if (fieldPortal == default)
         {
             Logger.Warn($"Unable to find portal:{portalId} in map:{srcMapId}");
             return;
         }
 
-        Portal srcPortal = fieldPortal.Value;
+        var srcPortal = fieldPortal.Value;
         switch (srcPortal.PortalType)
         {
             case PortalTypes.Field:
                 break;
             case PortalTypes.DungeonReturnToLobby:
-                DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstanceId(session.Player.InstanceId);
+                var dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstanceId(session.Player.InstanceId);
                 if (dungeonSession == null)
                 {
                     return;
@@ -98,7 +98,7 @@ internal sealed class MoveFieldHandler : GamePacketHandler
             return;
         }
 
-        MapPortal dstPortal = MapEntityStorage.GetPortals(srcPortal.TargetMapId)
+        var dstPortal = MapEntityStorage.GetPortals(srcPortal.TargetMapId)
             .FirstOrDefault(portal => portal.Id == srcPortal.TargetPortalId); // target map's portal id == source portal's targetPortalId
         if (dstPortal == default)
         {
@@ -106,7 +106,7 @@ internal sealed class MoveFieldHandler : GamePacketHandler
             return;
         }
 
-        CoordF coord = dstPortal.Coord.ToFloat();
+        var coord = dstPortal.Coord.ToFloat();
 
         if (dstPortal.Name == "Portal_cube") // spawn on the next block if portal is a cube
         {
@@ -133,7 +133,7 @@ internal sealed class MoveFieldHandler : GamePacketHandler
 
     private static void HandleHomePortal(GameSession session, IFieldObject<Portal> fieldPortal)
     {
-        IFieldObject<Cube> srcCube = session.FieldManager.State.Cubes.Values
+        var srcCube = session.FieldManager.State.Cubes.Values
             .FirstOrDefault(x => x.Value.PortalSettings is not null
                                 && x.Value.PortalSettings.PortalObjectId == fieldPortal.ObjectId);
         if (srcCube is null)
@@ -141,7 +141,7 @@ internal sealed class MoveFieldHandler : GamePacketHandler
             return;
         }
 
-        string destinationTarget = srcCube.Value.PortalSettings.DestinationTarget;
+        var destinationTarget = srcCube.Value.PortalSettings.DestinationTarget;
         if (string.IsNullOrEmpty(destinationTarget))
         {
             return;
@@ -150,7 +150,7 @@ internal sealed class MoveFieldHandler : GamePacketHandler
         switch (srcCube.Value.PortalSettings.Destination)
         {
             case UGCPortalDestination.PortalInHome:
-                IFieldObject<Cube> destinationCube = session.FieldManager.State.Cubes.Values
+                var destinationCube = session.FieldManager.State.Cubes.Values
                     .FirstOrDefault(x => x.Value.PortalSettings is not null
                                         && x.Value.PortalSettings.PortalName == destinationTarget);
                 if (destinationCube is null)
@@ -158,7 +158,7 @@ internal sealed class MoveFieldHandler : GamePacketHandler
                     return;
                 }
                 session.Player.FieldPlayer.Coord = destinationCube.Coord;
-                CoordF coordF = destinationCube.Coord;
+                var coordF = destinationCube.Coord;
                 coordF.Z += 25; // Without this the player falls through the ground.
                 session.Send(UserMoveByPortalPacket.Move(session.Player.FieldPlayer, coordF, session.Player.FieldPlayer.Rotation));
                 break;
@@ -166,8 +166,8 @@ internal sealed class MoveFieldHandler : GamePacketHandler
                 session.Player.Warp(int.Parse(destinationTarget));
                 break;
             case UGCPortalDestination.FriendHome:
-                long friendAccountId = long.Parse(destinationTarget);
-                Home home = GameServer.HomeManager.GetHomeById(friendAccountId);
+                var friendAccountId = long.Parse(destinationTarget);
+                var home = GameServer.HomeManager.GetHomeById(friendAccountId);
                 if (home is null)
                 {
                     return;
@@ -179,18 +179,18 @@ internal sealed class MoveFieldHandler : GamePacketHandler
 
     private static void HandleLeaveInstance(GameSession session)
     {
-        Player player = session.Player;
+        var player = session.Player;
         player.Warp(player.ReturnMapId, player.ReturnCoord, session.Player.FieldPlayer.Rotation);
     }
 
     private static void HandleVisitHouse(GameSession session, IPacketReader packet)
     {
-        int returnMapId = packet.ReadInt();
+        var returnMapId = packet.ReadInt();
         packet.Skip(8);
-        long accountId = packet.ReadLong();
-        string password = packet.ReadUnicodeString();
+        var accountId = packet.ReadLong();
+        var password = packet.ReadUnicodeString();
 
-        Player target = GameServer.PlayerManager.GetPlayerByAccountId(accountId);
+        var target = GameServer.PlayerManager.GetPlayerByAccountId(accountId);
         if (target is null)
         {
             target = DatabaseManager.Characters.FindPartialPlayerById(accountId);
@@ -199,9 +199,9 @@ internal sealed class MoveFieldHandler : GamePacketHandler
                 return;
             }
         }
-        Player player = session.Player;
+        var player = session.Player;
 
-        Home home = GameServer.HomeManager.GetHomeByAccountId(accountId);
+        var home = GameServer.HomeManager.GetHomeByAccountId(accountId);
         if (home == null)
         {
             session.SendNotice("This player does not have a home!");
@@ -238,7 +238,7 @@ internal sealed class MoveFieldHandler : GamePacketHandler
     // This also leaves decor planning
     private static void HandleReturnMap(GameSession session)
     {
-        Player player = session.Player;
+        var player = session.Player;
         if (player.IsInDecorPlanner)
         {
             player.IsInDecorPlanner = false;
@@ -247,7 +247,7 @@ internal sealed class MoveFieldHandler : GamePacketHandler
             return;
         }
 
-        CoordF returnCoord = player.ReturnCoord;
+        var returnCoord = player.ReturnCoord;
         returnCoord.Z += Block.BLOCK_SIZE;
         player.WarpGameToGame(player.ReturnMapId, 1, returnCoord, session.Player.FieldPlayer.Rotation);
         player.ReturnMapId = 0;
@@ -256,7 +256,7 @@ internal sealed class MoveFieldHandler : GamePacketHandler
 
     private static void HandleEnterDecorPlaner(GameSession session)
     {
-        Player player = session.Player;
+        var player = session.Player;
         if (player.IsInDecorPlanner)
         {
             return;
@@ -264,7 +264,7 @@ internal sealed class MoveFieldHandler : GamePacketHandler
 
         player.IsInDecorPlanner = true;
         player.Guide = null;
-        Home home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
+        var home = GameServer.HomeManager.GetHomeById(player.VisitingHomeId);
         home.DecorPlannerHeight = home.Height;
         home.DecorPlannerSize = home.Size;
         home.DecorPlannerInventory = new();

@@ -11,8 +11,8 @@ internal sealed class FileHashHandler : GamePacketHandler
     public override void Handle(GameSession session, IPacketReader packet)
     {
         packet.ReadInt();
-        string filename = packet.ReadString();
-        string md5 = packet.ReadString();
+        var filename = packet.ReadString();
+        var md5 = packet.ReadString();
 
         Logger.Debug("Hash for {filename}: {md5}", filename, md5);
     }

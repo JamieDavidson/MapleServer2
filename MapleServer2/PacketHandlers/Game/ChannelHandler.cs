@@ -12,9 +12,9 @@ internal sealed class ChannelHandler : GamePacketHandler
 
     public override void Handle(GameSession session, IPacketReader packet)
     {
-        short channelId = packet.ReadShort();
+        var channelId = packet.ReadShort();
 
-        Player player = session.Player;
+        var player = session.Player;
         player.InstanceId = channelId;
         player.ChannelId = channelId;
 

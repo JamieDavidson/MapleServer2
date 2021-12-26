@@ -59,8 +59,8 @@ internal sealed class DungeonHandler : GamePacketHandler
 
     public static void HandleEnterDungeonPortal(GameSession session)
     {
-        long instanceId = session.Player.InstanceId;
-        DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstanceId(instanceId);
+        var instanceId = session.Player.InstanceId;
+        var dungeonSession = GameServer.DungeonManager.GetDungeonSessionByInstanceId(instanceId);
         if (dungeonSession == null)
         {
             return;
@@ -71,9 +71,9 @@ internal sealed class DungeonHandler : GamePacketHandler
 
     public static void HandleCreateDungeon(GameSession session, IPacketReader packet)
     {
-        int dungeonId = packet.ReadInt();
-        bool groupEnter = packet.ReadBool();
-        Player player = session.Player;
+        var dungeonId = packet.ReadInt();
+        var groupEnter = packet.ReadBool();
+        var player = session.Player;
 
         if (player.DungeonSessionId != -1)
         {
@@ -81,22 +81,22 @@ internal sealed class DungeonHandler : GamePacketHandler
             return;
         }
 
-        int dungeonLobbyId = DungeonStorage.GetDungeonByDungeonId(dungeonId).LobbyFieldId;
-        MapPlayerSpawn spawn = MapEntityStorage.GetRandomPlayerSpawn(dungeonLobbyId);
+        var dungeonLobbyId = DungeonStorage.GetDungeonByDungeonId(dungeonId).LobbyFieldId;
+        var spawn = MapEntityStorage.GetRandomPlayerSpawn(dungeonLobbyId);
 
-        DungeonSession dungeonSession = GameServer.DungeonManager.CreateDungeonSession(dungeonId, groupEnter ? DungeonType.Group : DungeonType.Solo);
+        var dungeonSession = GameServer.DungeonManager.CreateDungeonSession(dungeonId, groupEnter ? DungeonType.Group : DungeonType.Solo);
 
         //TODO: Send packet that greys out enter alone / enter as party when already in a dungeon session (sendRoomDungeon packet/s).
         //the session belongs to the party leader
         if (groupEnter)
         {
-            Party party = player.Party;
+            var party = player.Party;
             if (party.DungeonSessionId != -1)
             {
                 session.SendNotice("Need to reset dungeon before entering another instance");
                 return;
             }
-            foreach (Player member in party.Members)
+            foreach (var member in party.Members)
             {
                 if (member.DungeonSessionId != -1)
                 {
@@ -120,8 +120,8 @@ internal sealed class DungeonHandler : GamePacketHandler
 
     public static void HandleEnterDungeonButton(GameSession session)
     {
-        Party party = session.Player.Party;
-        DungeonSession dungeonSession = GameServer.DungeonManager.GetDungeonSessionBySessionId(party.DungeonSessionId);
+        var party = session.Player.Party;
+        var dungeonSession = GameServer.DungeonManager.GetDungeonSessionBySessionId(party.DungeonSessionId);
         if (dungeonSession == null) //Can be removed when enter dungeon button is removed on dungeonsession deletion.
         {
             return;
@@ -136,7 +136,7 @@ internal sealed class DungeonHandler : GamePacketHandler
 
     private static void HandleAddRewards(GameSession session, IPacketReader packet)
     {
-        int dungeonId = packet.ReadInt();
+        var dungeonId = packet.ReadInt();
 
         session.Send(DungeonPacket.UpdateDungeonInfo(3, dungeonId));
         // session.Send(DungeonPacket.UpdateDungeon(dungeonId, toggle));
@@ -144,7 +144,7 @@ internal sealed class DungeonHandler : GamePacketHandler
 
     private static void HandleGetHelp(GameSession session, IPacketReader packet)
     {
-        int dungeonId = packet.ReadInt();
+        var dungeonId = packet.ReadInt();
 
         if (session.Player.Party == null)
         {
@@ -158,7 +158,7 @@ internal sealed class DungeonHandler : GamePacketHandler
             return;
         }
 
-        Party party = session.Player.Party;
+        var party = session.Player.Party;
 
         party.BroadcastPacketParty(PartyPacket.PartyHelp(dungeonId));
         MapleServer.BroadcastPacketAll(DungeonHelperPacket.BroadcastAssist(party, dungeonId));
@@ -166,7 +166,7 @@ internal sealed class DungeonHandler : GamePacketHandler
 
     private static void HandleVeteran(GameSession session, IPacketReader packet)
     {
-        int dungeonId = packet.ReadInt();
+        var dungeonId = packet.ReadInt();
 
         session.Send(DungeonPacket.UpdateDungeonInfo(4, dungeonId));
         // session.Send(DungeonPacket.UpdateDungeon(dungeonId, toggle));
@@ -174,8 +174,8 @@ internal sealed class DungeonHandler : GamePacketHandler
 
     private static void HandleFavorite(GameSession session, IPacketReader packet)
     {
-        int dungeonId = packet.ReadInt();
-        byte toggle = packet.ReadByte();
+        var dungeonId = packet.ReadInt();
+        var toggle = packet.ReadByte();
 
         session.Send(DungeonPacket.UpdateDungeonInfo(5, dungeonId));
         // session.Send(DungeonPacket.UpdateDungeon(dungeonId, toggle));

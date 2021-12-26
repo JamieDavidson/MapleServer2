@@ -18,14 +18,14 @@ internal sealed class UserChatHandler : GamePacketHandler
 
     public override void Handle(GameSession session, IPacketReader packet)
     {
-        ChatType type = (ChatType) packet.ReadInt();
-        string message = packet.ReadUnicodeString();
-        string recipient = packet.ReadUnicodeString();
-        long clubId = packet.ReadLong();
+        var type = (ChatType) packet.ReadInt();
+        var message = packet.ReadUnicodeString();
+        var recipient = packet.ReadUnicodeString();
+        var clubId = packet.ReadLong();
 
         if (message.Length > 0 && message[..1].Equals("/"))
         {
-            string[] args = message[1..].Split(" ");
+            var args = message[1..].Split(" ");
             if (!GameServer.CommandManager.HandleCommand(new GameCommandTrigger(args, session)))
             {
                 session.SendNotice($"No command were found with alias: {args[0]}");
@@ -33,7 +33,7 @@ internal sealed class UserChatHandler : GamePacketHandler
             return;
         }
 
-        PacketWriter itemLinkPacket = GetItemLink(message);
+        var itemLinkPacket = GetItemLink(message);
 
         switch (type)
         {
@@ -74,7 +74,7 @@ internal sealed class UserChatHandler : GamePacketHandler
     {
         var player = session.Player;
         var inventory = player.Inventory;
-        Item voucher = inventory.GetItemByTag("FreeChannelChatCoupon");
+        var voucher = inventory.GetItemByTag("FreeChannelChatCoupon");
         if (voucher is not null)
         {
             session.Send(NoticePacket.Notice(SystemNotice.UsedChannelChatVoucher, NoticeType.ChatAndFastText));
@@ -86,8 +86,8 @@ internal sealed class UserChatHandler : GamePacketHandler
             return;
         }
 
-        List<Player> allPlayers = GameServer.PlayerManager.GetAllPlayers();
-        foreach (Player i in allPlayers.Where(x => x.ChannelId == player.ChannelId))
+        var allPlayers = GameServer.PlayerManager.GetAllPlayers();
+        foreach (var i in allPlayers.Where(x => x.ChannelId == player.ChannelId))
         {
             if (itemLinkPacket is not null)
             {
@@ -148,9 +148,9 @@ internal sealed class UserChatHandler : GamePacketHandler
 
     private static void HandleGuildAlert(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
     {
-        Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
+        var guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
 
-        GuildMember member = guild?.Members.FirstOrDefault(x => x.Player == session.Player);
+        var member = guild?.Members.FirstOrDefault(x => x.Player == session.Player);
         if (member is null)
         {
             return;
@@ -170,7 +170,7 @@ internal sealed class UserChatHandler : GamePacketHandler
 
     private static void HandleGuildChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
     {
-        Guild guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
+        var guild = GameServer.GuildManager.GetGuildById(session.Player.Guild.Id);
         if (guild is null)
         {
             return;
@@ -185,7 +185,7 @@ internal sealed class UserChatHandler : GamePacketHandler
 
     private static void HandlePartyChat(GameSession session, string message, ChatType type, PacketWriter itemLinkPacket)
     {
-        Party party = session.Player.Party;
+        var party = session.Player.Party;
         if (party is null)
         {
             return;
@@ -200,7 +200,7 @@ internal sealed class UserChatHandler : GamePacketHandler
 
     private static void HandleWhisperChat(GameSession session, string recipient, string message, PacketWriter itemLinkPacket)
     {
-        Player recipientPlayer = GameServer.PlayerManager.GetPlayerByName(recipient);
+        var recipientPlayer = GameServer.PlayerManager.GetPlayerByName(recipient);
         if (recipientPlayer is null)
         {
             session.Send(ChatPacket.Error(session.Player, SystemNotice.UnableToWhisper, ChatType.WhisperFail));
@@ -252,9 +252,9 @@ internal sealed class UserChatHandler : GamePacketHandler
 
         foreach (XmlNode itemLinkMessage in itemLinkMessages.SelectNodes("//A"))
         {
-            string[] itemLinkMessageSplit = itemLinkMessage.Attributes["HREF"].Value.Split(",");
-            string itemLinkType = itemLinkMessageSplit[0].Split(":")[1];
-            long itemUid = long.Parse(itemLinkMessageSplit[1]);
+            var itemLinkMessageSplit = itemLinkMessage.Attributes["HREF"].Value.Split(",");
+            var itemLinkType = itemLinkMessageSplit[0].Split(":")[1];
+            var itemUid = long.Parse(itemLinkMessageSplit[1]);
             Item item = null;
 
             if (itemLinkType != "itemTooltip")
@@ -262,7 +262,7 @@ internal sealed class UserChatHandler : GamePacketHandler
                 continue;
             }
 
-            int itemToolTipType = int.Parse(itemLinkMessageSplit[2]);
+            var itemToolTipType = int.Parse(itemLinkMessageSplit[2]);
             if (itemToolTipType == 2) // quest/navigator items
             {
                 if (ItemMetadataStorage.IsValid((int) itemUid))

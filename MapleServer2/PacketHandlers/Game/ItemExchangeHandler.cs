@@ -46,9 +46,9 @@ internal sealed class ItemExchangeHandler : GamePacketHandler
 
     private static void HandleUse(GameSession session, IPacketReader packet)
     {
-        long itemUid = packet.ReadLong();
-        long unk = packet.ReadLong();
-        int quantity = packet.ReadInt();
+        var itemUid = packet.ReadLong();
+        var unk = packet.ReadLong();
+        var quantity = packet.ReadInt();
 
         var inventory = session.Player.Inventory;
         if (!inventory.HasItemWithUid(itemUid))
@@ -56,9 +56,9 @@ internal sealed class ItemExchangeHandler : GamePacketHandler
             return;
         }
 
-        Item item = inventory.GetItemByUid(itemUid);
+        var item = inventory.GetItemByUid(itemUid);
 
-        ItemExchangeScrollMetadata exchange = ItemExchangeScrollMetadataStorage.GetMetadata(item.Function.Id);
+        var exchange = ItemExchangeScrollMetadataStorage.GetMetadata(item.Function.Id);
 
         if (!session.Player.Wallet.Meso.Modify(-exchange.MesoCost * quantity))
         {
@@ -94,10 +94,10 @@ internal sealed class ItemExchangeHandler : GamePacketHandler
         // TODO: Check if rarity matches
 
         var inventory = session.Player.Inventory;
-        for (int i = 0; i < exchange.ItemCost.Count; i++)
+        for (var i = 0; i < exchange.ItemCost.Count; i++)
         {
-            ItemRequirementMetadata exchangeItem = exchange.ItemCost.ElementAt(i);
-            Item item = inventory.GetItemByItemId(exchangeItem.Id);
+            var exchangeItem = exchange.ItemCost.ElementAt(i);
+            var item = inventory.GetItemByItemId(exchangeItem.Id);
 
             if (item == null)
             {
@@ -114,10 +114,10 @@ internal sealed class ItemExchangeHandler : GamePacketHandler
         var inventory = session.Player.Inventory;
         if (exchange.ItemCost.Count != 0)
         {
-            for (int i = 0; i < exchange.ItemCost.Count; i++)
+            for (var i = 0; i < exchange.ItemCost.Count; i++)
             {
-                ItemRequirementMetadata exchangeItem = exchange.ItemCost.ElementAt(i);
-                Item item = inventory.GetItemByItemId(exchangeItem.Id);
+                var exchangeItem = exchange.ItemCost.ElementAt(i);
+                var item = inventory.GetItemByItemId(exchangeItem.Id);
                 if (item == null)
                 {
                     continue;

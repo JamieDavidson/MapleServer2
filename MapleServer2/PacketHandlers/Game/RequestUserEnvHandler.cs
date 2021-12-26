@@ -35,7 +35,7 @@ internal sealed class RequestUserEnvHandler : GamePacketHandler
 
     private static void HandleTitleChange(GameSession session, IPacketReader packet)
     {
-        int titleID = packet.ReadInt();
+        var titleID = packet.ReadInt();
 
         if (titleID < 0)
         {

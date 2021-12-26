@@ -49,16 +49,16 @@ internal sealed class SkillBookTreeHandler : GamePacketHandler
 
     private static void HandleSave(GameSession session, IPacketReader packet)
     {
-        long activeTabId = packet.ReadLong();
-        long selectedTab = packet.ReadLong(); // if 0 player used activate tab
-        int unknown = packet.ReadInt();
-        int tabCount = packet.ReadInt();
-        for (int i = 0; i < tabCount; i++)
+        var activeTabId = packet.ReadLong();
+        var selectedTab = packet.ReadLong(); // if 0 player used activate tab
+        var unknown = packet.ReadInt();
+        var tabCount = packet.ReadInt();
+        for (var i = 0; i < tabCount; i++)
         {
-            long tabId = packet.ReadLong();
-            string tabName = packet.ReadUnicodeString();
+            var tabId = packet.ReadLong();
+            var tabName = packet.ReadUnicodeString();
 
-            SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == tabId);
+            var skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == tabId);
             if (skillTab == default)
             {
                 skillTab = new(session.Player.CharacterId, session.Player.Job, tabId, tabName);
@@ -72,18 +72,18 @@ internal sealed class SkillBookTreeHandler : GamePacketHandler
             }
 
             skillTab.ResetSkillTree(session.Player.Job);
-            int skillCount = packet.ReadInt();
-            for (int j = 0; j < skillCount; j++)
+            var skillCount = packet.ReadInt();
+            for (var j = 0; j < skillCount; j++)
             {
-                int skillId = packet.ReadInt();
-                int skillLevel = packet.ReadInt();
+                var skillId = packet.ReadInt();
+                var skillLevel = packet.ReadInt();
                 skillTab.AddOrUpdate(skillId, (short) skillLevel, skillLevel > 0);
             }
         }
 
         session.Player.ActiveSkillTabId = activeTabId;
         session.Send(SkillBookTreePacket.Save(session.Player, selectedTab));
-        foreach (SkillTab skillTab in session.Player.SkillTabs)
+        foreach (var skillTab in session.Player.SkillTabs)
         {
             DatabaseManager.SkillTabs.Update(skillTab);
         }
@@ -91,10 +91,10 @@ internal sealed class SkillBookTreeHandler : GamePacketHandler
 
     private static void HandleRename(GameSession session, IPacketReader packet)
     {
-        long id = packet.ReadLong();
-        string newName = packet.ReadUnicodeString();
+        var id = packet.ReadLong();
+        var newName = packet.ReadUnicodeString();
 
-        SkillTab skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == id);
+        var skillTab = session.Player.SkillTabs.FirstOrDefault(x => x.TabId == id);
         skillTab.Name = newName;
         session.Send(SkillBookTreePacket.Rename(id, newName));
     }

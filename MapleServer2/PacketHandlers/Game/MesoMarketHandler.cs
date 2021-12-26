@@ -71,14 +71,14 @@ internal sealed class MesoMarketHandler : GamePacketHandler
         session.Send(MesoMarketPacket.LoadMarket());
         session.Send(MesoMarketPacket.AccountStats(session.Player.Account.MesoMarketDailyListings, session.Player.Account.MesoMarketMonthlyPurchases));
 
-        List<MesoMarketListing> listings = GameServer.MesoMarketManager.GetListingsByAccountId(session.Player.AccountId);
+        var listings = GameServer.MesoMarketManager.GetListingsByAccountId(session.Player.AccountId);
         session.Send(MesoMarketPacket.MyListings(listings));
     }
 
     private static void HandleCreateListing(GameSession session, IPacketReader packet)
     {
-        long mesos = packet.ReadLong();
-        long price = packet.ReadLong();
+        var mesos = packet.ReadLong();
+        var price = packet.ReadLong();
 
         if (session.Player.Account.MesoMarketDailyListings >= int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketDailyListingsLimit")))
         {
@@ -102,9 +102,9 @@ internal sealed class MesoMarketHandler : GamePacketHandler
 
     private static void HandleCancelListing(GameSession session, IPacketReader packet)
     {
-        long listingId = packet.ReadLong();
+        var listingId = packet.ReadLong();
 
-        MesoMarketListing listing = GameServer.MesoMarketManager.GetListingById(listingId);
+        var listing = GameServer.MesoMarketManager.GetListingById(listingId);
         if (listing is null)
         {
             session.Send(MesoMarketPacket.Error((int) MesoMarketErrors.TryAgain));
@@ -120,23 +120,23 @@ internal sealed class MesoMarketHandler : GamePacketHandler
     private static void HandleRefreshListings(GameSession session, IPacketReader packet)
     {
         // GMS2 has this set at 5m min and max due to it being Meso Tokens instead of mesos
-        long minMesoRange = packet.ReadLong();
-        long maxMesoRange = packet.ReadLong();
+        var minMesoRange = packet.ReadLong();
+        var maxMesoRange = packet.ReadLong();
 
-        List<MesoMarketListing> listings = GameServer.MesoMarketManager.GetSearchedListings(minMesoRange, maxMesoRange);
+        var listings = GameServer.MesoMarketManager.GetSearchedListings(minMesoRange, maxMesoRange);
         session.Send(MesoMarketPacket.LoadListings(listings));
     }
 
     private static void HandlePurchase(GameSession session, IPacketReader packet)
     {
-        long listingId = packet.ReadLong();
+        var listingId = packet.ReadLong();
 
         if (session.Player.Account.MesoMarketMonthlyPurchases >= int.Parse(ConstantsMetadataStorage.GetConstant("MesoMarketMonthlyPurchaseLimit")))
         {
             return;
         }
 
-        MesoMarketListing listing = GameServer.MesoMarketManager.GetListingById(listingId);
+        var listing = GameServer.MesoMarketManager.GetListingById(listingId);
         if (listing is null)
         {
             session.Send(MesoMarketPacket.Error((int) MesoMarketErrors.ItemSoldOut));

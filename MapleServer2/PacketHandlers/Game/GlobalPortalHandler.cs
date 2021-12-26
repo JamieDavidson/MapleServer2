@@ -33,16 +33,16 @@ internal sealed class GlobalPortalHandler : GamePacketHandler
 
     private static void HandleEnter(GameSession session, IPacketReader packet)
     {
-        int globalEventId = packet.ReadInt();
-        int selectionIndex = packet.ReadInt();
+        var globalEventId = packet.ReadInt();
+        var selectionIndex = packet.ReadInt();
 
-        GlobalEvent globalEvent = GameServer.GlobalEventManager.GetEventById(globalEventId);
+        var globalEvent = GameServer.GlobalEventManager.GetEventById(globalEventId);
         if (globalEvent == null)
         {
             return;
         }
 
-        Map map = Map.Tria;
+        var map = Map.Tria;
         switch (globalEvent.Events[selectionIndex])
         {
             case GlobalEventType.oxquiz:
@@ -90,7 +90,7 @@ internal sealed class GlobalPortalHandler : GamePacketHandler
         }
 
         session.Player.Mount = null;
-        MapPortal portal = MapEntityStorage.GetPortals((int) map).FirstOrDefault(portal => portal.Id == 1);
+        var portal = MapEntityStorage.GetPortals((int) map).FirstOrDefault(portal => portal.Id == 1);
         session.Player.Warp((int) map, portal.Coord.ToFloat(), portal.Rotation.ToFloat());
     }
 }

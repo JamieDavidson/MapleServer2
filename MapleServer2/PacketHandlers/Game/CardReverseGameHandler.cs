@@ -43,7 +43,7 @@ internal sealed class CardReverseGameHandler : GamePacketHandler
 
     private static void HandleOpen(GameSession session)
     {
-        List<CardReverseGame> cards = DatabaseManager.CardReverseGame.FindAll();
+        var cards = DatabaseManager.CardReverseGame.FindAll();
         session.Send(CardReverseGamePacket.Open(cards));
     }
 
@@ -66,11 +66,11 @@ internal sealed class CardReverseGameHandler : GamePacketHandler
         // Unknown how this game works as to whether it's weighted or not
         // Currently being handled by each item having an equal chance
 
-        List<CardReverseGame> cards = DatabaseManager.CardReverseGame.FindAll();
+        var cards = DatabaseManager.CardReverseGame.FindAll();
 
-        int index = RandomProvider.Get().Next(cards.Count);
+        var index = RandomProvider.Get().Next(cards.Count);
 
-        CardReverseGame card = cards[index];
+        var card = cards[index];
         Item item = new(card.ItemId)
         {
             Amount = card.ItemAmount,

@@ -47,16 +47,16 @@ internal sealed class RequestItemBreakHandler : GamePacketHandler
 
     private static void HandleAdd(GameSession session, IPacketReader packet)
     {
-        short slot = (short) packet.ReadInt();
-        long uid = packet.ReadLong();
-        int amount = packet.ReadInt();
+        var slot = (short) packet.ReadInt();
+        var uid = packet.ReadLong();
+        var amount = packet.ReadInt();
 
         session.Player.DismantleInventory.DismantleAdd(session, slot, uid, amount);
     }
 
     private static void HandleRemove(GameSession session, IPacketReader packet)
     {
-        long uid = packet.ReadLong();
+        var uid = packet.ReadLong();
         session.Player.DismantleInventory.Remove(session, uid);
     }
 
@@ -67,8 +67,8 @@ internal sealed class RequestItemBreakHandler : GamePacketHandler
 
     private static void HandleAutoAdd(GameSession session, IPacketReader packet)
     {
-        InventoryTab inventoryTab = (InventoryTab) packet.ReadByte();
-        byte rarityType = packet.ReadByte();
+        var inventoryTab = (InventoryTab) packet.ReadByte();
+        var rarityType = packet.ReadByte();
 
         session.Player.DismantleInventory.AutoAdd(session, inventoryTab, rarityType);
     }
