@@ -177,14 +177,19 @@ internal sealed class GuildHandler : GamePacketHandler
 
     private static void HandleGuildMail(GameSession session, IPacketReader packet)
     {
-        var title = packet.ReadUnicodeString();
-        var body = packet.ReadUnicodeString();
+        string title = packet.ReadUnicodeString();
+        string body = packet.ReadUnicodeString();
 
-        var sender = session.Player;
-        var guild = session.Player.Guild;
+        Player sender = session.Player;
+        Guild guild = sender.Guild;
 
-        var senderRank = sender.GuildMember.Rank;
-        var guildRank = guild.Ranks[senderRank];
+        if (guild == null)
+        {
+            return;
+        }
+
+        byte senderRank = sender.GuildMember.Rank;
+        GuildRank guildRank = guild.Ranks[senderRank];
 
         if (!guildRank.HasRight(GuildRights.CanGuildMail))
         {
@@ -192,15 +197,12 @@ internal sealed class GuildHandler : GamePacketHandler
             return;
         }
 
-        var guildMemberCharacterIds = guild.Members
-            .Select(m => m.Player.CharacterId)
-            .Where(i => i != sender.CharacterId);
-        
-        foreach (var characterId in guildMemberCharacterIds)
-        {
-            MailHelper.SendMail(MailType.Player, characterId, sender.CharacterId, sender.Name, title, body, "", "", new List<Item>(), 0, 0, out var mail);
+        session.Send(GuildPacket.SendMail());
 
-            session.Send(MailPacket.Send(mail));
+        IEnumerable<long> recipientIds = guild.Members.Select(c => c.Player.CharacterId);
+        foreach (long recipientId in recipientIds)
+        {
+            MailHelper.SendMail(MailType.Player, recipientId, sender.CharacterId, sender.Name, title, body, "", "", new(), 0, 0, out Mail mail);
         }
     }
 
