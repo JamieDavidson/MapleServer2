@@ -183,6 +183,15 @@ internal sealed class GuildHandler : GamePacketHandler
         var sender = session.Player;
         var guild = session.Player.Guild;
 
+        var senderRank = sender.GuildMember.Rank;
+        var guildRank = guild.Ranks[senderRank];
+
+        if (!guildRank.HasRight(GuildRights.CanGuildMail))
+        {
+            session.Send(GuildPacket.ErrorNotice(GuildErrorNotice.InsufficientPermissions));
+            return;
+        }
+
         var guildMemberCharacterIds = guild.Members
             .Select(m => m.Player.CharacterId)
             .Where(i => i != sender.CharacterId);
