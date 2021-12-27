@@ -12,8 +12,8 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
         volumes:
-            - ./data:/var/lib/mysql
-            - ./logs:/var/log/mysql
+            - D:/MySqlImage/data:/var/lib/mysql
+            - D:/MySqlImage/logs:/var/log/mysql
         ports:
             - ${PORT}:${PORT}
         expose:
