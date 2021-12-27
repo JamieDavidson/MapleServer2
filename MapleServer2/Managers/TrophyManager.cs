@@ -18,6 +18,13 @@ internal static class TrophyManager
         UpdateMatchingTrophies(session, matchingTrophies.Select(t => t.Id), 1);
     }
 
+    public static void OnJump(GameSession session)
+    {
+        var jumpTrophies = GetRelevantTrophies(TrophyCategories.Jump);
+
+        UpdateMatchingTrophies(session, jumpTrophies.Select(t => t.Id), 1);
+    }
+
     private static IEnumerable<TrophyMetadata> GetRelevantTrophies(string category) =>
         TrophyMetadataStorage.GetTrophiesByType(category);
 
