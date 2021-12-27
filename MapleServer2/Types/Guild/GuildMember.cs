@@ -7,7 +7,10 @@ public class GuildMember
     public long Id;
     public Player Player { get; private set; }
     public string Motto;
-    public byte Rank { get; set; } // by index of guild ranks
+    /// <summary>
+    /// The index of the rank in the guild's rank collection
+    /// </summary>
+    public byte Rank { get; set; }
     public int DailyContribution { get; set; }
     public int ContributionTotal { get; set; }
     public byte DailyDonationCount { get; set; }
