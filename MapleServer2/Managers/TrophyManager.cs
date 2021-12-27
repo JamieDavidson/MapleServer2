@@ -11,18 +11,31 @@ internal static class TrophyManager
 {
     public static void OnMapEntered(GameSession session, long mapId)
     {
-        var mapTrophies = GetRelevantTrophies(TrophyCategories.Map);
+        var mapTrophies = GetRelevantTrophies(TrophyTypes.Map);
         var matchingTrophies = mapTrophies
             .Where(m => m.Grades.Any(g => IsMatchingCondition(g.ConditionCodes, mapId)));
 
-        UpdateMatchingTrophies(session, matchingTrophies.Select(t => t.Id), 1);
+        UpdateMatchingTrophies(session, matchingTrophies, 1);
     }
 
     public static void OnJump(GameSession session)
     {
-        var jumpTrophies = GetRelevantTrophies(TrophyCategories.Jump);
+        var jumpTrophies = GetRelevantTrophies(TrophyTypes.Jump);
 
-        UpdateMatchingTrophies(session, jumpTrophies.Select(t => t.Id), 1);
+        UpdateMatchingTrophies(session, jumpTrophies, 1);
+    }
+
+    public static void OnLevelUp(GameSession session)
+    {
+        var jobId = (int)session.Player.JobCode;
+        var levelUpTrophies = GetRelevantTrophies(TrophyTypes.LevelUp);
+        var levelTrophies = GetRelevantTrophies(TrophyTypes.Level);
+
+        var matchingTrophies = levelUpTrophies
+            .Where(t => t.Grades.Any(g => IsMatchingCondition(g.ConditionCodes, jobId)));
+
+        UpdateMatchingTrophies(session, matchingTrophies, 1);
+        UpdateMatchingTrophies(session, levelTrophies, 1);
     }
 
     private static IEnumerable<TrophyMetadata> GetRelevantTrophies(string category) =>
@@ -71,8 +84,9 @@ internal static class TrophyManager
         return condition >= lowerBound && condition <= upperBound;
     }
 
-    private static void UpdateMatchingTrophies(GameSession session, IEnumerable<int> trophyIds, int progress)
+    private static void UpdateMatchingTrophies(GameSession session, IEnumerable<TrophyMetadata> trophies, int progress)
     {
+        var trophyIds = trophies.Select(t => t.Id);
         foreach (var trophyId in trophyIds)
         {
             var player = session.Player;
@@ -91,7 +105,7 @@ internal static class TrophyManager
         }
     }
 
-    private static class TrophyCategories
+    private static class TrophyTypes
     {
         public const string AdventureLevel = "adventure_level";
         public const string AutoFishing = "auto_fishing";
