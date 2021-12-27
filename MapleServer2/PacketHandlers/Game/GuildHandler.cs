@@ -3,6 +3,8 @@ using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
+using MapleServer2.Enums;
+using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
@@ -28,6 +30,7 @@ internal sealed class GuildHandler : GamePacketHandler
         public const byte GuildNotice = 0x3E;
         public const byte UpdateRank = 0x41;
         public const byte ListGuild = 0x42;
+        public const byte GuildMail = 0x45;
         public const byte SubmitApplication = 0x50;
         public const byte WithdrawApplication = 0x51;
         public const byte ApplicationResponse = 0x52;
@@ -124,6 +127,9 @@ internal sealed class GuildHandler : GamePacketHandler
             case GuildOperations.ListGuild:
                 HandleListGuild(session, packet);
                 break;
+            case GuildOperations.GuildMail:
+                HandleGuildMail(session, packet);
+                break;
             case GuildOperations.SubmitApplication:
                 HandleSubmitApplication(session, packet);
                 break;
@@ -166,6 +172,26 @@ internal sealed class GuildHandler : GamePacketHandler
             default:
                 IPacketHandler<GameSession>.LogUnknownMode(GetType(), mode);
                 break;
+        }
+    }
+
+    private static void HandleGuildMail(GameSession session, IPacketReader packet)
+    {
+        var title = packet.ReadUnicodeString();
+        var body = packet.ReadUnicodeString();
+
+        var sender = session.Player;
+        var guild = session.Player.Guild;
+
+        var guildMemberCharacterIds = guild.Members
+            .Select(m => m.Player.CharacterId)
+            .Where(i => i != sender.CharacterId);
+        
+        foreach (var characterId in guildMemberCharacterIds)
+        {
+            MailHelper.SendMail(MailType.Player, characterId, sender.CharacterId, sender.Name, title, body, "", "", new List<Item>(), 0, 0, out var mail);
+
+            session.Send(MailPacket.Send(mail));
         }
     }
 
