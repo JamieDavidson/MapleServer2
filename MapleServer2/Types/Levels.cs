@@ -59,10 +59,7 @@ public class Levels
 
         Level++;
 
-        Player.TrophyUpdate("level_up", 1, code: Player.Job.GetHashCode().ToString(), target: Level.ToString());
         TrophyManager.OnLevelUp(Player.Session);
-        TrophyManager.OnLevel(Player.Session);
-        Player.TrophyUpdate("level", 1);
 
         Player.StatPointDistribution.AddTotalStatPoints(5);
         Player.Session.FieldManager.BroadcastPacket(ExperiencePacket.LevelUp(Player.FieldPlayer, Level));
