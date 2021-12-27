@@ -23,5 +23,8 @@ public static class TrophyMetadataStorage
         (x.Grades[0].ConditionCodes.Length == 0 || x.Grades[0].ConditionCodes.Contains(code)) &&
         (x.Grades[0].ConditionTargets.Length == 0 || x.Grades[0].ConditionTargets.Contains(target)));
 
+    public static IEnumerable<TrophyMetadata> GetTrophiesByType(string type)
+        => Trophies.Values.Where(m => m.Grades.Any(g => g.ConditionType == type));
+
     public static TrophyMetadata GetMetadata(int id) => Trophies.GetValueOrDefault(id);
 }
