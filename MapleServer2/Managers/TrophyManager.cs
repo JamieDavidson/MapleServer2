@@ -25,6 +25,13 @@ internal static class TrophyManager
         UpdateMatchingTrophies(session, jumpTrophies, 1);
     }
 
+    public static void OnPlayTimeTick(GameSession session)
+    {
+        var playtimeTrophies = GetRelevantTrophies(TrophyTypes.PlayTime);
+
+        UpdateMatchingTrophies(session, playtimeTrophies, 1);
+    }
+
     public static void OnLevelUp(GameSession session)
     {
         var jobId = (int)session.Player.JobCode;
@@ -36,6 +43,16 @@ internal static class TrophyManager
 
         UpdateMatchingTrophies(session, matchingTrophies, 1);
         UpdateMatchingTrophies(session, levelTrophies, 1);
+    }
+
+    public static void OnObjectInteract(GameSession session, long objectId)
+    {
+        var interactTrophies = GetRelevantTrophies(TrophyTypes.InteractObject);
+
+        var matchingTrophies = interactTrophies
+            .Where(t => t.Grades.Any(g => IsMatchingCondition(g.ConditionCodes, objectId)));
+
+        UpdateMatchingTrophies(session, matchingTrophies, 1);
     }
 
     private static IEnumerable<TrophyMetadata> GetRelevantTrophies(string category) =>

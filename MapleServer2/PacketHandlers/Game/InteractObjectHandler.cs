@@ -4,6 +4,7 @@ using Maple2Storage.Types.Metadata;
 using MaplePacketLib2.Tools;
 using MapleServer2.Constants;
 using MapleServer2.Data.Static;
+using MapleServer2.Managers;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
@@ -86,6 +87,7 @@ internal sealed class InteractObjectHandler : GamePacketHandler
                         continue;
                     }
 
+                    TrophyManager.OnObjectInteract(session, interactObject.InteractId);
                     QuestHelper.UpdateQuest(session, interactObject.InteractId.ToString(), "interact_object");
                     session.Send(InteractObjectPacket.QuestUse(interactObject));
                     session.Send(InteractObjectPacket.Interact(interactObject));
