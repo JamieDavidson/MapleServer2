@@ -9,6 +9,15 @@ namespace MapleServer2.Managers;
 
 internal static class TrophyManager
 {
+    public static void OnAcceptQuest(GameSession session, int questId)
+    {
+        var questAcceptTrophies = GetRelevantTrophies(TrophyTypes.QuestAccept);
+        var matchingTrophies = questAcceptTrophies
+            .Where(t => t.Grades.Any(g => IsMatchingCondition(g.ConditionCodes, questId)));
+
+        UpdateMatchingTrophies(session, matchingTrophies, 1);
+    }
+
     public static void OnMapEntered(GameSession session, long mapId)
     {
         var mapTrophies = GetRelevantTrophies(TrophyTypes.Map);
@@ -47,7 +56,8 @@ internal static class TrophyManager
 
     public static void OnObjectInteract(GameSession session, long objectId)
     {
-        var interactTrophies = GetRelevantTrophies(TrophyTypes.InteractObject);
+        var interactTrophies = GetRelevantTrophies(TrophyTypes.InteractObject)
+            .Concat(GetRelevantTrophies(TrophyTypes.Controller));
 
         var matchingTrophies = interactTrophies
             .Where(t => t.Grades.Any(g => IsMatchingCondition(g.ConditionCodes, objectId)));
