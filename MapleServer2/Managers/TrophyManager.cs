@@ -22,7 +22,7 @@ internal static class TrophyManager
     {
         var mapTrophies = GetRelevantTrophies(TrophyTypes.Map);
         var matchingTrophies = mapTrophies
-            .Where(m => m.Grades.Any(g => IsMatchingCondition(g.ConditionCodes, mapId)));
+            .Where(t => IsMatchingCondition(t.Grades.First().ConditionCodes, mapId));
 
         UpdateMatchingTrophies(session, matchingTrophies, 1);
     }
@@ -48,7 +48,7 @@ internal static class TrophyManager
         var levelTrophies = GetRelevantTrophies(TrophyTypes.Level);
 
         var matchingTrophies = levelUpTrophies
-            .Where(t => t.Grades.Any(g => IsMatchingCondition(g.ConditionCodes, jobId)));
+            .Where(t => IsMatchingCondition(t.Grades.First().ConditionCodes, jobId));
 
         UpdateMatchingTrophies(session, matchingTrophies, 1);
         UpdateMatchingTrophies(session, levelTrophies, 1);
@@ -60,7 +60,7 @@ internal static class TrophyManager
             .Concat(GetRelevantTrophies(TrophyTypes.Controller));
 
         var matchingTrophies = interactTrophies
-            .Where(t => t.Grades.Any(g => IsMatchingCondition(g.ConditionCodes, objectId)));
+            .Where(t => IsMatchingCondition(t.Grades.First().ConditionCodes, objectId));
 
         UpdateMatchingTrophies(session, matchingTrophies, 1);
     }
