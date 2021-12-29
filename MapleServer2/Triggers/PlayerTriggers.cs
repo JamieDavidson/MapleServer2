@@ -170,7 +170,7 @@ public partial class TriggerContext
         {
             if (type == "trigger")
             {
-                player.Value.TrophyUpdate(type, 1, code: trophySet);
+                //player.Value.TrophyUpdate(type, 1, code: trophySet);
             }
         }
     }

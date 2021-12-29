@@ -2,6 +2,7 @@
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Enums;
+using MapleServer2.Managers;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Packets;
 
@@ -58,8 +59,7 @@ public class Levels
 
         Level++;
 
-        Player.TrophyUpdate("level_up", 1, code: Player.Job.GetHashCode().ToString(), target: Level.ToString());
-        Player.TrophyUpdate("level", 1);
+        TrophyManager.OnLevelUp(Player);
 
         Player.StatPointDistribution.AddTotalStatPoints(5);
         Player.Session.FieldManager.BroadcastPacket(ExperiencePacket.LevelUp(Player.FieldPlayer, Level));
@@ -123,7 +123,7 @@ public class Levels
         {
             return;
         }
-        // Prestige exp can only be earned 1M exp per day. 
+        // Prestige exp can only be earned 1M exp per day.
         // TODO: After 1M exp, reduce the gain and reset the exp gained every midnight.
 
         long newPrestigeExp = PrestigeExp + amount;
@@ -157,7 +157,6 @@ public class Levels
         }
 
         masteryExp.Level = currLevel;
-        Player.TrophyUpdate("mastery_grade", 1);
-        Player.TrophyUpdate("set_mastery_grade", 1);
+        TrophyManager.OnGainMasteryLevel(Player);
     }
 }
