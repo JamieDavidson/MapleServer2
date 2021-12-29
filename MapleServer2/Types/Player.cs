@@ -249,7 +249,7 @@ public class Player
         }
 
         // Add initial trophy for level
-        TrophyUpdate("level", 1);
+        TrophyManager.OnLevelUp(this);
     }
 
     public void UpdateBuddies()
@@ -403,36 +403,6 @@ public class Player
         if (gatheringCount.CurrentCount + amount <= gatheringCount.MaxCount)
         {
             gatheringCount.CurrentCount += amount;
-        }
-    }
-
-    public void TrophyUpdate(string type, int addAmount, string code = "", string target = "", int sendUpdateInterval = 1)
-    {
-        IEnumerable<TrophyMetadata> trophies = TrophyMetadataStorage.GetTrophiesByCondition(type, code, target);
-        foreach (TrophyMetadata metadata in trophies)
-        {
-            if (TrophyData.ContainsKey(metadata.Id))
-            {
-                continue;
-            }
-
-            TrophyData[metadata.Id] = new(CharacterId, AccountId, metadata.Id);
-        }
-
-        IEnumerable<Trophy> enumerable = TrophyData.Values.Where(x =>
-            x.GradeCondition.ConditionType == type &&
-            (x.GradeCondition.ConditionCodes.Length == 0 || x.GradeCondition.ConditionCodes.Contains(code)) &&
-            (x.GradeCondition.ConditionTargets.Length == 0 || x.GradeCondition.ConditionTargets.Contains(target)));
-        foreach (Trophy trophy in enumerable)
-        {
-            trophy.AddCounter(Session, addAmount);
-            if (trophy.Counter % sendUpdateInterval != 0)
-            {
-                continue;
-            }
-
-            DatabaseManager.Trophies.Update(trophy);
-            Session?.Send(TrophyPacket.WriteUpdate(trophy));
         }
     }
 

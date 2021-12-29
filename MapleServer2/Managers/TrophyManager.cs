@@ -66,7 +66,10 @@ internal static class TrophyManager
 
     public static void OnGainMasteryLevel(Player player)
     {
+        var masteryTrophies = GetRelevantTrophies(TrophyTypes.MasteryGrade)
+            .Concat(GetRelevantTrophies(TrophyTypes.SetMasteryGrade));
 
+        UpdateMatchingTrophies(player, masteryTrophies, 1);
     }
 
     private static IEnumerable<TrophyMetadata> GetRelevantTrophies(string category) =>
