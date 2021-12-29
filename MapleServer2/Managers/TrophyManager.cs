@@ -2,59 +2,58 @@ using Maple2Storage.Types.Metadata;
 using MapleServer2.Data.Static;
 using MapleServer2.Database;
 using MapleServer2.Packets;
-using MapleServer2.Servers.Game;
 using MapleServer2.Types;
 
 namespace MapleServer2.Managers;
 
 internal static class TrophyManager
 {
-    public static void OnAcceptQuest(GameSession session, int questId)
+    public static void OnAcceptQuest(Player player, int questId)
     {
         var questAcceptTrophies = GetRelevantTrophies(TrophyTypes.QuestAccept);
         var matchingTrophies = questAcceptTrophies
             .Where(t => t.Grades.Any(g => IsMatchingCondition(g.ConditionCodes, questId)));
 
-        UpdateMatchingTrophies(session, matchingTrophies, 1);
+        UpdateMatchingTrophies(player, matchingTrophies, 1);
     }
 
-    public static void OnMapEntered(GameSession session, long mapId)
+    public static void OnMapEntered(Player player, long mapId)
     {
         var mapTrophies = GetRelevantTrophies(TrophyTypes.Map);
         var matchingTrophies = mapTrophies
             .Where(t => IsMatchingCondition(t.Grades.First().ConditionCodes, mapId));
 
-        UpdateMatchingTrophies(session, matchingTrophies, 1);
+        UpdateMatchingTrophies(player, matchingTrophies, 1);
     }
 
-    public static void OnJump(GameSession session)
+    public static void OnJump(Player player)
     {
         var jumpTrophies = GetRelevantTrophies(TrophyTypes.Jump);
 
-        UpdateMatchingTrophies(session, jumpTrophies, 1);
+        UpdateMatchingTrophies(player, jumpTrophies, 1);
     }
 
-    public static void OnPlayTimeTick(GameSession session)
+    public static void OnPlayTimeTick(Player player)
     {
         var playtimeTrophies = GetRelevantTrophies(TrophyTypes.PlayTime);
 
-        UpdateMatchingTrophies(session, playtimeTrophies, 1);
+        UpdateMatchingTrophies(player, playtimeTrophies, 1);
     }
 
-    public static void OnLevelUp(GameSession session)
+    public static void OnLevelUp(Player player)
     {
-        var jobId = (int)session.Player.JobCode;
+        var jobId = (int)player.JobCode;
         var levelUpTrophies = GetRelevantTrophies(TrophyTypes.LevelUp);
         var levelTrophies = GetRelevantTrophies(TrophyTypes.Level);
 
         var matchingTrophies = levelUpTrophies
             .Where(t => IsMatchingCondition(t.Grades.First().ConditionCodes, jobId));
 
-        UpdateMatchingTrophies(session, matchingTrophies, 1);
-        UpdateMatchingTrophies(session, levelTrophies, 1);
+        UpdateMatchingTrophies(player, matchingTrophies, 1);
+        UpdateMatchingTrophies(player, levelTrophies, 1);
     }
 
-    public static void OnObjectInteract(GameSession session, long objectId)
+    public static void OnObjectInteract(Player player, long objectId)
     {
         var interactTrophies = GetRelevantTrophies(TrophyTypes.InteractObject)
             .Concat(GetRelevantTrophies(TrophyTypes.Controller));
@@ -62,7 +61,12 @@ internal static class TrophyManager
         var matchingTrophies = interactTrophies
             .Where(t => IsMatchingCondition(t.Grades.First().ConditionCodes, objectId));
 
-        UpdateMatchingTrophies(session, matchingTrophies, 1);
+        UpdateMatchingTrophies(player, matchingTrophies, 1);
+    }
+
+    public static void OnGainMasteryLevel(Player player)
+    {
+
     }
 
     private static IEnumerable<TrophyMetadata> GetRelevantTrophies(string category) =>
@@ -111,23 +115,21 @@ internal static class TrophyManager
         return condition >= lowerBound && condition <= upperBound;
     }
 
-    private static void UpdateMatchingTrophies(GameSession session, IEnumerable<TrophyMetadata> trophies, int progress)
+    private static void UpdateMatchingTrophies(Player player, IEnumerable<TrophyMetadata> trophies, int progress)
     {
         var trophyIds = trophies.Select(t => t.Id);
         foreach (var trophyId in trophyIds)
         {
-            var player = session.Player;
-
             if (!player.TrophyData.ContainsKey(trophyId))
             {
                 player.TrophyData[trophyId] = new Trophy(player.CharacterId, player.AccountId, trophyId);
             }
 
-            player.TrophyData[trophyId].AddCounter(session, progress);
+            player.TrophyData[trophyId].AddCounter(player.Session, progress);
 
             player.TrophyData.TryGetValue(trophyId, out var trophy);
 
-            session.Send(TrophyPacket.WriteUpdate(trophy));
+            player.Session?.Send(TrophyPacket.WriteUpdate(trophy));
             DatabaseManager.Trophies.Update(trophy);
         }
     }

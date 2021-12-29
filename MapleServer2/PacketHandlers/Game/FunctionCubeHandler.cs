@@ -55,7 +55,7 @@ internal sealed class FunctionCubeHandler : GamePacketHandler
         }
 
         var objectId = ItemMetadataStorage.GetObjectId(fieldCube.Value.Item.Id);
-        TrophyManager.OnObjectInteract(session, objectId);
+        TrophyManager.OnObjectInteract(session.Player, objectId);
 
         switch (fieldCube.Value.Item.HousingCategory)
         {

@@ -63,7 +63,7 @@ internal sealed class QuestHandler : GamePacketHandler
 
         questStatus.State = QuestState.Started;
         questStatus.StartTimestamp = TimeInfo.Now();
-        TrophyManager.OnAcceptQuest(session, questId);
+        TrophyManager.OnAcceptQuest(session.Player, questId);
         DatabaseManager.Quests.Update(questStatus);
         session.Send(QuestPacket.AcceptQuest(questId));
     }

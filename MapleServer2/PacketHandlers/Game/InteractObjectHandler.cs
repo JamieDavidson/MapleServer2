@@ -87,7 +87,7 @@ internal sealed class InteractObjectHandler : GamePacketHandler
                         continue;
                     }
 
-                    TrophyManager.OnObjectInteract(session, interactObject.InteractId);
+                    TrophyManager.OnObjectInteract(session.Player, interactObject.InteractId);
                     QuestHelper.UpdateQuest(session, interactObject.InteractId.ToString(), "interact_object");
                     session.Send(InteractObjectPacket.QuestUse(interactObject));
                     session.Send(InteractObjectPacket.Interact(interactObject));

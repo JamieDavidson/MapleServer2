@@ -32,6 +32,6 @@ internal sealed class StateHandler : GamePacketHandler
 
     private static void HandleJump(GameSession session)
     {
-        TrophyManager.OnJump(session);
+        TrophyManager.OnJump(session.Player);
     }
 }

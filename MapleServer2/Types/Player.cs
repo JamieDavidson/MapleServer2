@@ -449,7 +449,7 @@ public class Player
             {
                 OnlineTime += 1;
                 LastLoginTime = TimeInfo.Now();
-                TrophyManager.OnPlayTimeTick(Session);
+                TrophyManager.OnPlayTimeTick(this);
                 await Task.Delay(60000);
             }
         });

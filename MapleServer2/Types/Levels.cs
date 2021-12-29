@@ -59,7 +59,7 @@ public class Levels
 
         Level++;
 
-        TrophyManager.OnLevelUp(Player.Session);
+        TrophyManager.OnLevelUp(Player);
 
         Player.StatPointDistribution.AddTotalStatPoints(5);
         Player.Session.FieldManager.BroadcastPacket(ExperiencePacket.LevelUp(Player.FieldPlayer, Level));

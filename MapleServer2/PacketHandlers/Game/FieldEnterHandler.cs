@@ -59,6 +59,6 @@ internal sealed class FieldEnterHandler : GamePacketHandler
         var gameEvents = DatabaseManager.Events.FindAll();
         session.Send(GameEventPacket.Load(gameEvents));
 
-        TrophyManager.OnMapEntered(session, player.MapId);
+        TrophyManager.OnMapEntered(player, player.MapId);
     }
 }
