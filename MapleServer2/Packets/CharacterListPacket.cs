@@ -222,12 +222,13 @@ public static class CharacterListPacket
 
     public static void WriteEquipsAndCosmetics(PacketWriter pWriter, Player player)
     {
-        pWriter.WriteByte((byte) (player.Inventory.Equips.Count + player.Inventory.Cosmetics.Count));
-        foreach ((ItemSlot slot, Item equip) in player.Inventory.Equips)
+        var equips = player.Inventory.GetEquipment();
+        pWriter.WriteByte((byte) (equips.Count + player.Inventory.Cosmetics.Count));
+        foreach (var (slot, equip) in equips)
         {
             WriteEquip(slot, equip, pWriter);
         }
-        foreach ((ItemSlot slot, Item equip) in player.Inventory.Cosmetics)
+        foreach (var (slot, equip) in player.Inventory.Cosmetics)
         {
             WriteEquip(slot, equip, pWriter);
         }

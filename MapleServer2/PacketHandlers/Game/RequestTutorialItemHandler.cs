@@ -15,13 +15,13 @@ internal sealed class RequestTutorialItemHandler : GamePacketHandler
     {
         var metadata = JobMetadataStorage.GetTutorialItems((int) session.Player.Job);
 
-        var inventory = session.Player.Inventory; 
-            
+        var inventory = session.Player.Inventory;
+
         foreach (var tutorialItem in metadata)
         {
             var tutorialItemsCount = inventory.GetItemCount(tutorialItem.ItemId);
             tutorialItemsCount += inventory.Cosmetics.Where(x => x.Value.Id == tutorialItem.ItemId).Count();
-            tutorialItemsCount += inventory.Equips.Where(x => x.Value.Id == tutorialItem.ItemId).Count();
+            tutorialItemsCount += inventory.GetEquipment().Where(x => x.Value.Id == tutorialItem.ItemId).Count();
 
             if (tutorialItemsCount >= tutorialItem.Amount)
             {

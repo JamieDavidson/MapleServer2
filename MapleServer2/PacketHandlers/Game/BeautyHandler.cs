@@ -171,7 +171,7 @@ internal sealed class BeautyHandler : GamePacketHandler
         var beautyItemUid = packet.ReadLong();
         var equipColor = packet.Read<EquipColor>();
 
-        var beautyItem = session.Player.GetEquippedItem(beautyItemUid);
+        var beautyItem = session.Player.Inventory.GetEquippedItem(beautyItemUid);
 
         if (beautyItem.ItemSlot == ItemSlot.CP)
         {
@@ -425,7 +425,7 @@ internal sealed class BeautyHandler : GamePacketHandler
             itemUid[i] = packet.ReadLong();
             itemId[i] = packet.ReadInt();
             equipColor[i] = packet.Read<EquipColor>();
-            var item = session.Player.GetEquippedItem(itemUid[i]);
+            var item = session.Player.Inventory.GetEquippedItem(itemUid[i]);
             if (item == null)
             {
                 return;

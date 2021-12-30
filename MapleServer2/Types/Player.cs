@@ -345,27 +345,6 @@ public class Player
         }
     }
 
-    public Dictionary<ItemSlot, Item> GetEquippedInventory(InventoryTab tab)
-    {
-        return tab switch
-        {
-            InventoryTab.Gear => Inventory.Equips,
-            InventoryTab.Outfit => Inventory.Cosmetics,
-            _ => null
-        };
-    }
-
-    public Item GetEquippedItem(long itemUid)
-    {
-        Item gearItem = Inventory.Equips.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
-        if (gearItem is not null)
-        {
-            return gearItem;
-        }
-
-        return Inventory.Cosmetics.FirstOrDefault(x => x.Value.Uid == itemUid).Value;
-    }
-
     public Task TimeSyncLoop()
     {
         return Task.Run(async () =>

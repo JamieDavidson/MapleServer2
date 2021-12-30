@@ -31,12 +31,12 @@ public class DatabaseInventory : DatabaseTable
 
         List<Item> items = new();
         items.AddRange(inventory.GetItemsNotNull().ToList());
-        items.AddRange(inventory.Equips.Values.Where(x => x != null).ToList());
+        items.AddRange(inventory.GetEquipment().Values.Where(x => x != null).ToList());
         items.AddRange(inventory.Badges.Where(x => x != null).ToList());
         items.AddRange(inventory.Cosmetics.Values.Where(x => x != null).ToList());
         items.AddRange(inventory.LapenshardStorage.Where(x => x != null).ToList());
 
-        foreach (Item item in items)
+        foreach (var item in items)
         {
             item.InventoryId = inventory.Id;
             item.BankInventoryId = 0;
