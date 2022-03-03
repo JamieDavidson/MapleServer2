@@ -17,11 +17,11 @@ namespace MapleServer2.Network;
 
 public abstract class Session : IDisposable
 {
-    public const uint VERSION = 12;
-    private const uint BLOCK_IV = 12; // TODO: should this be variable
+    public const uint Version = 12;
+    private const uint BlockIv = 12; // TODO: should this be variable
 
-    private const int HANDSHAKE_SIZE = 19;
-    private const int STOP_TIMEOUT = 2000;
+    private const int HandshakeSize = 19;
+    private const int StopTimeout = 2000;
 
     public EventHandler<string> OnError;
     public EventHandler<PoolPacketReader> OnPacket;
@@ -77,8 +77,8 @@ public abstract class Session : IDisposable
 
         Client = client;
         NetworkStream = client.GetStream();
-        SendCipher = new(VERSION, Siv, BLOCK_IV);
-        RecvCipher = new(VERSION, Riv, BLOCK_IV);
+        SendCipher = new(Version, Siv, BlockIv);
+        RecvCipher = new(Version, Riv, BlockIv);
     }
 
     public void Dispose()
@@ -100,7 +100,7 @@ public abstract class Session : IDisposable
 
         Disposed = true;
         Complete();
-        Thread.Join(STOP_TIMEOUT);
+        Thread.Join(StopTimeout);
 
         CloseClient();
 
@@ -204,7 +204,7 @@ public abstract class Session : IDisposable
 
     private void PerformHandshake()
     {
-        PacketWriter handshake = HandshakePacket.Handshake(VERSION, Riv, Siv, BLOCK_IV, Type, HANDSHAKE_SIZE);
+        PacketWriter handshake = HandshakePacket.Handshake(Version, Riv, Siv, BlockIv, Type, HandshakeSize);
 
         // No encryption for handshake
         using PoolPacketWriter packet = SendCipher.WriteHeader(handshake.Buffer, 0, handshake.Length);

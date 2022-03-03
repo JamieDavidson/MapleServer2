@@ -35,15 +35,15 @@ public class RequestUserEnvHandler : GamePacketHandler
 
     private static void HandleTitleChange(GameSession session, PacketReader packet)
     {
-        int titleID = packet.ReadInt();
+        int titleId = packet.ReadInt();
 
-        if (titleID < 0)
+        if (titleId < 0)
         {
             return;
         }
 
-        session.Player.TitleId = titleID;
-        session.FieldManager.BroadcastPacket(UserEnvPacket.UpdateTitle(session, titleID));
+        session.Player.TitleId = titleId;
+        session.FieldManager.BroadcastPacket(UserEnvPacket.UpdateTitle(session, titleId));
     }
 
     private static void HandleTrophy(GameSession session)

@@ -44,13 +44,13 @@ public class TriggerHandler : GamePacketHandler
 
     private static void HandleUpdateWidget(GameSession session, PacketReader packet)
     {
-        TriggerUIMode submode = (TriggerUIMode) packet.ReadByte();
+        TriggerUiMode submode = (TriggerUiMode) packet.ReadByte();
         int arg = packet.ReadInt();
 
         Widget widget;
         switch (submode)
         {
-            case TriggerUIMode.StopCutscene:
+            case TriggerUiMode.StopCutscene:
                 widget = session.FieldManager.GetWidget(WidgetType.SceneMovie);
                 if (widget == null)
                 {
@@ -61,7 +61,7 @@ public class TriggerHandler : GamePacketHandler
                 widget.Arg = arg.ToString();
                 session.Send(StopCutscene(arg));
                 break;
-            case TriggerUIMode.Guide:
+            case TriggerUiMode.Guide:
                 widget = session.FieldManager.GetWidget(WidgetType.Guide);
                 if (widget == null)
                 {

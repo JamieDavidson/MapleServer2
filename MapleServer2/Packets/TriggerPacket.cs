@@ -12,11 +12,11 @@ public static class TriggerPacket
         UpdateTrigger = 0x3,
         Cutscene = 0x4,
         Camera = 0x5,
-        UI = 0x8,
+        Ui = 0x8,
         Timer = 0xE
     }
 
-    public enum TriggerUIMode : byte
+    public enum TriggerUiMode : byte
     {
         Guide = 0x1,
         EnableBanner = 0x2,
@@ -99,8 +99,8 @@ public static class TriggerPacket
     public static PacketWriter Guide(int eventId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-        pWriter.Write(TriggerPacketMode.UI);
-        pWriter.Write(TriggerUIMode.Guide);
+        pWriter.Write(TriggerPacketMode.Ui);
+        pWriter.Write(TriggerUiMode.Guide);
         pWriter.WriteInt(eventId);
         return pWriter;
     }
@@ -108,7 +108,7 @@ public static class TriggerPacket
     public static PacketWriter Banner(byte state, int entityId, int stringGuideId = 0, int time = 0)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-        pWriter.Write(TriggerPacketMode.UI);
+        pWriter.Write(TriggerPacketMode.Ui);
         pWriter.WriteByte(state); // 02 = on, 03 = off
         pWriter.WriteInt(entityId);
         pWriter.WriteInt(stringGuideId);
@@ -119,8 +119,8 @@ public static class TriggerPacket
     public static PacketWriter StartCutscene(string fileName, int movieId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-        pWriter.Write(TriggerPacketMode.UI);
-        pWriter.Write(TriggerUIMode.StartCutscene);
+        pWriter.Write(TriggerPacketMode.Ui);
+        pWriter.Write(TriggerUiMode.StartCutscene);
         pWriter.WriteString(fileName);
         pWriter.WriteInt(movieId);
         return pWriter;
@@ -129,8 +129,8 @@ public static class TriggerPacket
     public static PacketWriter StopCutscene(int movieId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-        pWriter.Write(TriggerPacketMode.UI);
-        pWriter.Write(TriggerUIMode.StopCutscene);
+        pWriter.Write(TriggerPacketMode.Ui);
+        pWriter.Write(TriggerUiMode.StopCutscene);
         pWriter.WriteInt(movieId);
         return pWriter;
     }
@@ -138,8 +138,8 @@ public static class TriggerPacket
     public static PacketWriter SetAnimationSequence(string animationState)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-        pWriter.Write(TriggerPacketMode.UI);
-        pWriter.Write(TriggerUIMode.SetAnimationSequence);
+        pWriter.Write(TriggerPacketMode.Ui);
+        pWriter.Write(TriggerUiMode.SetAnimationSequence);
         pWriter.WriteInt(1);
         pWriter.WriteUnicodeString(animationState);
         return pWriter;
@@ -148,8 +148,8 @@ public static class TriggerPacket
     public static PacketWriter SetAnimationLoop(string animationState, int duration, bool loop)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.TRIGGER);
-        pWriter.Write(TriggerPacketMode.UI);
-        pWriter.Write(TriggerUIMode.SetAnimationLoop);
+        pWriter.Write(TriggerPacketMode.Ui);
+        pWriter.Write(TriggerUiMode.SetAnimationLoop);
         pWriter.WriteBool(loop);
         pWriter.WriteInt(duration);
         pWriter.WriteUnicodeString(animationState);

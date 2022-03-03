@@ -741,19 +741,19 @@ public static class GuildPacket
         return pWriter;
     }
 
-    public static PacketWriter UseBuffNotice(int buffID)
+    public static PacketWriter UseBuffNotice(int buffId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
         pWriter.Write(GuildPacketMode.UseBuffNotice);
-        pWriter.WriteInt(buffID);
+        pWriter.WriteInt(buffId);
         return pWriter;
     }
 
-    public static PacketWriter ActivateBuff(int buffID)
+    public static PacketWriter ActivateBuff(int buffId)
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.GUILD);
         pWriter.Write(GuildPacketMode.ActivateBuff);
-        pWriter.WriteInt(buffID);
+        pWriter.WriteInt(buffId);
         return pWriter;
     }
 

@@ -15,7 +15,7 @@ public class VibrateHandler : GamePacketHandler
     public override void Handle(GameSession session, PacketReader packet)
     {
         string entityId = packet.ReadString();
-        long skillSN = packet.ReadLong();
+        long skillSn = packet.ReadLong();
         int skillId = packet.ReadInt();
         short skillLevel = packet.ReadShort();
         short unkShort = packet.ReadShort();

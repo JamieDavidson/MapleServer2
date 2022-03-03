@@ -22,7 +22,7 @@ public static class GemPacket
         SlotNoLongerValid,
         ItemNotEligible,
         ItemExpired,
-        ItemPCCafeOnly,
+        ItemPcCafeOnly,
         ActivePremiumClubRequired
     }
 

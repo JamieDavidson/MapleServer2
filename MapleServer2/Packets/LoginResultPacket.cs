@@ -16,7 +16,7 @@ public static class LoginResultPacket
         AccountAlreadyLoggedIn2 = 0x05, // Account already logged in. Previous session will be aborted, clicking ok trys to relog
         MemberLimit = 0x06, // Member limit reached
         AccountSuspended = 0x07, // Account suspended, shows date and reason.
-        SystemErrorDB = 0x08, // System Error: DB
+        SystemErrorDb = 0x08, // System Error: DB
         SystemError = 0x09, // System Error
         ChannelFull = 0x0A, // Channel is full
         Blank = 0x0B, // Blank message

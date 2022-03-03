@@ -10,7 +10,7 @@ namespace MapleServer2.Triggers;
 
 public partial class TriggerContext
 {
-    public void StartMiniGame(int boxId, byte round, MiniGame type, bool isShowResultUI)
+    public void StartMiniGame(int boxId, byte round, MiniGame type, bool isShowResultUi)
     {
     }
 

@@ -41,7 +41,7 @@ public class MailHandler : GamePacketHandler
         NotEnouhgMeso = 0x1A,
         PlayerIsBlocked = 0x1B,
         PlayerBlockedYou = 0x1C,
-        GMCannotSendMail = 0x1D,
+        GmCannotSendMail = 0x1D,
         ContainsForbiddenWord = 0x1F,
         MailPrivilegeSuspended = 0x20
     }

@@ -54,7 +54,7 @@ public class SkillHandler : GamePacketHandler
 
     private static void HandleCast(GameSession session, PacketReader packet)
     {
-        long skillSN = packet.ReadLong();
+        long skillSn = packet.ReadLong();
         int serverTick = packet.ReadInt();
         int skillId = packet.ReadInt();
         short skillLevel = packet.ReadShort();
@@ -74,7 +74,7 @@ public class SkillHandler : GamePacketHandler
         }
 
         IFieldActor<Player> fieldPlayer = session.Player.FieldPlayer;
-        SkillCast skillCast = new(skillId, skillLevel, skillSN, serverTick, fieldPlayer.ObjectId, clientTick, attackPoint)
+        SkillCast skillCast = new(skillId, skillLevel, skillSn, serverTick, fieldPlayer.ObjectId, clientTick, attackPoint)
         {
             Position = position,
             Direction = direction,
@@ -126,7 +126,7 @@ public class SkillHandler : GamePacketHandler
 
     private static void HandleSyncTick(PacketReader packet)
     {
-        long skillSN = packet.ReadLong();
+        long skillSn = packet.ReadLong();
         int serverTick = packet.ReadInt();
     }
 

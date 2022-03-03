@@ -57,7 +57,7 @@ public class RequestItemUseHandler : GamePacketHandler
                 HandleOpenInstrument(item);
                 break;
             case "VIPCoupon":
-                HandleVIPCoupon(session, item);
+                HandleVipCoupon(session, item);
                 break;
             case "StoryBook":
                 HandleStoryBook(session, item);
@@ -188,7 +188,7 @@ public class RequestItemUseHandler : GamePacketHandler
         }
     }
 
-    private static void HandleVIPCoupon(GameSession session, Item item)
+    private static void HandleVipCoupon(GameSession session, Item item)
     {
         long vipTime = item.Function.VipCoupon.Duration * 3600;
 
@@ -370,9 +370,9 @@ public class RequestItemUseHandler : GamePacketHandler
 
     public static void HandleCallAirTaxi(GameSession session, PacketReader packet, Item item)
     {
-        int fieldID = int.Parse(packet.ReadUnicodeString());
+        int fieldId = int.Parse(packet.ReadUnicodeString());
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);
-        session.Player.Warp(fieldID);
+        session.Player.Warp(fieldId);
     }
 
     public static void HandleInstallBillBoard(GameSession session, PacketReader packet, Item item)
