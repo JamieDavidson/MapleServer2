@@ -14,7 +14,7 @@ public partial class FieldManager
             set => Value.Stats = value;
         }
 
-        private CancellationTokenSource CombatCTS;
+        private CancellationTokenSource CombatCts;
 
         private Task HpRegenThread;
         private Task SpRegenThread;
@@ -210,10 +210,10 @@ public partial class FieldManager
         public Task StartCombatStance()
         {
             // Refresh out-of-combat timer
-            CombatCTS?.Cancel();
+            CombatCts?.Cancel();
             CancellationTokenSource cts = new();
             cts.Token.Register(() => cts.Dispose());
-            CombatCTS = cts;
+            CombatCts = cts;
 
             // Enter combat
             Value.Session.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(this, true));
@@ -223,7 +223,7 @@ public partial class FieldManager
 
                 if (!cts.Token.IsCancellationRequested)
                 {
-                    CombatCTS = null;
+                    CombatCts = null;
                     cts.Dispose();
                     Value.Session?.FieldManager.BroadcastPacket(UserBattlePacket.UserBattle(this, false));
                 }

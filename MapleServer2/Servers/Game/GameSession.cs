@@ -81,7 +81,7 @@ public class GameSession : Session
         Player.OnlineTimeThread = null;
 
         CoordF safeCoord = Player.SafeBlock;
-        safeCoord.Z += Block.BLOCK_SIZE;
+        safeCoord.Z += Block.BlockSize;
         Player.SavedCoord = safeCoord;
 
         // if session is not changing channels or servers, send the logout message

@@ -791,10 +791,10 @@ public class RequestCubeHandler : GamePacketHandler
         home.Height = layout.Height;
         session.Send(ResponseCubePacket.UpdateHomeSizeAndHeight(layout.Size, layout.Height));
 
-        int x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
+        int x = -1 * Block.BlockSize * (home.Size - 1);
         foreach (IFieldObject<Player> fieldPlayer in session.FieldManager.State.Players.Values)
         {
-            fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
+            fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BlockSize * 3), CoordF.From(0, 0, 0)));
         }
 
         foreach (Cube layoutCube in layout.Cubes)
@@ -828,10 +828,10 @@ public class RequestCubeHandler : GamePacketHandler
         home.Height = layout.Height;
         session.Send(ResponseCubePacket.UpdateHomeSizeAndHeight(layout.Size, layout.Height));
 
-        int x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
+        int x = -1 * Block.BlockSize * (home.Size - 1);
         foreach (IFieldObject<Player> fieldPlayer in session.FieldManager.State.Players.Values)
         {
-            fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
+            fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BlockSize * 3), CoordF.From(0, 0, 0)));
         }
 
         foreach (Cube cube in layout.Cubes)
@@ -916,16 +916,16 @@ public class RequestCubeHandler : GamePacketHandler
         int x;
         if (session.Player.IsInDecorPlanner)
         {
-            x = -1 * Block.BLOCK_SIZE * (home.DecorPlannerSize - 1);
+            x = -1 * Block.BlockSize * (home.DecorPlannerSize - 1);
         }
         else
         {
-            x = -1 * Block.BLOCK_SIZE * (home.Size - 1);
+            x = -1 * Block.BlockSize * (home.Size - 1);
         }
 
         foreach (IFieldObject<Player> fieldPlayer in session.FieldManager.State.Players.Values)
         {
-            fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BLOCK_SIZE * 3), CoordF.From(0, 0, 0)));
+            fieldPlayer.Value.Session.Send(UserMoveByPortalPacket.Move(fieldPlayer, CoordF.From(x, x, Block.BlockSize * 3), CoordF.From(0, 0, 0)));
         }
     }
 
@@ -1355,7 +1355,7 @@ public class RequestCubeHandler : GamePacketHandler
                 return false;
             }
 
-            coordS.Z -= Block.BLOCK_SIZE;
+            coordS.Z -= Block.BlockSize;
         }
 
         return true;
@@ -1389,12 +1389,12 @@ public class RequestCubeHandler : GamePacketHandler
     {
         if (mode is RequestCubeMode.DecreaseSize)
         {
-            int maxSize = (home.Size - 1) * Block.BLOCK_SIZE * -1;
+            int maxSize = (home.Size - 1) * Block.BlockSize * -1;
             for (int i = 0; i < home.Size; i++)
             {
                 for (int j = 0; j <= home.Height; j++)
                 {
-                    CoordF coord = CoordF.From(maxSize, i * Block.BLOCK_SIZE * -1, j * Block.BLOCK_SIZE);
+                    CoordF coord = CoordF.From(maxSize, i * Block.BlockSize * -1, j * Block.BlockSize);
                     IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
                     if (cube is not null)
                     {
@@ -1407,7 +1407,7 @@ public class RequestCubeHandler : GamePacketHandler
             {
                 for (int j = 0; j <= home.Height; j++)
                 {
-                    CoordF coord = CoordF.From(i * Block.BLOCK_SIZE * -1, maxSize, j * Block.BLOCK_SIZE);
+                    CoordF coord = CoordF.From(i * Block.BlockSize * -1, maxSize, j * Block.BlockSize);
                     IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
                     if (cube != default)
                     {
@@ -1423,7 +1423,7 @@ public class RequestCubeHandler : GamePacketHandler
             {
                 for (int j = 0; j < home.Size; j++)
                 {
-                    CoordF coord = CoordF.From(i * Block.BLOCK_SIZE * -1, j * Block.BLOCK_SIZE * -1, home.Height * Block.BLOCK_SIZE);
+                    CoordF coord = CoordF.From(i * Block.BlockSize * -1, j * Block.BlockSize * -1, home.Height * Block.BlockSize);
                     IFieldObject<Cube> cube = session.FieldManager.State.Cubes.Values.FirstOrDefault(x => x.Coord == coord);
                     if (cube is not null)
                     {

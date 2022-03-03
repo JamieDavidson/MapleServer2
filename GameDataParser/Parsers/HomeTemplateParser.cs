@@ -40,7 +40,7 @@ public class HomeTemplateParser : Exporter<List<HomeTemplateMetadata>>
             homeTemplate.Size = byte.Parse(size[0]);
             homeTemplate.Height = byte.Parse(size[2]);
             sbyte[] baseCoordB = item.Attributes["baseCubePoint3"].Value.Split(",").Select(sbyte.Parse).ToArray();
-            CoordF baseCoordF = CoordF.From(baseCoordB[0] * Block.BLOCK_SIZE, baseCoordB[1] * Block.BLOCK_SIZE, baseCoordB[2] * Block.BLOCK_SIZE);
+            CoordF baseCoordF = CoordF.From(baseCoordB[0] * Block.BlockSize, baseCoordB[1] * Block.BlockSize, baseCoordB[2] * Block.BlockSize);
 
             XmlNodeList cubes = document.GetElementsByTagName("cube");
             foreach (XmlNode cube in cubes)
@@ -50,7 +50,7 @@ public class HomeTemplateParser : Exporter<List<HomeTemplateMetadata>>
                 byte[] coordsB = cube.Attributes["offsetCubePoint3"].Value.Split(",").Select(byte.Parse).ToArray();
                 CoordF cubeCoordF;
 
-                cubeCoordF = CoordF.From(coordsB[0] * Block.BLOCK_SIZE, coordsB[1] * Block.BLOCK_SIZE, coordsB[2] * Block.BLOCK_SIZE);
+                cubeCoordF = CoordF.From(coordsB[0] * Block.BlockSize, coordsB[1] * Block.BlockSize, coordsB[2] * Block.BlockSize);
                 cubeCoordF.X += baseCoordF.X;
                 cubeCoordF.Y += baseCoordF.Y;
 

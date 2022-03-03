@@ -31,15 +31,15 @@ public class MobSpawn
 
     }
 
-    public static List<CoordF> SelectPoints(int spawnRadius = Block.BLOCK_SIZE)
+    public static List<CoordF> SelectPoints(int spawnRadius = Block.BlockSize)
     {
         List<CoordF> spawnOffsets = new();
-        int spawnSize = 2 * (spawnRadius / Block.BLOCK_SIZE);
+        int spawnSize = 2 * (spawnRadius / Block.BlockSize);
         for (int i = 0; i <= spawnSize; i++)
         {
             for (int j = 0; j <= spawnSize; j++)
             {
-                spawnOffsets.Add(CoordF.From(i * Block.BLOCK_SIZE - spawnRadius, j * Block.BLOCK_SIZE - spawnRadius, 0));
+                spawnOffsets.Add(CoordF.From(i * Block.BlockSize - spawnRadius, j * Block.BlockSize - spawnRadius, 0));
             }
         }
         return spawnOffsets.OrderBy(x => RandomProvider.Get().Next()).ToList();

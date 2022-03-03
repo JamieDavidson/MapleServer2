@@ -130,13 +130,13 @@ public static class RegionSkillHandler
             CoordS tempBlockCoord = offSetCoord.ToShort();
 
             // Set the height to the max allowed, which is one block above the cast coord.
-            tempBlockCoord.Z += Block.BLOCK_SIZE * 2;
+            tempBlockCoord.Z += Block.BlockSize * 2;
 
             // Find the first block below the effect coord
             int distanceToNextBlockBelow = MapMetadataStorage.GetDistanceToNextBlockBelow(mapId, offSetCoord.ToShort(), out MapBlock blockBelow);
 
             // If the block is null or the distance from the cast effect Z height is greater than two blocks, continue
-            if (blockBelow is null || distanceToNextBlockBelow > Block.BLOCK_SIZE * 2)
+            if (blockBelow is null || distanceToNextBlockBelow > Block.BlockSize * 2)
             {
                 continue;
             }
@@ -155,7 +155,7 @@ public static class RegionSkillHandler
 
             // Since this is the block below, add 150 units to the Z coord so the effect is above the block
             offSetCoord = blockBelow.Coord.ToFloat();
-            offSetCoord.Z += Block.BLOCK_SIZE;
+            offSetCoord.Z += Block.BlockSize;
 
             effectCoords.Add(offSetCoord);
         }

@@ -60,9 +60,9 @@ public struct CoordF
     public readonly CoordB ToByte()
     {
         return CoordB.From(
-            (sbyte) (X / Block.BLOCK_SIZE),
-            (sbyte) (Y / Block.BLOCK_SIZE),
-            (sbyte) (Z / Block.BLOCK_SIZE));
+            (sbyte) (X / Block.BlockSize),
+            (sbyte) (Y / Block.BlockSize),
+            (sbyte) (Z / Block.BlockSize));
     }
     #endregion
 
@@ -141,7 +141,7 @@ public struct CoordF
         return (left - right).Length();
     }
 
-    public double XYAngle()
+    public double XyAngle()
     {
         return 1800 * Math.Atan2(Y, X) / Math.PI + 900;
     }
@@ -233,9 +233,9 @@ public struct CoordS
     public readonly CoordB ToByte()
     {
         return CoordB.From(
-            (sbyte) (X / Block.BLOCK_SIZE),
-            (sbyte) (Y / Block.BLOCK_SIZE),
-            (sbyte) (Z / Block.BLOCK_SIZE));
+            (sbyte) (X / Block.BlockSize),
+            (sbyte) (Y / Block.BlockSize),
+            (sbyte) (Z / Block.BlockSize));
     }
     #endregion
 
@@ -311,7 +311,7 @@ public struct CoordS
         return (left - right).Length();
     }
 
-    public double XYAngle()
+    public double XyAngle()
     {
         return 1800 * Math.Atan2(Y, X) / Math.PI + 900;
     }
@@ -383,9 +383,9 @@ public struct CoordB
     public static CoordB FromVector3(Vector3 vector3)
     {
         return From(
-            (sbyte) (vector3.X / Block.BLOCK_SIZE),
-            (sbyte) (vector3.Y / Block.BLOCK_SIZE),
-            (sbyte) (vector3.Z / Block.BLOCK_SIZE));
+            (sbyte) (vector3.X / Block.BlockSize),
+            (sbyte) (vector3.Y / Block.BlockSize),
+            (sbyte) (vector3.Z / Block.BlockSize));
     }
 
     public static CoordB Parse(string value, string separator)
@@ -401,17 +401,17 @@ public struct CoordB
     public readonly CoordF ToFloat()
     {
         return CoordF.From(
-            X * Block.BLOCK_SIZE,
-            Y * Block.BLOCK_SIZE,
-            Z * Block.BLOCK_SIZE);
+            X * Block.BlockSize,
+            Y * Block.BlockSize,
+            Z * Block.BlockSize);
     }
 
     public readonly CoordS ToShort()
     {
         return CoordS.From(
-            (short) (X * Block.BLOCK_SIZE),
-            (short) (Y * Block.BLOCK_SIZE),
-            (short) (Z * Block.BLOCK_SIZE));
+            (short) (X * Block.BlockSize),
+            (short) (Y * Block.BlockSize),
+            (short) (Z * Block.BlockSize));
     }
     #endregion
 
@@ -487,7 +487,7 @@ public struct CoordB
         return (left - right).Length();
     }
 
-    public double XYAngle()
+    public double XyAngle()
     {
         return 1800 * Math.Atan2(Y, X) / Math.PI + 900;
     }

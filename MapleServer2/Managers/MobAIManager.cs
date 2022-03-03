@@ -7,7 +7,7 @@ using NLog;
 
 namespace MapleServer2.Managers;
 
-public static class MobAIManager
+public static class MobAiManager
 {
     private static readonly Dictionary<string, MobAi> AiTable = new();
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -40,18 +40,18 @@ public static class MobAIManager
                 continue;
             }
 
-            ParseAI(document);
+            ParseAi(document);
             Logger.Info($"Loaded {filename}");
         }
         Logger.Info("Finished loading AI.");
     }
 
-    public static MobAi GetAI(string aiInfo)
+    public static MobAi GetAi(string aiInfo)
     {
         return AiTable.GetValueOrDefault(aiInfo, null);
     }
 
-    private static void ParseAI(XmlDocument document)
+    private static void ParseAi(XmlDocument document)
     {
         XmlNode behaviorsNode = document.SelectSingleNode("/ai/behavior");
 

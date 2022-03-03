@@ -67,7 +67,7 @@ public class BuildModeHandler : GamePacketHandler
 
         // Add Guide Object
         CoordF startCoord = Block.ClosestBlock(session.Player.FieldPlayer.Coord);
-        startCoord.Z += Block.BLOCK_SIZE;
+        startCoord.Z += Block.BlockSize;
         GuideObject guide = new(0, session.Player.CharacterId);
         IFieldObject<GuideObject> fieldGuide = session.FieldManager.RequestFieldObject(guide);
         fieldGuide.Coord = startCoord;

@@ -42,7 +42,7 @@ public static class MapMetadataStorage
             return false;
         }
 
-        coord.Z += Block.BLOCK_SIZE;
+        coord.Z += Block.BlockSize;
         mapMetadata.Blocks.TryGetValue(coord, out MapBlock block);
         return block is not null;
     }
@@ -55,7 +55,7 @@ public static class MapMetadataStorage
             return false;
         }
 
-        coord.Z -= Block.BLOCK_SIZE;
+        coord.Z -= Block.BlockSize;
         mapMetadata.Blocks.TryGetValue(coord, out MapBlock block);
         return block is not null;
     }
@@ -81,7 +81,7 @@ public static class MapMetadataStorage
             mapMetadata.Blocks.TryGetValue(coordS, out MapBlock block);
             if (block is null)
             {
-                coordS.Z -= Block.BLOCK_SIZE;
+                coordS.Z -= Block.BlockSize;
                 continue;
             }
 
@@ -90,7 +90,7 @@ public static class MapMetadataStorage
                 return block.SaleableGroup;
             }
 
-            coordS.Z -= Block.BLOCK_SIZE;
+            coordS.Z -= Block.BlockSize;
         }
 
         return 0;
@@ -131,7 +131,7 @@ public static class MapMetadataStorage
                 return coord.Z - block.Coord.Z;
             }
 
-            tempCoord.Z -= Block.BLOCK_SIZE;
+            tempCoord.Z -= Block.BlockSize;
         }
 
         block = null;

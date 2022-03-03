@@ -59,7 +59,7 @@ public static class MapleServer
 
         // Load Mob AI files
         string mobAiSchema = Path.Combine(Paths.AiDirectory, "mob-ai.xsd");
-        MobAIManager.Load(Paths.AiDirectory, mobAiSchema);
+        MobAiManager.Load(Paths.AiDirectory, mobAiSchema);
 
         // Initialize all metadata.
         await MetadataHelper.InitializeAll();

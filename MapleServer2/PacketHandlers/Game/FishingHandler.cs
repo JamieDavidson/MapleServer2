@@ -99,7 +99,7 @@ public class FishingHandler : GamePacketHandler
 
         // Adding GuideObject
         CoordF guideBlock = GetObjectBlock(fishingBlocks, session.Player.FieldPlayer.Coord);
-        guideBlock.Z += Block.BLOCK_SIZE; // sits on top of the block
+        guideBlock.Z += Block.BlockSize; // sits on top of the block
         GuideObject guide = new(1, session.Player.CharacterId);
         IFieldObject<GuideObject> fieldGuide = session.FieldManager.RequestFieldObject(guide);
         fieldGuide.Coord = guideBlock;
@@ -121,17 +121,17 @@ public class FishingHandler : GamePacketHandler
     {
         List<MapBlock> blocks = new();
 
-        startCoord.Z -= Block.BLOCK_SIZE;
+        startCoord.Z -= Block.BlockSize;
         CoordF checkBlock = startCoord;
-        if (direction == Direction.NORTH_EAST)
+        if (direction == Direction.NorthEast)
         {
-            checkBlock.Y += 2 * Block.BLOCK_SIZE; // start at the corner
+            checkBlock.Y += 2 * Block.BlockSize; // start at the corner
 
             for (int yAxis = 0; yAxis < 5; yAxis++)
             {
                 for (int xAxis = 0; xAxis < 3; xAxis++)
                 {
-                    checkBlock.X += Block.BLOCK_SIZE;
+                    checkBlock.X += Block.BlockSize;
 
                     MapBlock block = ScanZAxisForLiquidBlock(checkBlock, mapId);
                     if (block != null)
@@ -139,38 +139,38 @@ public class FishingHandler : GamePacketHandler
                         blocks.Add(block);
                     }
                 }
-                checkBlock.Y -= Block.BLOCK_SIZE;
+                checkBlock.Y -= Block.BlockSize;
                 checkBlock.X = startCoord.X; // reset X
             }
         }
-        else if (direction == Direction.NORTH_WEST)
+        else if (direction == Direction.NorthWest)
         {
-            checkBlock.X += 2 * Block.BLOCK_SIZE; // start at the corner
+            checkBlock.X += 2 * Block.BlockSize; // start at the corner
 
             for (int xAxis = 0; xAxis < 5; xAxis++)
             {
                 for (int yAxis = 0; yAxis < 3; yAxis++)
                 {
-                    checkBlock.Y += Block.BLOCK_SIZE;
+                    checkBlock.Y += Block.BlockSize;
                     MapBlock block = ScanZAxisForLiquidBlock(checkBlock, mapId);
                     if (block != null)
                     {
                         blocks.Add(block);
                     }
                 }
-                checkBlock.X -= Block.BLOCK_SIZE;
+                checkBlock.X -= Block.BlockSize;
                 checkBlock.Y = startCoord.Y; // reset Y
             }
         }
-        else if (direction == Direction.SOUTH_WEST)
+        else if (direction == Direction.SouthWest)
         {
-            checkBlock.Y -= 2 * Block.BLOCK_SIZE; // start at the corner
+            checkBlock.Y -= 2 * Block.BlockSize; // start at the corner
 
             for (int yAxis = 0; yAxis < 5; yAxis++)
             {
                 for (int xAxis = 0; xAxis < 3; xAxis++)
                 {
-                    checkBlock.X -= Block.BLOCK_SIZE;
+                    checkBlock.X -= Block.BlockSize;
 
                     MapBlock block = ScanZAxisForLiquidBlock(checkBlock, mapId);
                     if (block != null)
@@ -178,19 +178,19 @@ public class FishingHandler : GamePacketHandler
                         blocks.Add(block);
                     }
                 }
-                checkBlock.Y += Block.BLOCK_SIZE;
+                checkBlock.Y += Block.BlockSize;
                 checkBlock.X = startCoord.X; // reset X
             }
         }
-        else if (direction == Direction.SOUTH_EAST)
+        else if (direction == Direction.SouthEast)
         {
-            checkBlock.X -= 2 * Block.BLOCK_SIZE; // start at the corner
+            checkBlock.X -= 2 * Block.BlockSize; // start at the corner
 
             for (int xAxis = 0; xAxis < 5; xAxis++)
             {
                 for (int yAxis = 0; yAxis < 3; yAxis++)
                 {
-                    checkBlock.Y -= Block.BLOCK_SIZE;
+                    checkBlock.Y -= Block.BlockSize;
 
                     MapBlock block = ScanZAxisForLiquidBlock(checkBlock, mapId);
                     if (block != null)
@@ -198,7 +198,7 @@ public class FishingHandler : GamePacketHandler
                         blocks.Add(block);
                     }
                 }
-                checkBlock.X += Block.BLOCK_SIZE;
+                checkBlock.X += Block.BlockSize;
                 checkBlock.Y = startCoord.Y; // reset Y
             }
         }
@@ -217,7 +217,7 @@ public class FishingHandler : GamePacketHandler
             MapBlock block = MapMetadataStorage.GetMapBlock(mapId, checkBlock.ToShort());
             if (block == null || !MapMetadataStorage.IsLiquidBlock(block))
             {
-                checkBlock.Z -= Block.BLOCK_SIZE;
+                checkBlock.Z -= Block.BlockSize;
                 continue;
             }
 
@@ -239,7 +239,7 @@ public class FishingHandler : GamePacketHandler
         bool success = packet.ReadBool();
 
         CoordF guideBlock = Block.ClosestBlock(session.Player.Guide.Coord);
-        guideBlock.Z -= Block.BLOCK_SIZE; // get liquid block coord
+        guideBlock.Z -= Block.BlockSize; // get liquid block coord
         MapBlock block = MapMetadataStorage.GetMapBlock(session.Player.MapId, guideBlock.ToShort());
         List<FishMetadata> fishes = FishMetadataStorage.GetValidFishes(session.Player.MapId, block.Attribute);
 

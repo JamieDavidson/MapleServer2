@@ -111,21 +111,21 @@ public class MoveFieldHandler : GamePacketHandler
 
         if (dstPortal.Name == "Portal_cube") // spawn on the next block if portal is a cube
         {
-            if (dstPortal.Rotation.Z == Direction.SOUTH_EAST)
+            if (dstPortal.Rotation.Z == Direction.SouthEast)
             {
-                coord.Y -= Block.BLOCK_SIZE;
+                coord.Y -= Block.BlockSize;
             }
-            else if (dstPortal.Rotation.Z == Direction.NORTH_EAST)
+            else if (dstPortal.Rotation.Z == Direction.NorthEast)
             {
-                coord.X += Block.BLOCK_SIZE;
+                coord.X += Block.BlockSize;
             }
-            else if (dstPortal.Rotation.Z == Direction.NORTH_WEST)
+            else if (dstPortal.Rotation.Z == Direction.NorthWest)
             {
-                coord.Y += Block.BLOCK_SIZE;
+                coord.Y += Block.BlockSize;
             }
-            else if (dstPortal.Rotation.Z == Direction.SOUTH_WEST)
+            else if (dstPortal.Rotation.Z == Direction.SouthWest)
             {
-                coord.X -= Block.BLOCK_SIZE;
+                coord.X -= Block.BlockSize;
             }
         }
 
@@ -249,7 +249,7 @@ public class MoveFieldHandler : GamePacketHandler
         }
 
         CoordF returnCoord = player.ReturnCoord;
-        returnCoord.Z += Block.BLOCK_SIZE;
+        returnCoord.Z += Block.BlockSize;
         player.WarpGameToGame(player.ReturnMapId, 1, returnCoord, session.Player.FieldPlayer.Rotation);
         player.ReturnMapId = 0;
         player.VisitingHomeId = 0;

@@ -17,7 +17,7 @@ public partial class FieldManager
 
     private partial class Mob : FieldActor<NpcMetadata>, INpc
     {
-        private readonly MobAi AI;
+        private readonly MobAi Ai;
         public IFieldObject<MobSpawn> OriginSpawn;
 
         private CoordF SpawnDistance;
@@ -32,7 +32,7 @@ public partial class FieldManager
         public Mob(int objectId, NpcMetadata metadata) : base(objectId, metadata)
         {
             Animation = AnimationStorage.GetSequenceIdBySequenceName(metadata.Model, "Idle_A");
-            AI = MobAIManager.GetAI(metadata.AiInfo);
+            Ai = MobAiManager.GetAi(metadata.AiInfo);
             Stats = new(metadata);
             State = NpcState.Normal;
         }
@@ -65,12 +65,12 @@ public partial class FieldManager
 
         public void Act()
         {
-            if (AI == null)
+            if (Ai == null)
             {
                 return;
             }
 
-            (string actionName, NpcAction actionType) = AI.GetAction(this);
+            (string actionName, NpcAction actionType) = Ai.GetAction(this);
 
             if (actionName != null)
             {
@@ -78,7 +78,7 @@ public partial class FieldManager
             }
 
             Action = actionType;
-            Movement = AI.GetMovementAction(this);
+            Movement = Ai.GetMovementAction(this);
 
             switch (Action)
             {
@@ -120,10 +120,10 @@ public partial class FieldManager
 
                     Velocity = CoordF.From(moveDistance, moveDir);
                     // Keep near spawn
-                    if ((SpawnDistance - Velocity).Length() >= Block.BLOCK_SIZE * 2)
+                    if ((SpawnDistance - Velocity).Length() >= Block.BlockSize * 2)
                     {
-                        moveDir = (short) SpawnDistance.XYAngle();
-                        Velocity = CoordF.From(Block.BLOCK_SIZE, moveDir);
+                        moveDir = (short) SpawnDistance.XyAngle();
+                        Velocity = CoordF.From(Block.BlockSize, moveDir);
                     }
 
                     LookDirection = moveDir; // looking direction of the monster
@@ -183,16 +183,16 @@ public partial class FieldManager
             }
 
             // Drop SP
-            bool dropSP = Rand.Next(6) == 0;
-            if (dropSP)
+            bool dropSp = Rand.Next(6) == 0;
+            if (dropSp)
             {
                 Item spBall = new(90000009, 20);
                 session.FieldManager.AddResource(spBall, mob, session.Player.FieldPlayer);
             }
 
             // Drop EP
-            bool dropEP = Rand.Next(10) == 0;
-            if (dropEP)
+            bool dropEp = Rand.Next(10) == 0;
+            if (dropEp)
             {
                 Item epBall = new(90000010, 20);
                 session.FieldManager.AddResource(epBall, mob, session.Player.FieldPlayer);

@@ -1049,7 +1049,7 @@ public partial class FieldManager
             CoordS healingCoord = healingSpot.Value.Coord;
             foreach (IFieldActor<Player> player in State.Players.Values)
             {
-                if ((healingCoord - player.Coord.ToShort()).Length() >= Block.BLOCK_SIZE * 2 || healingCoord.Z != player.Coord.ToShort().Z - 1)
+                if ((healingCoord - player.Coord.ToShort()).Length() >= Block.BlockSize * 2 || healingCoord.Z != player.Coord.ToShort().Z - 1)
                 {
                     continue;
                 }

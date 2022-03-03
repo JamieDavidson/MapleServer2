@@ -14,7 +14,7 @@ public class FallDamageHandler : GamePacketHandler
     public override void Handle(GameSession session, PacketReader packet)
     {
         float distance = packet.ReadFloat();
-        if (distance > Block.BLOCK_SIZE * 6)
+        if (distance > Block.BlockSize * 6)
         {
             // TODO: Check if player has Safe ride enabled
             if (session.Player.Mount != null)

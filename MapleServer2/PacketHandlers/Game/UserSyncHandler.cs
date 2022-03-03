@@ -59,7 +59,7 @@ public class UserSyncHandler : GamePacketHandler
             // we will need to know the state of the player for other things like counting time spent on ropes/running/walking/swimming
             if (syncStates[0].Animation2 is 7 or 132) // swimming
             {
-                safeBlock.Z += Block.BLOCK_SIZE; // Without this player will spawn under the water
+                safeBlock.Z += Block.BlockSize; // Without this player will spawn under the water
             }
 
             safeBlock.Z += 10; // Without this player will spawn inside the block

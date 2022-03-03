@@ -58,7 +58,7 @@ public class LoadUgcMapHandler : GamePacketHandler
             else
             {
                 byte homeSize = (byte) (home.Size - 1);
-                int x = -1 * Block.BLOCK_SIZE * homeSize;
+                int x = -1 * Block.BlockSize * homeSize;
                 coord = CoordF.From(x, x, 151);
                 rotation = CoordF.From(0, 0, 0);
             }

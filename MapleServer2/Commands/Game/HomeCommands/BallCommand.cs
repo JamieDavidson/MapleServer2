@@ -66,7 +66,7 @@ public class BallCommand : InGameCommand
         };
         IFieldObject<GuideObject> fieldObject = fieldManager.RequestFieldObject(ball);
 
-        fieldObject.Coord = CoordF.From(fieldPlayer.Coord.X, fieldPlayer.Coord.Y, fieldPlayer.Coord.Z + Block.BLOCK_SIZE * 2);
+        fieldObject.Coord = CoordF.From(fieldPlayer.Coord.X, fieldPlayer.Coord.Y, fieldPlayer.Coord.Z + Block.BlockSize * 2);
         fieldObject.Rotation = CoordF.From(0, 0, size);
 
         fieldManager.AddGuide(fieldObject);
