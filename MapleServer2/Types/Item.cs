@@ -27,7 +27,7 @@ public class Item
     public List<Job> RecommendJobs { get; set; }
     public ItemFunction Function { get; set; }
     public string Tag { get; set; }
-    public int ShopID { get; set; }
+    public int ShopId { get; set; }
     public ItemHousingCategory HousingCategory;
     public string BlackMarketCategory;
     public string Category;
@@ -229,7 +229,7 @@ public class Item
         RecommendJobs = ItemMetadataStorage.GetRecommendJobs(Id);
         Function = ItemMetadataStorage.GetFunction(Id);
         Tag = ItemMetadataStorage.GetTag(Id);
-        ShopID = ItemMetadataStorage.GetShopID(Id);
+        ShopId = ItemMetadataStorage.GetShopID(Id);
         RemainingTrades = ItemMetadataStorage.GetTradeableCount(Id);
         TransferType = ItemMetadataStorage.GetTransferType(Id);
         RepackageCount = ItemMetadataStorage.GetRepackageCount(Id);

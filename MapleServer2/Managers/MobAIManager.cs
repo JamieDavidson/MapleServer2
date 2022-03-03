@@ -9,7 +9,7 @@ namespace MapleServer2.Managers;
 
 public static class MobAIManager
 {
-    private static readonly Dictionary<string, MobAI> AiTable = new();
+    private static readonly Dictionary<string, MobAi> AiTable = new();
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     public static void Load(string dirPath, string schemaPath = null)
@@ -46,7 +46,7 @@ public static class MobAIManager
         Logger.Info("Finished loading AI.");
     }
 
-    public static MobAI GetAI(string aiInfo)
+    public static MobAi GetAI(string aiInfo)
     {
         return AiTable.GetValueOrDefault(aiInfo, null);
     }
@@ -55,15 +55,15 @@ public static class MobAIManager
     {
         XmlNode behaviorsNode = document.SelectSingleNode("/ai/behavior");
 
-        MobAI ai = new();
+        MobAi ai = new();
         foreach (XmlNode node in behaviorsNode)
         {
             NpcState stateValue = GetMobState(node.Name);
             NpcAction newActionValue = GetMobAction(node.Attributes["action"]?.Value);
             MobMovement movementValue = GetMobMovement(node.Attributes["movement"]?.Value);
-            MobAI.Condition[] conditions = GetConditions( /*node*/);
+            MobAi.Condition[] conditions = GetConditions( /*node*/);
 
-            ai.Rules.TryAdd(stateValue, (newActionValue, movementValue, Array.Empty<MobAI.Condition>()));
+            ai.Rules.TryAdd(stateValue, (newActionValue, movementValue, Array.Empty<MobAi.Condition>()));
         }
 
         string aiName = document.BaseURI.Split("MobAI/")[1];
@@ -103,9 +103,9 @@ public static class MobAIManager
         };
     }
 
-    private static MobAI.Condition[] GetConditions( /*XmlNode node*/)
+    private static MobAi.Condition[] GetConditions( /*XmlNode node*/)
     {
         // TODO: Parse actions' conditions
-        return Array.Empty<MobAI.Condition>();
+        return Array.Empty<MobAi.Condition>();
     }
 }

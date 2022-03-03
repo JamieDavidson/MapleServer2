@@ -22,7 +22,7 @@ public class DatabaseAccount : DatabaseTable
             meso_token = account.MesoToken.Amount,
             bank_inventory_id = account.BankInventory.Id,
             mushking_royale_id = account.MushkingRoyaleStats.Id,
-            vip_expiration = account.VIPExpiration,
+            vip_expiration = account.VipExpiration,
             meso_market_daily_listings = account.MesoMarketDailyListings,
             meso_market_monthly_purchases = account.MesoMarketMonthlyPurchases
         });
@@ -70,7 +70,7 @@ public class DatabaseAccount : DatabaseTable
             game_meret = account.GameMeret.Amount,
             event_meret = account.EventMeret.Amount,
             meso_token = account.MesoToken.Amount,
-            vip_expiration = account.VIPExpiration,
+            vip_expiration = account.VipExpiration,
             meso_market_daily_listings = account.MesoMarketDailyListings,
             meso_market_monthly_purchases = account.MesoMarketMonthlyPurchases
         });

@@ -99,8 +99,8 @@ public class Player
     public bool IsInDecorPlanner;
 
     public List<GameEventUserValue> EventUserValues = new();
-    public long RPSOpponentId;
-    public RpsChoice RPSSelection;
+    public long RpsOpponentId;
+    public RpsChoice RpsSelection;
 
     public int MaxSkillTabs { get; set; }
     public long ActiveSkillTabId { get; set; }
@@ -137,7 +137,7 @@ public class Player
     public Wallet Wallet { get; set; }
     public Dictionary<int, QuestStatus> QuestData;
 
-    public CancellationTokenSource OnlineCTS;
+    public CancellationTokenSource OnlineCts;
     public Task OnlineTimeThread;
 
     public List<GatheringCount> GatheringCount;
@@ -367,14 +367,14 @@ public class Player
 
     public Task OnlineTimer()
     {
-        OnlineCTS = new();
+        OnlineCts = new();
         return Task.Run(async () =>
         {
             // First wait one minute before updating the online time
             await Task.Delay(60000);
 
             // Then update the online time every minute if CTS is not requested
-            while (!OnlineCTS.IsCancellationRequested)
+            while (!OnlineCts.IsCancellationRequested)
             {
                 OnlineTime += 1;
                 TrophyManager.OnPlayTimeTick(this);

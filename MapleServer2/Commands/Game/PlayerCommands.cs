@@ -253,7 +253,7 @@ public class BuffCommand : InGameCommand
         int stacks = trigger.Get<int>("stacks") == 0 ? 1 : trigger.Get<int>("stacks");
 
         SkillCast skillCast = new(id, level);
-        if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield() || skillCast.IsGM() || skillCast.IsGlobal() ||
+        if (skillCast.IsBuffToOwner() || skillCast.IsBuffToEntity() || skillCast.IsBuffShield() || skillCast.IsGm() || skillCast.IsGlobal() ||
             skillCast.IsRecoveryFromBuff())
         {
             Status status = new(skillCast, trigger.Session.Player.FieldPlayer.ObjectId, trigger.Session.Player.FieldPlayer.ObjectId, stacks);

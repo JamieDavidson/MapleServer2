@@ -2,7 +2,7 @@
 
 public class MapleopolyTile
 {
-    public const int TILE_AMOUNT = 28;
+    public const int TileAmount = 28;
     public int TilePosition;
     public MapleopolyTileType Type;
     public int TileParameter;

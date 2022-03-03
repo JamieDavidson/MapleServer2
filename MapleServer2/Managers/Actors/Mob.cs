@@ -17,7 +17,7 @@ public partial class FieldManager
 
     private partial class Mob : FieldActor<NpcMetadata>, INpc
     {
-        private readonly MobAI AI;
+        private readonly MobAi AI;
         public IFieldObject<MobSpawn> OriginSpawn;
 
         private CoordF SpawnDistance;

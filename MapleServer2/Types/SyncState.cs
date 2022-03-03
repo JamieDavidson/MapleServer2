@@ -47,7 +47,7 @@ public class SyncState
 
     // Rock Paper Scissors
     public int OpponentObjectId;
-    public byte RPSUnk1;
-    public byte RPSUnk2;
-    public string RPSUnk3;
+    public byte RpsUnk1;
+    public byte RpsUnk2;
+    public string RpsUnk3;
 }

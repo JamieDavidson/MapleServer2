@@ -1,6 +1,6 @@
 ﻿namespace MapleServer2.Types;
 
-public class OXQuizQuestion
+public class OxQuizQuestion
 {
     public int Id;
     public string Category;
@@ -8,9 +8,9 @@ public class OXQuizQuestion
     public string AnswerText;
     public bool Answer;
 
-    public OXQuizQuestion() { }
+    public OxQuizQuestion() { }
 
-    public OXQuizQuestion(int id, string category, string questionText, string answerText, bool answer)
+    public OxQuizQuestion(int id, string category, string questionText, string answerText, bool answer)
     {
         Id = id;
         Category = category;

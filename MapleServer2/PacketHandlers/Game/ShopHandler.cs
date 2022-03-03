@@ -160,10 +160,10 @@ public class ShopHandler : GamePacketHandler
             return;
         }
 
-        Shop shop = DatabaseManager.Shops.FindById(item.ShopID);
+        Shop shop = DatabaseManager.Shops.FindById(item.ShopId);
         if (shop == null)
         {
-            Logger.Warn($"Unknown shop ID: {item.ShopID}");
+            Logger.Warn($"Unknown shop ID: {item.ShopId}");
             return;
         }
 

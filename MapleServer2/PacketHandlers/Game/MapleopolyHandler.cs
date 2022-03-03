@@ -136,7 +136,7 @@ public class MapleopolyHandler : GamePacketHandler
     {
         int.TryParse(freeRollValue.EventValue, out int freeRolls);
         int.TryParse(totalTileValue.EventValue, out int totalTiles);
-        int currentTilePosition = totalTiles % MapleopolyTile.TILE_AMOUNT;
+        int currentTilePosition = totalTiles % MapleopolyTile.TileAmount;
 
         MapleopolyTile currentTile = DatabaseManager.Mapleopoly.FindTileByPosition(currentTilePosition + 1);
 
@@ -158,10 +158,10 @@ public class MapleopolyHandler : GamePacketHandler
                 totalTiles += currentTile.TileParameter;
                 break;
             case MapleopolyTileType.RoundTrip:
-                totalTiles += MapleopolyTile.TILE_AMOUNT;
+                totalTiles += MapleopolyTile.TileAmount;
                 break;
             case MapleopolyTileType.GoToStart:
-                int tileToStart = MapleopolyTile.TILE_AMOUNT - currentTilePosition;
+                int tileToStart = MapleopolyTile.TileAmount - currentTilePosition;
                 totalTiles += tileToStart;
                 break;
             case MapleopolyTileType.Start:
@@ -179,7 +179,7 @@ public class MapleopolyHandler : GamePacketHandler
     private static void ProcessTrip(GameSession session, GameEventUserValue totalTripValue, int totalTiles)
     {
         int.TryParse(totalTripValue.EventValue, out int totalTrips);
-        int newTotalTrips = totalTiles / MapleopolyTile.TILE_AMOUNT;
+        int newTotalTrips = totalTiles / MapleopolyTile.TileAmount;
         if (newTotalTrips <= totalTrips)
         {
             return;

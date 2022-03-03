@@ -13,7 +13,7 @@ public class Account
     public long CreationTime { get; set; }
     public long LastLogTime { get; set; }
     public int CharacterSlots { get; set; }
-    public long VIPExpiration { get; set; }
+    public long VipExpiration { get; set; }
 
     public Currency Meret { get; set; }
     public Currency GameMeret { get; set; }
@@ -48,7 +48,7 @@ public class Account
         MesoToken = new(CurrencyType.MesoToken, data.meso_token, gameSession);
         BankInventory = bankInventory;
         MushkingRoyaleStats = royaleStats;
-        VIPExpiration = data.vip_expiration;
+        VipExpiration = data.vip_expiration;
         HomeId = data.home_id ?? 0;
         MesoMarketDailyListings = data.meso_market_daily_listings;
         MesoMarketMonthlyPurchases = data.meso_market_monthly_purchases;
@@ -131,7 +131,7 @@ public class Account
         return true;
     }
 
-    public bool IsVip() => VIPExpiration > TimeInfo.Now();
+    public bool IsVip() => VipExpiration > TimeInfo.Now();
 
     public void AddMedal(GameSession session, Item item)
     {

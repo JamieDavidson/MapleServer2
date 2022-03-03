@@ -30,8 +30,8 @@ public class FieldEnterHandler : GamePacketHandler
         if (account.IsVip())
         {
             session.Send(BuffPacket.SendBuff(0,
-                new(100000014, player.FieldPlayer.ObjectId, player.FieldPlayer.ObjectId, 1, (int) account.VIPExpiration, 1)));
-            session.Send(PremiumClubPacket.ActivatePremium(player.FieldPlayer, account.VIPExpiration));
+                new(100000014, player.FieldPlayer.ObjectId, player.FieldPlayer.ObjectId, 1, (int) account.VipExpiration, 1)));
+            session.Send(PremiumClubPacket.ActivatePremium(player.FieldPlayer, account.VipExpiration));
         }
 
         session.Send(EmotePacket.LoadEmotes(player));

@@ -8,7 +8,7 @@ public class Widget
     public WidgetType Type;
     public string State;
     public string Arg; // unclear what this is
-    public OXQuizQuestion OXQuizQuestion;
+    public OxQuizQuestion OxQuizQuestion;
 
     public Widget(WidgetType type)
     {

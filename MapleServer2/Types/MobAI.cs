@@ -5,12 +5,12 @@ using MapleServer2.Enums;
 
 namespace MapleServer2.Types;
 
-public class MobAI
+public class MobAi
 {
     public delegate bool Condition(IFieldActor<NpcMetadata> mob);
     public Dictionary<NpcState, (NpcAction, MobMovement, Condition[])> Rules;
 
-    public MobAI()
+    public MobAi()
     {
         Rules = new();
     }

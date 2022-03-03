@@ -41,13 +41,13 @@ public partial class TriggerContext
                         break;
                     case "PickQuiz":
                         // TODO: Use args to find a tier of a question
-                        widget.OXQuizQuestion = OXQuizMetadataStorage.GetQuestion();
+                        widget.OxQuizQuestion = OXQuizMetadataStorage.GetQuestion();
                         break;
                     case "ShowQuiz":
-                        Field.BroadcastPacket(QuizEventPacket.Question(widget.OXQuizQuestion.Category, widget.OXQuizQuestion.QuestionText, int.Parse(args)));
+                        Field.BroadcastPacket(QuizEventPacket.Question(widget.OxQuizQuestion.Category, widget.OxQuizQuestion.QuestionText, int.Parse(args)));
                         break;
                     case "PreJudge":
-                        if (widget.OXQuizQuestion.Answer)
+                        if (widget.OxQuizQuestion.Answer)
                         {
                             widget.State = "Correct";
                         }
@@ -57,7 +57,7 @@ public partial class TriggerContext
                         }
                         break;
                     case "ShowAnswer":
-                        Field.BroadcastPacket(QuizEventPacket.Answer(widget.OXQuizQuestion.Answer, widget.OXQuizQuestion.AnswerText, int.Parse(args)));
+                        Field.BroadcastPacket(QuizEventPacket.Answer(widget.OxQuizQuestion.Answer, widget.OxQuizQuestion.AnswerText, int.Parse(args)));
                         break;
                     case "Judge":
                         break;

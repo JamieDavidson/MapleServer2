@@ -66,9 +66,9 @@ public static class SyncStateHelper
         if (state.BoreAnimation == 60) // RPS
         {
             state.OpponentObjectId = packet.ReadInt();
-            state.RPSUnk1 = packet.ReadByte();
-            state.RPSUnk2 = packet.ReadByte();
-            state.RPSUnk3 = packet.ReadUnicodeString();
+            state.RpsUnk1 = packet.ReadByte();
+            state.RpsUnk2 = packet.ReadByte();
+            state.RpsUnk3 = packet.ReadUnicodeString();
         }
 
         return state;
@@ -131,9 +131,9 @@ public static class SyncStateHelper
         if (entry.BoreAnimation == 60) // RPS
         {
             pWriter.WriteInt(entry.OpponentObjectId);
-            pWriter.WriteByte(entry.RPSUnk1);
-            pWriter.WriteByte(entry.RPSUnk2);
-            pWriter.WriteUnicodeString(entry.RPSUnk3);
+            pWriter.WriteByte(entry.RpsUnk1);
+            pWriter.WriteByte(entry.RpsUnk2);
+            pWriter.WriteUnicodeString(entry.RpsUnk3);
         }
 
         return pWriter;

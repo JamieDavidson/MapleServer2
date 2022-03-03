@@ -113,7 +113,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
             return;
         }
 
-        session.Player.RPSOpponentId = otherPlayer.CharacterId;
+        session.Player.RpsOpponentId = otherPlayer.CharacterId;
 
         otherPlayer.Session.Send(RockPaperScissorsPacket.RequestMatch(session.Player.CharacterId));
     }
@@ -129,7 +129,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
             return;
         }
 
-        session.Player.RPSOpponentId = otherPlayer.CharacterId;
+        session.Player.RpsOpponentId = otherPlayer.CharacterId;
 
         otherPlayer.Session.Send(RockPaperScissorsPacket.ConfirmMatch(session.Player.CharacterId));
         otherPlayer.Session.Send(RockPaperScissorsPacket.BeginMatch());
@@ -164,7 +164,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
 
     private static void HandleSelectRpsChoice(GameSession session, PacketReader packet)
     {
-        session.Player.RPSSelection = (RpsChoice) packet.ReadInt();
+        session.Player.RpsSelection = (RpsChoice) packet.ReadInt();
 
         // delay for 1 sec for opponent to update their selection
         Task.Run(async () =>
@@ -174,7 +174,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
 
         // confirm if opponent is still in the map
         Player opponent = session.FieldManager.State.Players
-            .FirstOrDefault(x => x.Value.Value.CharacterId == session.Player.RPSOpponentId).Value?.Value;
+            .FirstOrDefault(x => x.Value.Value.CharacterId == session.Player.RpsOpponentId).Value?.Value;
         if (opponent == null)
         {
             return;
@@ -194,7 +194,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
             }
         };
 
-        RpsResult result = resultMatrix[(int) session.Player.RPSSelection, (int) opponent.RPSSelection];
+        RpsResult result = resultMatrix[(int) session.Player.RpsSelection, (int) opponent.RpsSelection];
 
         RPS rpsEvent = DatabaseManager.Events.FindRockPaperScissorsEvent();
         if (rpsEvent is null)
@@ -217,7 +217,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
         dailyMatchCount++;
 
         dailyMatches.UpdateValue(session, dailyMatchCount);
-        session.Send(RockPaperScissorsPacket.MatchResults(result, session.Player.RPSSelection, opponent.RPSSelection));
+        session.Send(RockPaperScissorsPacket.MatchResults(result, session.Player.RpsSelection, opponent.RpsSelection));
     }
 
     private static void HandleClaimReward(GameSession session, PacketReader packet)

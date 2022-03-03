@@ -26,17 +26,17 @@ public class GlobalEvent
 }
 public enum GlobalEventType : byte
 {
-    oxquiz = 1,
-    trap_master = 2,
-    spring_beach = 3,
-    crazy_runner = 4,
-    final_surviver = 5,
-    great_escape = 6,
-    dancedance_stop = 7,
-    crazy_runner_shanghai = 8,
-    hideandseek = 9,
-    red_arena = 10,
-    blood_mine = 11,
-    treasure_island = 12,
-    christmas_dancedance_stop = 13
+    OxQuiz = 1,
+    TrapMaster = 2,
+    SpringBeach = 3,
+    CrazyRunner = 4,
+    FinalSurviver = 5,
+    GreatEscape = 6,
+    DanceDanceStop = 7,
+    CrazyRunnerShanghai = 8,
+    HideAndSeek = 9,
+    RedArena = 10,
+    BloodMine = 11,
+    TreasureIsland = 12,
+    ChristmasDanceDanceStop = 13
 }
