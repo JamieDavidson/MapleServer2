@@ -1,12 +1,12 @@
 ﻿namespace MaplePacketLib2.Crypto;
 
-public class XORCrypter : ICrypter
+public class XorCrypter : ICrypter
 {
-    private const int INDEX = 2;
+    private const int Index = 2;
 
     private readonly byte[] Table;
 
-    public XORCrypter(uint version)
+    public XorCrypter(uint version)
     {
         Table = new byte[2];
 
@@ -20,7 +20,7 @@ public class XORCrypter : ICrypter
 
     public static uint GetIndex(uint version)
     {
-        return (version + INDEX) % 3 + 1;
+        return (version + Index) % 3 + 1;
     }
 
     public void Encrypt(byte[] src)

@@ -9,7 +9,7 @@ public unsafe class PoolPacketWriter : PacketWriter, IDisposable
     private readonly ArrayPool<byte> Pool;
     private bool Disposed;
 
-    public PoolPacketWriter(int size = DEFAULT_SIZE, ArrayPool<byte> pool = null) : base((pool ?? ArrayPool<byte>.Shared).Rent(size))
+    public PoolPacketWriter(int size = DefaultSize, ArrayPool<byte> pool = null) : base((pool ?? ArrayPool<byte>.Shared).Rent(size))
     {
         Pool = pool ?? ArrayPool<byte>.Shared;
         Length = 0;

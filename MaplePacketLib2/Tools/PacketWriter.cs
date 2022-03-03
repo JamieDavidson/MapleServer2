@@ -4,14 +4,14 @@ namespace MaplePacketLib2.Tools;
 
 public unsafe class PacketWriter : IPacketWriter
 {
-    protected const int DEFAULT_SIZE = 512;
+    protected const int DefaultSize = 512;
 
     public byte[] Buffer { get; protected set; }
     public int Length { get; protected set; }
 
     public int Remaining => Buffer.Length - Length;
 
-    public PacketWriter(int size = DEFAULT_SIZE) : this(new byte[size]) { }
+    public PacketWriter(int size = DefaultSize) : this(new byte[size]) { }
 
     public PacketWriter(byte[] buffer, int offset = 0)
     {
@@ -19,7 +19,7 @@ public unsafe class PacketWriter : IPacketWriter
         Length = offset;
     }
 
-    public static PacketWriter Of(object opcode, int size = DEFAULT_SIZE)
+    public static PacketWriter Of(object opcode, int size = DefaultSize)
     {
         PacketWriter packet = new(size);
         packet.Write(Convert.ToUInt16(opcode));

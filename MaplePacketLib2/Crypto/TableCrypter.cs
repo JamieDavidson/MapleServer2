@@ -2,25 +2,25 @@
 
 public class TableCrypter : ICrypter
 {
-    private const int INDEX = 3;
+    private const int Index = 3;
 
-    private const int TABLE_SIZE = 256;
+    private const int TableSize = 256;
 
     private readonly byte[] Decrypted;
     private readonly byte[] Encrypted;
 
     public TableCrypter(uint version)
     {
-        Decrypted = new byte[TABLE_SIZE];
-        Encrypted = new byte[TABLE_SIZE];
+        Decrypted = new byte[TableSize];
+        Encrypted = new byte[TableSize];
 
         // Init
-        for (int i = 0; i < TABLE_SIZE; i++)
+        for (int i = 0; i < TableSize; i++)
         {
             Encrypted[i] = (byte) i;
         }
         Shuffle(Encrypted, version);
-        for (int i = 0; i < TABLE_SIZE; i++)
+        for (int i = 0; i < TableSize; i++)
         {
             Decrypted[Encrypted[i]] = (byte) i;
         }
@@ -28,7 +28,7 @@ public class TableCrypter : ICrypter
 
     public static uint GetIndex(uint version)
     {
-        return (version + INDEX) % 3 + 1;
+        return (version + Index) % 3 + 1;
     }
 
     public void Encrypt(byte[] src)
@@ -60,7 +60,7 @@ public class TableCrypter : ICrypter
     private static void Shuffle(byte[] data, uint version)
     {
         Rand32 rand32 = new((uint) Math.Pow(version, 2));
-        for (int i = TABLE_SIZE - 1; i >= 1; i--)
+        for (int i = TableSize - 1; i >= 1; i--)
         {
             byte rand = (byte) (rand32.Random() % (i + 1));
 

@@ -3,11 +3,11 @@
 // Left rotates data left by length / 2
 public class RearrangeCrypter : ICrypter
 {
-    private const int INDEX = 1;
+    private const int Index = 1;
 
     public static uint GetIndex(uint version)
     {
-        return (version + INDEX) % 3 + 1;
+        return (version + Index) % 3 + 1;
     }
 
     public void Encrypt(byte[] src)
