@@ -14,31 +14,31 @@ public class Banner
 
     public Banner() { }
 
-    public Banner(int id, string name, string type, string sub_type, string image_url, int language, long begin_time, long end_time)
+    public Banner(int id, string name, string type, string subType, string imageUrl, int language, long beginTime, long endTime)
     {
         Id = id;
         Name = name;
         _ = Enum.TryParse(type, out BannerType bannerType);
         Type = bannerType;
-        _ = Enum.TryParse(sub_type, out BannerSubType bannerSubType);
+        _ = Enum.TryParse(subType, out BannerSubType bannerSubType);
         SubType = bannerSubType;
-        ImageUrl = image_url;
+        ImageUrl = imageUrl;
         Language = (BannerLanguage) language;
-        BeginTime = begin_time;
-        EndTime = end_time;
+        BeginTime = beginTime;
+        EndTime = endTime;
     }
 }
 public enum BannerType
 {
-    merat,
-    playgift,
-    pcbang,
-    right, // used for cash
-    left // used for cash
+    Merat,
+    PlayGift,
+    PcBang,
+    Right, // used for cash
+    Left // used for cash
 }
 public enum BannerSubType
 {
-    cash
+    Cash
 }
 public enum BannerLanguage
 {

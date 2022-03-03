@@ -71,7 +71,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
 
     private static void HandleOpenMatch(GameSession session)
     {
-        RPS rpsEvent = DatabaseManager.Events.FindRockPaperScissorsEvent();
+        Rps rpsEvent = DatabaseManager.Events.FindRockPaperScissorsEvent();
         if (rpsEvent is null)
         {
             return;
@@ -99,7 +99,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
             return;
         }
 
-        RPS rpsEvent = DatabaseManager.Events.FindRockPaperScissorsEvent();
+        Rps rpsEvent = DatabaseManager.Events.FindRockPaperScissorsEvent();
         if (rpsEvent is null)
         {
             return;
@@ -196,7 +196,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
 
         RpsResult result = resultMatrix[(int) session.Player.RpsSelection, (int) opponent.RpsSelection];
 
-        RPS rpsEvent = DatabaseManager.Events.FindRockPaperScissorsEvent();
+        Rps rpsEvent = DatabaseManager.Events.FindRockPaperScissorsEvent();
         if (rpsEvent is null)
         {
             return;
@@ -224,7 +224,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
     {
         int rewardTier = packet.ReadInt();
 
-        RPS rpsEvent = DatabaseManager.Events.FindRockPaperScissorsEvent();
+        Rps rpsEvent = DatabaseManager.Events.FindRockPaperScissorsEvent();
         if (rpsEvent is null)
         {
             return;
@@ -247,13 +247,13 @@ public class RockPaperScissorsHandler : GamePacketHandler
             }
         }
 
-        RPSTier tier = rpsEvent.Tiers.ElementAtOrDefault(rewardTier);
+        RpsTier tier = rpsEvent.Tiers.ElementAtOrDefault(rewardTier);
         if (tier is null)
         {
             return;
         }
 
-        foreach (RPSReward reward in tier.Rewards)
+        foreach (RpsReward reward in tier.Rewards)
         {
             Item item = new(reward.ItemId)
             {

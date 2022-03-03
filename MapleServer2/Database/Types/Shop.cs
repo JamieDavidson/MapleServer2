@@ -17,16 +17,16 @@ public class Shop
 
     public Shop() { }
 
-    public Shop(int uid, int id, int category, string name, byte shop_type, bool restrict_sales, bool can_restock, long next_restock, bool allow_buyback)
+    public Shop(int uid, int id, int category, string name, byte shopType, bool restrictSales, bool canRestock, long nextRestock, bool allowBuyback)
     {
         Uid = uid;
         Id = id;
         Category = category;
         Name = name;
-        ShopType = (ShopType) shop_type;
-        RestrictSales = restrict_sales;
-        CanRestock = can_restock;
-        NextRestock = next_restock;
-        AllowBuyback = allow_buyback;
+        ShopType = (ShopType) shopType;
+        RestrictSales = restrictSales;
+        CanRestock = canRestock;
+        NextRestock = nextRestock;
+        AllowBuyback = allowBuyback;
     }
 }

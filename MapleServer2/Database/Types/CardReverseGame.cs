@@ -8,6 +8,6 @@ public class CardReverseGame
     public int ItemAmount { get; set; }
 
     // Temporarily hardcoding the item and cost
-    public const int TOKEN_ITEM_ID = 30000782; // 2nd Anniversary Commemorative Coin
-    public const int TOKEN_COST = 2;
+    public const int TokenItemId = 30000782; // 2nd Anniversary Commemorative Coin
+    public const int TokenCost = 2;
 }

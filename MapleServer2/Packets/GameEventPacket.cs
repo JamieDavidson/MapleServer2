@@ -84,7 +84,7 @@ public static class GameEventPacket
                 case UgcMapExtensionSale extensionSale:
                     pWriter.WriteInt(extensionSale.DiscountAmount);
                     break;
-                case RPS rps:
+                case Rps rps:
                     pWriter.WriteUnicodeString("<ms2>" +
                                                "<rps_game>" +
                                                "<play><actions rock=\"rock_A\" paper=\"paper_A\" scissors=\"scissors_A\" />" +
@@ -131,11 +131,11 @@ public static class GameEventPacket
                                                "</rps_game>" +
                                                "</ms2>");
                     pWriter.WriteInt(rps.Tiers.Count);
-                    foreach (RPSTier tier in rps.Tiers)
+                    foreach (RpsTier tier in rps.Tiers)
                     {
                         pWriter.WriteInt(tier.PlayAmount);
                         pWriter.WriteInt(tier.Rewards.Count);
-                        foreach (RPSReward reward in tier.Rewards)
+                        foreach (RpsReward reward in tier.Rewards)
                         {
                             pWriter.WriteInt(reward.ItemId);
                             pWriter.WriteShort(reward.ItemRarity);

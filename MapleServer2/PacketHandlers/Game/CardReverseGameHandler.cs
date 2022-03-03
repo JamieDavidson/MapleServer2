@@ -49,13 +49,13 @@ public class CardReverseGameHandler : GamePacketHandler
 
     private static void HandleMix(GameSession session)
     {
-        Item token = session.Player.Inventory.GetById(CardReverseGame.TOKEN_ITEM_ID);
-        if (token == null || token.Amount < CardReverseGame.TOKEN_COST)
+        Item token = session.Player.Inventory.GetById(CardReverseGame.TokenItemId);
+        if (token == null || token.Amount < CardReverseGame.TokenCost)
         {
             session.Send(CardReverseGamePacket.Notice());
             return;
         }
-        session.Player.Inventory.ConsumeItem(session, token.Uid, CardReverseGame.TOKEN_COST);
+        session.Player.Inventory.ConsumeItem(session, token.Uid, CardReverseGame.TokenCost);
 
         session.Send(CardReverseGamePacket.Mix());
     }

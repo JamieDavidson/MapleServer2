@@ -18,8 +18,8 @@ public static class CardReverseGamePacket
     {
         PacketWriter pWriter = PacketWriter.Of(SendOp.CARD_REVERSE_GAME);
         pWriter.Write(CardReverseGamePacketMode.Open);
-        pWriter.WriteInt(CardReverseGame.TOKEN_ITEM_ID);
-        pWriter.WriteInt(CardReverseGame.TOKEN_COST);
+        pWriter.WriteInt(CardReverseGame.TokenItemId);
+        pWriter.WriteInt(CardReverseGame.TokenCost);
         pWriter.WriteInt(cards.Count);
         foreach (CardReverseGame card in cards)
         {

@@ -184,12 +184,12 @@ public class AttendGiftDay
     }
 }
 
-public class RPS : GameEvent
+public class Rps : GameEvent
 {
     public readonly int VoucherId;
-    public readonly List<RPSTier> Tiers = new();
+    public readonly List<RpsTier> Tiers = new();
 
-    public RPS(int id, int voucherId, long beginTimestamp, long endTimestamp, List<RPSTier> tiers) : base(id,
+    public Rps(int id, int voucherId, long beginTimestamp, long endTimestamp, List<RpsTier> tiers) : base(id,
         beginTimestamp, endTimestamp)
     {
         Id = id;
@@ -199,25 +199,25 @@ public class RPS : GameEvent
     }
 }
 
-public class RPSTier
+public class RpsTier
 {
     public readonly int PlayAmount;
-    public readonly List<RPSReward> Rewards = new();
+    public readonly List<RpsReward> Rewards = new();
 
-    public RPSTier(int playAmount, List<RPSReward> rewards)
+    public RpsTier(int playAmount, List<RpsReward> rewards)
     {
         PlayAmount = playAmount;
         Rewards = rewards;
     }
 }
 
-public class RPSReward
+public class RpsReward
 {
     public readonly int ItemId;
     public readonly int ItemAmount;
     public readonly short ItemRarity;
 
-    public RPSReward(int itemId, int amount, short rarity)
+    public RpsReward(int itemId, int amount, short rarity)
     {
         ItemId = itemId;
         ItemAmount = amount;
