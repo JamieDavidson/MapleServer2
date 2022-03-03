@@ -83,7 +83,7 @@ public class InstrumentHandler : GamePacketHandler
         InstrumentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(item.Function.Id);
         InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
 
-        Instrument instrument = new(instrumentCategory.GMId, instrumentCategory.PercussionId, false, session.Player.FieldPlayer.ObjectId)
+        Instrument instrument = new(instrumentCategory.GmId, instrumentCategory.PercussionId, false, session.Player.FieldPlayer.ObjectId)
         {
             Improvise = true
         };
@@ -135,7 +135,7 @@ public class InstrumentHandler : GamePacketHandler
             return;
         }
 
-        Instrument instrument = new(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.Player.FieldPlayer.ObjectId)
+        Instrument instrument = new(instrumentCategory.GmId, instrumentCategory.PercussionId, score.IsCustomScore, session.Player.FieldPlayer.ObjectId)
         {
             InstrumentTick = session.ServerTick,
             Score = score,
@@ -212,7 +212,7 @@ public class InstrumentHandler : GamePacketHandler
         Item instrumentItem = session.Player.Inventory.GetByUid(instrumentItemUid);
         InstrumentInfoMetadata instrumentInfo = InstrumentInfoMetadataStorage.GetMetadata(instrumentItem.Function.Id);
         InstrumentCategoryInfoMetadata instrumentCategory = InstrumentCategoryInfoMetadataStorage.GetMetadata(instrumentInfo.Category);
-        Instrument instrument = new(instrumentCategory.GMId, instrumentCategory.PercussionId, score.IsCustomScore, session.Player.FieldPlayer.ObjectId)
+        Instrument instrument = new(instrumentCategory.GmId, instrumentCategory.PercussionId, score.IsCustomScore, session.Player.FieldPlayer.ObjectId)
         {
             Score = score,
             Ensemble = true,

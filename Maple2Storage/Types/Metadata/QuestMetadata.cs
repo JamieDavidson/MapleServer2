@@ -59,7 +59,7 @@ public class QuestMetadata
 public class QuestBasic
 {
     [XmlElement(Order = 1)]
-    public int ChapterID;
+    public int ChapterId;
     [XmlElement(Order = 2)]
     public int Id;
     [XmlElement(Order = 3)]
@@ -91,7 +91,7 @@ public class QuestBasic
 
     public override string ToString()
     {
-        return $"\r\nchapterID: {ChapterID}, questID: {Id}, questType: {QuestType}, account: {Account}, standardLevel: {StandardLevel}, " +
+        return $"\r\nchapterID: {ChapterId}, questID: {Id}, questType: {QuestType}, account: {Account}, standardLevel: {StandardLevel}, " +
                $"autoStart: {AutoStart}, disableGiveup: {DisableGiveup}, exceptChapterClear: {ExceptChapterClear}, repeatable: {Repeatable}, " +
                $"usePeriod: {UsePeriod}, eventTag: {EventTag}, locking: {Locking}, tabIndex: {TabIndex}, forceRegistGuide: {ForceRegistGuide}, " +
                $"useNavi: {UseNavigation}";
@@ -136,7 +136,7 @@ public class QuestRequire
     [XmlElement(Order = 9)]
     public List<int> UnreqAchievement = new();
     [XmlElement(Order = 10)]
-    public int GroupID;
+    public int GroupId;
     [XmlElement(Order = 11)]
     public string DayOfWeek;
     [XmlElement(Order = 12)]
@@ -146,7 +146,7 @@ public class QuestRequire
     {
         return $"\r\nLevel: {Level}, maxLevel: {MaxLevel}, job: {string.Join(", ", Job)}, quest: {string.Join(", ", RequiredQuests)}, " +
                $"selectableQuest: {string.Join(", ", SelectableQuest)}, unrequire: {string.Join(", ", Unrequire)}, field: {Field}, achievement: {Achievement}, " +
-               $"unreqAchievement: {string.Join(", ", UnreqAchievement)}, groupID: {GroupID}, dayOfWeek: {DayOfWeek}, gearScore: {GearScore}";
+               $"unreqAchievement: {string.Join(", ", UnreqAchievement)}, groupID: {GroupId}, dayOfWeek: {DayOfWeek}, gearScore: {GearScore}";
     }
 }
 
@@ -239,11 +239,11 @@ public class QuestDungeon
     [XmlElement(Order = 2)]
     public int GoToDungeon;
     [XmlElement(Order = 3)]
-    public int GoToInstanceID;
+    public int GoToInstanceId;
 
     public override string ToString()
     {
-        return $"\r\nstate: {State}, gotoDungeon: {GoToDungeon}, gotoInstanceID: {GoToInstanceID}";
+        return $"\r\nstate: {State}, gotoDungeon: {GoToDungeon}, gotoInstanceID: {GoToInstanceId}";
     }
 }
 
@@ -281,13 +281,13 @@ public class QuestRemoteComplete
 public class QuestSummonPortal
 {
     [XmlElement(Order = 1)]
-    public int FieldID;
+    public int FieldId;
     [XmlElement(Order = 2)]
-    public int PortalID;
+    public int PortalId;
 
     public override string ToString()
     {
-        return $"\r\nfieldID: {FieldID}, portalID: {PortalID}";
+        return $"\r\nfieldID: {FieldId}, portalID: {PortalId}";
     }
 }
 

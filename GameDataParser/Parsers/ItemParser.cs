@@ -64,8 +64,8 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                 PlayCount = musicScore.playCount,
                 FileName = musicScore.fileName,
                 IsCustomScore = musicScore.isCustomNote,
-                ShopID = data.Shop?.systemShopID ?? 0,
-                SkillID = data.skill.skillID,
+                ShopId = data.Shop?.systemShopID ?? 0,
+                SkillId = data.skill.skillID,
                 EnableBreak = limit.enableBreak != 0,
                 Level = limit.levelLimit,
                 TransferType = (TransferType) limit.transferType,
@@ -232,11 +232,11 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                     xmlParameter.LoadXml(decodedParameter);
                     XmlNode functionParameters = xmlParameter.SelectSingleNode("v");
 
-                    VIPCoupon coupon = new()
+                    VipCoupon coupon = new()
                     {
                         Duration = int.Parse(functionParameters.Attributes["period"].Value)
                     };
-                    metadata.FunctionData.VIPCoupon = coupon;
+                    metadata.FunctionData.VipCoupon = coupon;
                     break;
                 }
             case "HongBao":

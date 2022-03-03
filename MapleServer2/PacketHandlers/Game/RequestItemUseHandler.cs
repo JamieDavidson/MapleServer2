@@ -190,7 +190,7 @@ public class RequestItemUseHandler : GamePacketHandler
 
     private static void HandleVIPCoupon(GameSession session, Item item)
     {
-        long vipTime = item.Function.VIPCoupon.Duration * 3600;
+        long vipTime = item.Function.VipCoupon.Duration * 3600;
 
         PremiumClubHandler.ActivatePremium(session, vipTime);
         session.Player.Inventory.ConsumeItem(session, item.Uid, 1);

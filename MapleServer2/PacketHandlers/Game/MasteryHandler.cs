@@ -60,7 +60,7 @@ public class MasteryHandler : GamePacketHandler
             return;
         }
 
-        int rewardBoxItemId = mastery.Grades[grade - 1].RewardJobItemID;
+        int rewardBoxItemId = mastery.Grades[grade - 1].RewardJobItemId;
         Item rewardBox = new(rewardBoxItemId)
         {
             Amount = 1

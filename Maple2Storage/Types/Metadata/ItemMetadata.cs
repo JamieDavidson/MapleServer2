@@ -54,7 +54,7 @@ public class ItemMetadata
     [XmlElement(Order = 23)]
     public string FileName;
     [XmlElement(Order = 24)]
-    public int SkillID;
+    public int SkillId;
     [XmlElement(Order = 25)]
     public List<int> RecommendJobs = new();
     [XmlElement(Order = 26)]
@@ -64,7 +64,7 @@ public class ItemMetadata
     [XmlElement(Order = 28)]
     public string Tag;
     [XmlElement(Order = 29)]
-    public int ShopID;
+    public int ShopId;
     [XmlElement(Order = 30)]
     public int Level;
     [XmlElement(Order = 31)]
@@ -96,8 +96,8 @@ public class ItemMetadata
     {
         return
             $"ItemMetadata(Id:{Id},Slot:{Slot},GemSlot:{Gem},Tab:{Tab},Rarity:{Rarity},StackLimit:{StackLimit},IsTwoHand:{IsTwoHand},IsTemplate:{IsTemplate},Gender{Gender},PlayCount:{PlayCount}," +
-            $"IsCustomScore:{IsCustomScore},FileName:{FileName},SkillID:{SkillID},RecommendJobs:{string.Join(",", RecommendJobs)},Function:{FunctionData}," +
-            $"Tag:{Tag},ShopID:{ShopID}";
+            $"IsCustomScore:{IsCustomScore},FileName:{FileName},SkillID:{SkillId},RecommendJobs:{string.Join(",", RecommendJobs)},Function:{FunctionData}," +
+            $"Tag:{Tag},ShopID:{ShopId}";
     }
 }
 
@@ -141,7 +141,7 @@ public class ItemFunction
     [XmlElement(Order = 7)]
     public LevelPotion LevelPotion;
     [XmlElement(Order = 8)]
-    public VIPCoupon VIPCoupon;
+    public VipCoupon VipCoupon;
     [XmlElement(Order = 9)]
     public HongBaoData HongBao;
     [XmlElement(Order = 10)]
@@ -209,7 +209,7 @@ public class LevelPotion
 }
 
 [XmlType]
-public class VIPCoupon
+public class VipCoupon
 {
     [XmlElement(Order = 1)]
     public int Duration;

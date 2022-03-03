@@ -665,8 +665,8 @@ public class MapLiftableObject
     public string EntityId;
     [XmlElement(Order = 2)]
     public int ItemId;
-    [XmlElement(Order = 3)]
-    public string EffectQuestID;
+    [XmlElement(Order = 3, ElementName = "EffectQuestID")]
+    public string EffectQuestId;
     [XmlElement(Order = 4)]
     public string EffectQuestState;
     [XmlElement(Order = 5)]
@@ -680,7 +680,7 @@ public class MapLiftableObject
     {
         EntityId = entityId;
         ItemId = itemId;
-        EffectQuestID = effectQuestId;
+        EffectQuestId = effectQuestId;
         EffectQuestState = effectQuestState;
         ItemLifeTime = itemLifeTime;
         LiftableRegenCheckTime = liftableRegenCheckTime;

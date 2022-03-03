@@ -8,7 +8,7 @@ public class InstrumentCategoryInfoMetadata
     [XmlElement(Order = 1)]
     public byte CategoryId;
     [XmlElement(Order = 2)]
-    public byte GMId;
+    public byte GmId;
     [XmlElement(Order = 3)]
     public string Octave;
     [XmlElement(Order = 4)]
@@ -16,6 +16,6 @@ public class InstrumentCategoryInfoMetadata
 
     public override string ToString()
     {
-        return $"InstrumentCategoryInfo(CategoryId:{CategoryId},GMId:{GMId},Octave:{Octave},PercussionId{PercussionId})";
+        return $"InstrumentCategoryInfo(CategoryId:{CategoryId},GMId:{GmId},Octave:{Octave},PercussionId{PercussionId})";
     }
 }

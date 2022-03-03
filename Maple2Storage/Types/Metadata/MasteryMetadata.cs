@@ -24,7 +24,7 @@ public class MasteryGrade
     [XmlElement(Order = 2)]
     public long Value;
     [XmlElement(Order = 3)]
-    public int RewardJobItemID;
+    public int RewardJobItemId;
     [XmlElement(Order = 4)]
     public int RewardJobItemRank;
     [XmlElement(Order = 5)]
@@ -34,7 +34,7 @@ public class MasteryGrade
 
     public override string ToString()
     {
-        return $"MasteryGradeMetadata(Grade:{Grade},Value:{Value},RewardJobItemID:{RewardJobItemID},RewardJobItemRank:{RewardJobItemRank}," +
+        return $"MasteryGradeMetadata(Grade:{Grade},Value:{Value},RewardJobItemID:{RewardJobItemId},RewardJobItemRank:{RewardJobItemRank}," +
                $"RewardJobItemCount:{RewardJobItemCount},Feature:{Feature})";
     }
 }

@@ -27,7 +27,7 @@ public class InstrumentCategoryInfoParser : Exporter<List<InstrumentCategoryInfo
                 InstrumentCategoryInfoMetadata metadata = new()
                 {
                     CategoryId = byte.Parse(node.Attributes["id"].Value),
-                    GMId = byte.Parse(node.Attributes["GMId"]?.Value ?? "0"),
+                    GmId = byte.Parse(node.Attributes["GMId"]?.Value ?? "0"),
                     Octave = node.Attributes["defaultOctave"]?.Value ?? "",
                     PercussionId = byte.Parse(node.Attributes["percussionId"]?.Value ?? "0")
                 };

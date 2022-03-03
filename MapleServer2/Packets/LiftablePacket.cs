@@ -27,7 +27,7 @@ public static class LiftablePacket
             pWriter.Write(liftableObject.State);
             pWriter.WriteUnicodeString("0"); // unknown
             pWriter.WriteUnicodeString(); // ""
-            pWriter.WriteUnicodeString(liftableObject.Metadata.EffectQuestID);
+            pWriter.WriteUnicodeString(liftableObject.Metadata.EffectQuestId);
             pWriter.WriteUnicodeString(liftableObject.Metadata.EffectQuestState);
             pWriter.WriteByte(1);
         }
@@ -65,7 +65,7 @@ public static class LiftablePacket
         pWriter.Write(LiftableMode.Drop);
         pWriter.WriteString($"4_{liftableObject.Position.ToByte().AsHexadecimal()}");
         pWriter.WriteInt(1);
-        pWriter.WriteUnicodeString(liftableObject.Metadata.EffectQuestID);
+        pWriter.WriteUnicodeString(liftableObject.Metadata.EffectQuestId);
         pWriter.WriteUnicodeString(liftableObject.Metadata.EffectQuestState);
         pWriter.WriteUnicodeString("0");
         pWriter.WriteUnicodeString("0");

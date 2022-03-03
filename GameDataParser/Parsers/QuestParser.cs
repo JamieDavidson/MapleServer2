@@ -38,7 +38,7 @@ public class QuestParser : Exporter<List<QuestMetadata>>
                 {
                     if (node.Name == "basic")
                     {
-                        metadata.Basic.ChapterID = int.Parse(node.Attributes["chapterID"]?.Value ?? "0");
+                        metadata.Basic.ChapterId = int.Parse(node.Attributes["chapterID"]?.Value ?? "0");
                         metadata.Basic.Id = int.Parse(node.Attributes["questID"]?.Value ?? "0");
                         _ = byte.TryParse(node.Attributes["questType"]?.Value ?? "0", out byte questType);
                         metadata.Basic.QuestType = (QuestType) questType;
@@ -76,7 +76,7 @@ public class QuestParser : Exporter<List<QuestMetadata>>
 
                         metadata.Require.UnreqAchievement = node.Attributes["unreqAchievement"]?.Value.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(int.Parse).ToList();
 
-                        metadata.Require.GroupID = int.Parse(node.Attributes["groupID"]?.Value ?? "0");
+                        metadata.Require.GroupId = int.Parse(node.Attributes["groupID"]?.Value ?? "0");
                         metadata.Require.DayOfWeek = node.Attributes["dayOfWeek"].Value;
                         metadata.Require.GearScore = int.Parse(node.Attributes["gearScore"]?.Value ?? "0");
                     }
@@ -138,7 +138,7 @@ public class QuestParser : Exporter<List<QuestMetadata>>
                     {
                         metadata.Dungeon.State = byte.Parse(node.Attributes["state"]?.Value ?? "0");
                         metadata.Dungeon.GoToDungeon = int.Parse(node.Attributes["gotoDungeon"]?.Value ?? "0");
-                        metadata.Dungeon.GoToInstanceID = int.Parse(node.Attributes["gotoInstanceID"]?.Value ?? "0");
+                        metadata.Dungeon.GoToInstanceId = int.Parse(node.Attributes["gotoInstanceID"]?.Value ?? "0");
                     }
                     else if (node.Name == "remoteAccept")
                     {
@@ -153,8 +153,8 @@ public class QuestParser : Exporter<List<QuestMetadata>>
                     }
                     else if (node.Name == "summonPortal")
                     {
-                        metadata.SummonPortal.FieldID = int.Parse(node.Attributes["fieldID"]?.Value ?? "0");
-                        metadata.SummonPortal.PortalID = int.Parse(node.Attributes["portalID"]?.Value ?? "0");
+                        metadata.SummonPortal.FieldId = int.Parse(node.Attributes["fieldID"]?.Value ?? "0");
+                        metadata.SummonPortal.PortalId = int.Parse(node.Attributes["portalID"]?.Value ?? "0");
                     }
                     else if (node.Name == "eventMission")
                     {

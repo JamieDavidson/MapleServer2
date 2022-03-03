@@ -41,7 +41,7 @@ internal class MasteryParser : Exporter<List<MasteryMetadata>>
                     MasteryGrade newGrade = new();
                     _ = int.TryParse(grade.Attributes["grade"]?.Value ?? "0", out newGrade.Grade);
                     _ = long.TryParse(grade.Attributes["value"]?.Value ?? "0", out newGrade.Value);
-                    _ = int.TryParse(grade.Attributes["rewardJobItemID"]?.Value ?? "0", out newGrade.RewardJobItemID);
+                    _ = int.TryParse(grade.Attributes["rewardJobItemID"]?.Value ?? "0", out newGrade.RewardJobItemId);
                     _ = int.TryParse(grade.Attributes["rewardJobItemRank"]?.Value ?? "0", out newGrade.RewardJobItemRank);
                     _ = int.TryParse(grade.Attributes["rewardJobItemCount"]?.Value ?? "0", out newGrade.RewardJobItemCount);
                     newGrade.Feature = grade.Attributes["feature"]?.Value ?? "";
