@@ -3,6 +3,7 @@ using Maple2Storage.Types;
 using MapleServer2.Enums;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+using MapleServer2.Types.Home;
 using Newtonsoft.Json;
 using SqlKata.Execution;
 

@@ -4,6 +4,7 @@ using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Tools;
 using MapleServer2.Types;
+using MapleServer2.Types.Home;
 
 namespace MapleServer2.Packets;
 

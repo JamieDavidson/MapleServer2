@@ -2,6 +2,7 @@
 using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Types;
+using MapleServer2.Types.MeretMarket;
 
 namespace MapleServer2.Packets;
 
@@ -323,7 +324,7 @@ public static class MeretMarketPacket
         pWriter.WriteInt(item.RequiredAchievementId);
         pWriter.WriteInt(item.RequiredAchievementGrade);
         pWriter.WriteInt();
-        pWriter.WriteBool(item.PCCafe);
+        pWriter.WriteBool(item.PcCafe);
         pWriter.WriteByte();
         pWriter.WriteInt();
     }

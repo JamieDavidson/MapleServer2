@@ -1,5 +1,6 @@
 ﻿using MapleServer2.Enums;
 using MapleServer2.Types;
+using MapleServer2.Types.Home;
 using Newtonsoft.Json;
 using SqlKata.Execution;
 

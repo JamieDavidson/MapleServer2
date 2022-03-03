@@ -24,7 +24,7 @@ public class Account
     public int MesoMarketMonthlyPurchases { get; set; }
 
     public long HomeId;
-    public Home Home;
+    public Home.Home Home;
     public BankInventory BankInventory;
     public Dictionary<MedalSlot, Medal> EquippedMedals;
     public List<Medal> Medals;

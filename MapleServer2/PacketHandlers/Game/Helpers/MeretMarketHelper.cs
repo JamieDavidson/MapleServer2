@@ -1,6 +1,6 @@
 ﻿using Maple2Storage.Enums;
 using MapleServer2.Data.Static;
-using MapleServer2.Types;
+using MapleServer2.Types.MeretMarket;
 
 namespace MapleServer2.PacketHandlers.Game.Helpers;
 

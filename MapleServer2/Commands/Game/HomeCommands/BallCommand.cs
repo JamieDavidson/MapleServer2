@@ -5,6 +5,7 @@ using MapleServer2.Managers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+using MapleServer2.Types.Home;
 
 namespace MapleServer2.Commands.Game.HomeCommands;
 

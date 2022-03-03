@@ -608,7 +608,7 @@ public sealed class Inventory : IInventory
             return;
         }
 
-        Home home = GameServer.HomeManager.GetHomeById(session.Player.Account.Home.Id);
+        Home.Home home = GameServer.HomeManager.GetHomeById(session.Player.Account.Home.Id);
         if (home == null)
         {
             return;

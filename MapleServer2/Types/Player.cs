@@ -9,6 +9,7 @@ using MapleServer2.Enums;
 using MapleServer2.Managers;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
+using MapleServer2.Types.MeretMarket;
 
 namespace MapleServer2.Types;
 

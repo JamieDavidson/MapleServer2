@@ -2,6 +2,7 @@
 using MapleServer2.Constants;
 using MapleServer2.Enums;
 using MapleServer2.Types;
+using MapleServer2.Types.Home;
 
 namespace MapleServer2.Packets;
 
@@ -32,8 +33,8 @@ public static class ResponseLoadUgcMapPacket
         pWriter.WriteByte(home.Background);
         pWriter.WriteByte(home.Lighting);
         pWriter.WriteByte(home.Camera);
-        pWriter.WriteByte(Home.PERMISSION_COUNT);
-        for (int i = 0; i < Home.PERMISSION_COUNT; i++)
+        pWriter.WriteByte(Home.PermissionCount);
+        for (int i = 0; i < Home.PermissionCount; i++)
         {
             if (home.Permissions.ContainsKey((HomePermission) i))
             {

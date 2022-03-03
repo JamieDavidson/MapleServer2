@@ -6,7 +6,7 @@ using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 
-namespace MapleServer2.Types;
+namespace MapleServer2.Types.Home;
 
 // TODO: Implement architect expiration
 public class Home
@@ -42,7 +42,7 @@ public class Home
     public byte Camera { get; set; }
 
     // Permissions
-    public const byte PERMISSION_COUNT = 9;
+    public const byte PermissionCount = 9;
     public bool IsPrivate => !Password.Equals("******");
     public string Password { get; set; }
     public Dictionary<HomePermission, byte> Permissions { get; set; }

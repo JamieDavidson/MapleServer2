@@ -5,7 +5,7 @@ using MapleServer2.Database.Types;
 using MapleServer2.Enums;
 using MapleServer2.Servers.Game;
 
-namespace MapleServer2.Types;
+namespace MapleServer2.Types.MeretMarket;
 
 public abstract class MeretMarketItem
 {
@@ -35,7 +35,7 @@ public class PremiumMarketItem : MeretMarketItem
     public readonly short MaxLevelRequirement;
     public readonly int RequiredAchievementId;
     public readonly int RequiredAchievementGrade;
-    public readonly bool PCCafe;
+    public readonly bool PcCafe;
     public readonly bool RestockUnavailable;
     public readonly int ParentMarketId;
     public readonly long BannerId;
@@ -62,7 +62,7 @@ public class PremiumMarketItem : MeretMarketItem
         JobRequirement = (JobFlag) data.job_requirement;
         MaxLevelRequirement = data.max_level_requirement;
         MinLevelRequirement = data.min_level_requirement;
-        PCCafe = data.pc_cafe;
+        PcCafe = data.pc_cafe;
         ParentMarketId = data.parent_market_id;
         PromoBannerBeginTime = data.promo_banner_begin_time;
         PromoBannerEndTime = data.promo_banner_end_time;

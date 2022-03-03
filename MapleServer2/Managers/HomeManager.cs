@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using MapleServer2.Database;
-using MapleServer2.Types;
+using MapleServer2.Types.Home;
 
 namespace MapleServer2.Managers;
 

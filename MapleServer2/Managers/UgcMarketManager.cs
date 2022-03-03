@@ -4,6 +4,7 @@ using MapleServer2.Database;
 using MapleServer2.Enums;
 using MapleServer2.PacketHandlers.Game.Helpers;
 using MapleServer2.Types;
+using MapleServer2.Types.MeretMarket;
 
 namespace MapleServer2.Managers;
 

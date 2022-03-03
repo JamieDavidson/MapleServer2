@@ -13,6 +13,7 @@ using MapleServer2.Servers.Game;
 using MapleServer2.Tools;
 using MapleServer2.Triggers;
 using MapleServer2.Types;
+using MapleServer2.Types.Home;
 using NLog;
 
 namespace MapleServer2.Managers;

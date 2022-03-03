@@ -9,6 +9,7 @@ using MapleServer2.Enums;
 using MapleServer2.Packets;
 using MapleServer2.Servers.Game;
 using MapleServer2.Types;
+using MapleServer2.Types.Home;
 
 namespace MapleServer2.PacketHandlers.Game;
 
