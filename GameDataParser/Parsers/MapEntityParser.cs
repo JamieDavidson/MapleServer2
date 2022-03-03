@@ -59,8 +59,8 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
 
             foreach (XmlNode node in regionNodes)
             {
-                string mapID = node.Attributes["mapCode"].Value;
-                int spawnPointID = int.Parse(node.Attributes["spawnPointID"].Value);
+                string mapId = node.Attributes["mapCode"].Value;
+                int spawnPointId = int.Parse(node.Attributes["spawnPointID"].Value);
 
                 int difficulty = int.Parse(node.Attributes["difficulty"].Value);
                 int minDifficulty = int.Parse(node.Attributes["difficultyMin"].Value);
@@ -79,12 +79,12 @@ public class MapEntityParser : Exporter<List<MapEntityMetadata>>
                 bool isPetSpawn = petPopulation > 0;
 
                 SpawnMetadata spawnData = new(spawnTags, population, spawnTime, difficulty, minDifficulty, isPetSpawn);
-                if (!SpawnTagMap.ContainsKey(mapID))
+                if (!SpawnTagMap.ContainsKey(mapId))
                 {
-                    SpawnTagMap[mapID] = new();
+                    SpawnTagMap[mapId] = new();
                 }
 
-                SpawnTagMap[mapID][spawnPointID] = spawnData;
+                SpawnTagMap[mapId][spawnPointId] = spawnData;
             }
         }
 

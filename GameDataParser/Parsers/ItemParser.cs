@@ -394,20 +394,20 @@ public class ItemParser : Exporter<List<ItemMetadata>>
                     continue;
                 }
 
-                int itemID = int.Parse(nodes.Attributes["ItemID"].Value);
-                rewards[itemID] = new();
+                int itemId = int.Parse(nodes.Attributes["ItemID"].Value);
+                rewards[itemId] = new();
 
-                int ingredientItemID1 = int.Parse(nodes.Attributes["IngredientItemID1"]?.Value ?? "0");
+                int ingredientItemId1 = int.Parse(nodes.Attributes["IngredientItemID1"]?.Value ?? "0");
                 int ingredientCount1 = int.Parse(nodes.Attributes["IngredientCount1"]?.Value ?? "0");
-                rewards[itemID].Add(new(ingredientItemID1, ingredientCount1));
+                rewards[itemId].Add(new(ingredientItemId1, ingredientCount1));
 
-                _ = int.TryParse(nodes.Attributes["IngredientItemID2"]?.Value ?? "0", out int ingredientItemID2);
+                _ = int.TryParse(nodes.Attributes["IngredientItemID2"]?.Value ?? "0", out int ingredientItemId2);
                 _ = int.TryParse(nodes.Attributes["IngredientCount2"]?.Value ?? "0", out int ingredientCount2);
-                rewards[itemID].Add(new(ingredientItemID2, ingredientCount2));
+                rewards[itemId].Add(new(ingredientItemId2, ingredientCount2));
 
-                _ = int.TryParse(nodes.Attributes["IngredientItemID3"]?.Value ?? "0", out int ingredientItemID3);
+                _ = int.TryParse(nodes.Attributes["IngredientItemID3"]?.Value ?? "0", out int ingredientItemId3);
                 _ = int.TryParse(nodes.Attributes["IngredientCount3"]?.Value ?? "0", out int ingredientCount3);
-                rewards[itemID].Add(new(ingredientItemID3, ingredientCount3));
+                rewards[itemId].Add(new(ingredientItemId3, ingredientCount3));
             }
         }
 
