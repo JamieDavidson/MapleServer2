@@ -11,7 +11,7 @@ public static class ConstantsMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-constants-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-constants-metadata");
         List<ConstantsMetadata> constantsList = Serializer.Deserialize<List<ConstantsMetadata>>(stream);
         foreach (ConstantsMetadata constant in constantsList)
         {
@@ -19,7 +19,7 @@ public static class ConstantsMetadataStorage
         }
 
         // add/override
-        string json = File.ReadAllText($"{Paths.JSON_DIR}/Constants.json");
+        string json = File.ReadAllText($"{Paths.JsonDirectory}/Constants.json");
         List<ConstantsMetadata> addedConstants = JsonConvert.DeserializeObject<List<ConstantsMetadata>>(json);
         foreach (ConstantsMetadata constant in addedConstants)
         {

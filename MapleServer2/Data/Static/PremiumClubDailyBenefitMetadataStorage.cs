@@ -10,7 +10,7 @@ public static class PremiumClubDailyBenefitMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-premium-club-daily-benefit-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-premium-club-daily-benefit-metadata");
         List<PremiumClubDailyBenefitMetadata> items = Serializer.Deserialize<List<PremiumClubDailyBenefitMetadata>>(stream);
         foreach (PremiumClubDailyBenefitMetadata item in items)
         {

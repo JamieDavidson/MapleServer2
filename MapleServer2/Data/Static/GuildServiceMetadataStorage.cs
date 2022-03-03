@@ -10,7 +10,7 @@ public static class GuildServiceMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-guild-service-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-guild-service-metadata");
         List<GuildServiceMetadata> items = Serializer.Deserialize<List<GuildServiceMetadata>>(stream);
         foreach (GuildServiceMetadata item in items)
         {

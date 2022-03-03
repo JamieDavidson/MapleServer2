@@ -11,7 +11,7 @@ public static class MeretMarketCategoryMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-meret-market-category-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-meret-market-category-metadata");
         List<MeretMarketCategoryMetadata> items = Serializer.Deserialize<List<MeretMarketCategoryMetadata>>(stream);
         foreach (MeretMarketCategoryMetadata item in items)
         {

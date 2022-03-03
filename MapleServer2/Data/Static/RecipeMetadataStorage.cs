@@ -10,7 +10,7 @@ public static class RecipeMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-recipe-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-recipe-metadata");
         List<RecipeMetadata> recipeList = Serializer.Deserialize<List<RecipeMetadata>>(stream);
         foreach (RecipeMetadata recipe in recipeList)
         {

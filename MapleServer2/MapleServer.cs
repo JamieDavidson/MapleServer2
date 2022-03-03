@@ -32,7 +32,7 @@ public static class MapleServer
         CultureInfo.CurrentCulture = new("en-US");
 
         // Load .env file
-        string dotenv = Path.Combine(Paths.SOLUTION_DIR, ".env");
+        string dotenv = Path.Combine(Paths.SolutionDirectory, ".env");
 
         if (!File.Exists(dotenv))
         {
@@ -57,8 +57,8 @@ public static class MapleServer
         TaskScheduler.Instance.ScheduleTask(0, 0, 24, DailyReset);
 
         // Load Mob AI files
-        string mobAiSchema = Path.Combine(Paths.AI_DIR, "mob-ai.xsd");
-        MobAIManager.Load(Paths.AI_DIR, mobAiSchema);
+        string mobAiSchema = Path.Combine(Paths.AiDirectory, "mob-ai.xsd");
+        MobAIManager.Load(Paths.AiDirectory, mobAiSchema);
 
         // Initialize all metadata.
         await MetadataHelper.InitializeAll();

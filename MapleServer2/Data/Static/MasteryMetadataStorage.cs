@@ -11,7 +11,7 @@ public static class MasteryMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-mastery-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-mastery-metadata");
         List<MasteryMetadata> masteryList = Serializer.Deserialize<List<MasteryMetadata>>(stream);
         foreach (MasteryMetadata mastery in masteryList)
         {

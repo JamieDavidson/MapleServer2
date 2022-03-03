@@ -10,7 +10,7 @@ public static class SurvivalSilverPassRewardMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-survival-silver-pass-reward-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-survival-silver-pass-reward-metadata");
         List<SurvivalSilverPassRewardMetadata> items = Serializer.Deserialize<List<SurvivalSilverPassRewardMetadata>>(stream);
         foreach (SurvivalSilverPassRewardMetadata item in items)
         {

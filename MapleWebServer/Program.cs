@@ -2,7 +2,7 @@
 using Maple2Storage.Types;
 using MapleWebServer.Endpoints;
 
-string dotenv = Path.Combine(Paths.SOLUTION_DIR, ".env");
+string dotenv = Path.Combine(Paths.SolutionDirectory, ".env");
 if (!File.Exists(dotenv))
 {
     throw new ArgumentException(".env file not found!");

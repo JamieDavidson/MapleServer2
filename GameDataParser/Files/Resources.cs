@@ -10,8 +10,8 @@ public class MetadataResources
 
     public MetadataResources()
     {
-        string xmlPath = $"{Paths.RESOURCES_INPUT_DIR}/Xml.m2d";
-        string exportedPath = $"{Paths.RESOURCES_INPUT_DIR}/Exported.m2d";
+        string xmlPath = $"{Paths.ResourcesInputDirectory}/Xml.m2d";
+        string exportedPath = $"{Paths.ResourcesInputDirectory}/Exported.m2d";
 
         XmlReader = new(xmlPath);
         ExportedReader = new(exportedPath);

@@ -6,7 +6,7 @@ public static class ItemIconEndpoint
 {
     public static IResult Get(int itemId, string uuid)
     {
-        string fullPath = $"{Paths.DATA_DIR}/itemicon/{itemId}/{uuid}.png";
+        string fullPath = $"{Paths.DataDirectory}/itemicon/{itemId}/{uuid}.png";
         if (!File.Exists(fullPath))
         {
             return Results.BadRequest();

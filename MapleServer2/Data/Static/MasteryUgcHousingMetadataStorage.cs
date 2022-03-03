@@ -10,7 +10,7 @@ public static class MasteryUgcHousingMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-mastery-ugc-housing-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-mastery-ugc-housing-metadata");
         List<MasteryUgcHousingMetadata> masteryMetadatas = Serializer.Deserialize<List<MasteryUgcHousingMetadata>>(stream);
         foreach (MasteryUgcHousingMetadata metadata in masteryMetadatas)
         {

@@ -18,7 +18,7 @@ public class ScriptLoader
     /// </summary>
     public ScriptLoader(string scriptName, GameSession session = null)
     {
-        string scriptPath = $"{Paths.SCRIPTS_DIR}/{scriptName}.lua";
+        string scriptPath = $"{Paths.ScriptsDirectory}/{scriptName}.lua";
         if (!File.Exists(scriptPath))
         {
             return;

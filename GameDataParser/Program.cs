@@ -15,8 +15,8 @@ internal static class Program
         CultureInfo.CurrentCulture = new("en-US");
 
         // Create Resources folders if they don't exist
-        Directory.CreateDirectory(Paths.RESOURCES_INPUT_DIR);
-        Directory.CreateDirectory(Paths.RESOURCES_DIR);
+        Directory.CreateDirectory(Paths.ResourcesInputDirectory);
+        Directory.CreateDirectory(Paths.ResourcesDirectory);
         Stopwatch runtime = Stopwatch.StartNew();
 
         object resources = Activator.CreateInstance(typeof(MetadataResources));

@@ -10,7 +10,7 @@ public static class ItemDropMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-item-drop-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-item-drop-metadata");
         List<ItemDropMetadata> items = Serializer.Deserialize<List<ItemDropMetadata>>(stream);
         foreach (ItemDropMetadata item in items)
         {

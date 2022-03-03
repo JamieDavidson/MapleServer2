@@ -122,7 +122,7 @@ public static class DatabaseManager
 
     public static void CreateDatabase()
     {
-        string fileLines = File.ReadAllText(Paths.SOLUTION_DIR + "/MapleServer2/Database/SQL/Database.sql");
+        string fileLines = File.ReadAllText(Paths.SolutionDirectory + "/MapleServer2/Database/SQL/Database.sql");
         MySqlScript script = new(new(ConnectionStringWithoutTable), fileLines.Replace("DATABASE_NAME", Database));
         script.Execute();
     }
@@ -130,7 +130,7 @@ public static class DatabaseManager
     private static void Seed(string type)
     {
         Logger.Info($"Seeding {type}...");
-        ExecuteSqlFile(File.ReadAllText(Paths.SOLUTION_DIR + "/MapleServer2/Database/Seeding/" + type + "Seeding.sql"));
+        ExecuteSqlFile(File.ReadAllText(Paths.SolutionDirectory + "/MapleServer2/Database/Seeding/" + type + "Seeding.sql"));
     }
 
     private static void ExecuteSqlFile(string fileLines)

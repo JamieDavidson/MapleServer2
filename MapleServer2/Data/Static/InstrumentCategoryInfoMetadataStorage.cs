@@ -10,7 +10,7 @@ public static class InstrumentCategoryInfoMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-instrument-category-info-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-instrument-category-info-metadata");
         List<InstrumentCategoryInfoMetadata> items = Serializer.Deserialize<List<InstrumentCategoryInfoMetadata>>(stream);
         foreach (InstrumentCategoryInfoMetadata item in items)
         {

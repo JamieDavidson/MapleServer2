@@ -10,7 +10,7 @@ public static class PrestigeMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-prestige-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-prestige-metadata");
         PrestigeMetadata metadata = Serializer.Deserialize<PrestigeMetadata>(stream);
         foreach (PrestigeReward reward in metadata.Rewards)
         {

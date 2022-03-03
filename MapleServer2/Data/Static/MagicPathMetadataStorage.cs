@@ -10,7 +10,7 @@ public static class MagicPathMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-magicpath-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-magicpath-metadata");
         List<MagicPathMetadata> magicPathList = Serializer.Deserialize<List<MagicPathMetadata>>(stream);
         foreach (MagicPathMetadata magicPath in magicPathList)
         {

@@ -10,7 +10,7 @@ public static class MapMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-map-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-map-metadata");
         List<MapMetadata> items = Serializer.Deserialize<List<MapMetadata>>(stream);
         foreach (MapMetadata item in items)
         {

@@ -10,7 +10,7 @@ public static class PremiumClubPackageMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-premium-club-package-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-premium-club-package-metadata");
         List<PremiumClubPackageMetadata> items = Serializer.Deserialize<List<PremiumClubPackageMetadata>>(stream);
         foreach (PremiumClubPackageMetadata item in items)
         {

@@ -9,7 +9,7 @@ public static class FishingRewardsMetadataStorage
 
     public static void Init()
     {
-        string json = File.ReadAllText($"{Paths.JSON_DIR}/FishingRewards.json");
+        string json = File.ReadAllText($"{Paths.JsonDirectory}/FishingRewards.json");
         List<FishingRewardItem> items = JsonConvert.DeserializeObject<List<FishingRewardItem>>(json);
         foreach (FishingRewardItem item in items)
         {

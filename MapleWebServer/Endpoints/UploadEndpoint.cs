@@ -47,7 +47,7 @@ public static class UploadEndpoint
 
     private static IResult HandleItemIcon(byte[] fileBytes, int itemId, long itemUid)
     {
-        string filePath = $"{Paths.DATA_DIR}/itemicon/{itemId}/";
+        string filePath = $"{Paths.DataDirectory}/itemicon/{itemId}/";
         Directory.CreateDirectory(filePath);
 
         Item item = DatabaseManager.Items.FindByUgcUid(itemUid);
@@ -62,7 +62,7 @@ public static class UploadEndpoint
 
     private static IResult HandleItem(byte[] fileBytes, int itemId, long itemUid)
     {
-        string filePath = $"{Paths.DATA_DIR}/item/{itemId}/";
+        string filePath = $"{Paths.DataDirectory}/item/{itemId}/";
         Directory.CreateDirectory(filePath);
 
         Item item = DatabaseManager.Items.FindByUgcUid(itemUid);
@@ -81,7 +81,7 @@ public static class UploadEndpoint
 
     private static IResult HandleProfileAvatar(byte[] fileBytes, long characterId)
     {
-        string filePath = $"{Paths.DATA_DIR}/profiles/{characterId}/";
+        string filePath = $"{Paths.DataDirectory}/profiles/{characterId}/";
         Directory.CreateDirectory(filePath);
 
         // Adding timestamp to the file name to prevent caching, client doesn't refresh the image if the url is already cached

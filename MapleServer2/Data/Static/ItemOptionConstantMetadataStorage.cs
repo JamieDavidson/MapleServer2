@@ -10,7 +10,7 @@ public static class ItemOptionConstantMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-item-option-constant-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-item-option-constant-metadata");
         List<ItemOptionConstantMetadata> items = Serializer.Deserialize<List<ItemOptionConstantMetadata>>(stream);
         foreach (ItemOptionConstantMetadata item in items)
         {

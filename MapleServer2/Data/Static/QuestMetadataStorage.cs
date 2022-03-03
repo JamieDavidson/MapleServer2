@@ -12,7 +12,7 @@ public static class QuestMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-quest-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-quest-metadata");
         List<QuestMetadata> items = Serializer.Deserialize<List<QuestMetadata>>(stream);
         foreach (QuestMetadata item in items)
         {

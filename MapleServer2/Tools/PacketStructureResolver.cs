@@ -67,7 +67,7 @@ public class PacketStructureResolver
         }
 
         PacketStructureResolver resolver = new(opCode);
-        DirectoryInfo dir = Directory.CreateDirectory($"{Paths.SOLUTION_DIR}/MapleServer2/PacketStructures");
+        DirectoryInfo dir = Directory.CreateDirectory($"{Paths.SolutionDirectory}/MapleServer2/PacketStructures");
 
         string filePath = $"{dir.FullName}/{resolver.OpCode:X4} - {resolver.PacketName}.txt";
         if (!File.Exists(filePath))
@@ -162,7 +162,7 @@ public class PacketStructureResolver
         new SockHintInfo(info.Hint, DefaultValue).Update(Packet);
         string hint = info.Hint.GetCode() + "\r\n";
 
-        DirectoryInfo dir = Directory.CreateDirectory($"{Paths.SOLUTION_DIR}/MapleServer2/PacketStructures");
+        DirectoryInfo dir = Directory.CreateDirectory($"{Paths.SolutionDirectory}/MapleServer2/PacketStructures");
         StreamWriter file = File.AppendText($"{dir.FullName}/{OpCode:X4} - {PacketName}.txt");
         file.Write(hint);
         file.Close();

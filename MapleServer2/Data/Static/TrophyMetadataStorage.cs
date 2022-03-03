@@ -10,7 +10,7 @@ public static class TrophyMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-trophy-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-trophy-metadata");
         List<TrophyMetadata> trophies = Serializer.Deserialize<List<TrophyMetadata>>(stream);
         foreach (TrophyMetadata trophy in trophies)
         {

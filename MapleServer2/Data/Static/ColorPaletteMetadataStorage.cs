@@ -10,7 +10,7 @@ public static class ColorPaletteMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-color-palette-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-color-palette-metadata");
         List<ColorPaletteMetadata> items = Serializer.Deserialize<List<ColorPaletteMetadata>>(stream);
         foreach (ColorPaletteMetadata item in items)
         {

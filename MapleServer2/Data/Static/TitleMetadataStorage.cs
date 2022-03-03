@@ -10,7 +10,7 @@ public static class TitleMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-title-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-title-metadata");
         List<TitleMetadata> items = Serializer.Deserialize<List<TitleMetadata>>(stream);
         foreach (TitleMetadata item in items)
         {

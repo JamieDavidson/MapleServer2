@@ -10,7 +10,7 @@ public static class InstrumentInfoMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-instrument-info-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-instrument-info-metadata");
         List<InstrumentInfoMetadata> items = Serializer.Deserialize<List<InstrumentInfoMetadata>>(stream);
         foreach (InstrumentInfoMetadata item in items)
         {

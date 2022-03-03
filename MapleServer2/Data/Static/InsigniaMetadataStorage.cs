@@ -10,7 +10,7 @@ public static class InsigniaMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-insignia-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-insignia-metadata");
         List<InsigniaMetadata> items = Serializer.Deserialize<List<InsigniaMetadata>>(stream);
         foreach (InsigniaMetadata item in items)
         {

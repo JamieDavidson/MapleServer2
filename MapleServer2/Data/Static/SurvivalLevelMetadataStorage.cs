@@ -10,7 +10,7 @@ public static class SurvivaLevelMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-survival-level-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-survival-level-metadata");
         List<SurvivalLevelMetadata> items = Serializer.Deserialize<List<SurvivalLevelMetadata>>(stream);
         foreach (SurvivalLevelMetadata item in items)
         {

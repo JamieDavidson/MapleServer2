@@ -10,7 +10,7 @@ public static class DungeonStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-dungeon-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-dungeon-metadata");
         List<DungeonMetadata> dungeons = Serializer.Deserialize<List<DungeonMetadata>>(stream);
         foreach (DungeonMetadata dungeon in dungeons)
         {

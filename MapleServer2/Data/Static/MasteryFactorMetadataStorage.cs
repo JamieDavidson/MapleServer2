@@ -10,7 +10,7 @@ public static class MasteryFactorMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-mastery-factor-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-mastery-factor-metadata");
         List<MasteryFactorMetadata> masteryFactors = Serializer.Deserialize<List<MasteryFactorMetadata>>(stream);
         foreach (MasteryFactorMetadata masteryFactor in masteryFactors)
         {

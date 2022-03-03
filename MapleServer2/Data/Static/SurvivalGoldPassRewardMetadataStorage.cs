@@ -10,7 +10,7 @@ public static class SurvivalGoldPassRewardMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-survival-gold-pass-reward-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-survival-gold-pass-reward-metadata");
         List<SurvivalGoldPassRewardMetadata> items = Serializer.Deserialize<List<SurvivalGoldPassRewardMetadata>>(stream);
         foreach (SurvivalGoldPassRewardMetadata item in items)
         {

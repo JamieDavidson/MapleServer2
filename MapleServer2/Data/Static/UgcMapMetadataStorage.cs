@@ -10,7 +10,7 @@ public static class UgcMapMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-ugc-map-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-ugc-map-metadata");
         List<UgcMapMetadata> items = Serializer.Deserialize<List<UgcMapMetadata>>(stream);
         foreach (UgcMapMetadata item in items)
         {

@@ -6,7 +6,7 @@ public static class ProfileEndpoint
 {
     public static IResult Get(long characterId, string hash)
     {
-        string fullPath = $"{Paths.DATA_DIR}/profiles/{characterId}/{hash}.png";
+        string fullPath = $"{Paths.DataDirectory}/profiles/{characterId}/{hash}.png";
         if (!File.Exists(fullPath))
         {
             return Results.BadRequest();

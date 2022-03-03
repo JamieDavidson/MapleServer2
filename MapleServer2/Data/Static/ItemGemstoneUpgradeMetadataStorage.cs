@@ -10,7 +10,7 @@ public static class ItemGemstoneUpgradeMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-item-gemstone-upgrade-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-item-gemstone-upgrade-metadata");
         List<ItemGemstoneUpgradeMetadata> items = Serializer.Deserialize<List<ItemGemstoneUpgradeMetadata>>(stream);
         foreach (ItemGemstoneUpgradeMetadata item in items)
         {

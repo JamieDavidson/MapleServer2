@@ -10,7 +10,7 @@ public static class ExpMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-exp-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-exp-metadata");
         List<ExpMetadata> items = Serializer.Deserialize<List<ExpMetadata>>(stream);
         foreach (ExpMetadata item in items)
         {

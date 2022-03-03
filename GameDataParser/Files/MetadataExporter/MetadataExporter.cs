@@ -39,13 +39,13 @@ public abstract class MetadataExporter
 
     public void Write<Entities>(Entities entities)
     {
-        using (FileStream writeStream = File.Create($"{Paths.RESOURCES_DIR}/{Filename}"))
+        using (FileStream writeStream = File.Create($"{Paths.ResourcesDirectory}/{Filename}"))
         {
             Serializer.Serialize(writeStream, entities);
         }
 
 #if DEBUG
-        using (FileStream debugWriteStream = File.Create($"{Paths.RESOURCES_DIR}/{Filename}.xml"))
+        using (FileStream debugWriteStream = File.Create($"{Paths.ResourcesDirectory}/{Filename}.xml"))
         {
             try
             {

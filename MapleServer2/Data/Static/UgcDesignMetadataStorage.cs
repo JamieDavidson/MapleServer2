@@ -10,7 +10,7 @@ public static class UgcDesignMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-ugc-design-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-ugc-design-metadata");
         List<UgcDesignMetadata> items = Serializer.Deserialize<List<UgcDesignMetadata>>(stream);
         foreach (UgcDesignMetadata item in items)
         {

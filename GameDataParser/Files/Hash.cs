@@ -7,7 +7,7 @@ public static class Hash
 {
     public static bool HasValidHash(string filename)
     {
-        string hashPath = $"{Paths.HASH_DIR}/{filename}-hash";
+        string hashPath = $"{Paths.HashDirectory}/{filename}-hash";
 
         if (!File.Exists(hashPath))
         {
@@ -22,7 +22,7 @@ public static class Hash
 
     public static void WriteHash(string filename)
     {
-        string hashPath = $"{Paths.HASH_DIR}/{filename}-hash";
+        string hashPath = $"{Paths.HashDirectory}/{filename}-hash";
 
         string newHash = GetHash(filename);
 
@@ -31,7 +31,7 @@ public static class Hash
 
     public static string GetHash(string filename)
     {
-        string filepath = $"{Paths.RESOURCES_DIR}/{filename}";
+        string filepath = $"{Paths.ResourcesDirectory}/{filename}";
 
         if (!File.Exists(filepath))
         {

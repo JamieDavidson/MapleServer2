@@ -10,7 +10,7 @@ public static class FishingRodMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-fishing-rod-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-fishing-rod-metadata");
         List<FishingRodMetadata> items = Serializer.Deserialize<List<FishingRodMetadata>>(stream);
         foreach (FishingRodMetadata item in items)
         {

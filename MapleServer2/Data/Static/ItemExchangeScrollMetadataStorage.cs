@@ -10,7 +10,7 @@ public static class ItemExchangeScrollMetadataStorage
 
     public static void Init()
     {
-        using FileStream stream = File.OpenRead($"{Paths.RESOURCES_DIR}/ms2-item-exchange-scroll-metadata");
+        using FileStream stream = File.OpenRead($"{Paths.ResourcesDirectory}/ms2-item-exchange-scroll-metadata");
         List<ItemExchangeScrollMetadata> items = Serializer.Deserialize<List<ItemExchangeScrollMetadata>>(stream);
         foreach (ItemExchangeScrollMetadata item in items)
         {
