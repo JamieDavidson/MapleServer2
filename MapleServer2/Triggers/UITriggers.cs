@@ -41,7 +41,7 @@ public partial class TriggerContext
                         break;
                     case "PickQuiz":
                         // TODO: Use args to find a tier of a question
-                        widget.OxQuizQuestion = OXQuizMetadataStorage.GetQuestion();
+                        widget.OxQuizQuestion = OxQuizMetadataStorage.GetQuestion();
                         break;
                     case "ShowQuiz":
                         Field.BroadcastPacket(QuizEventPacket.Question(widget.OxQuizQuestion.Category, widget.OxQuizQuestion.QuestionText, int.Parse(args)));

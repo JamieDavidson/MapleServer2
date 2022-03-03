@@ -170,7 +170,7 @@ public class Levels
 
         // user already has some exp in mastery, so simply update it
         Session.Send(MasteryPacket.SetExp(type, masteryExp.CurrentExp += amount));
-        int currLevel = MasteryMetadataStorage.GetGradeFromXP(type, masteryExp.CurrentExp);
+        int currLevel = MasteryMetadataStorage.GetGradeFromXp(type, masteryExp.CurrentExp);
 
         if (currLevel <= masteryExp.Level)
         {

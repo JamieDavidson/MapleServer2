@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace MapleServer2.Data.Static;
 
-public static class OXQuizMetadataStorage
+public static class OxQuizMetadataStorage
 {
     private static readonly Dictionary<int, OxQuizQuestion> Questions = new();
 

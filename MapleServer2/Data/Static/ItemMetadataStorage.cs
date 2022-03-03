@@ -56,9 +56,9 @@ public static class ItemMetadataStorage
 
     public static string GetFileName(int itemId) => GetMetadata(itemId).FileName;
 
-    public static int GetSkillID(int itemId) => GetMetadata(itemId).SkillId;
+    public static int GetSkillId(int itemId) => GetMetadata(itemId).SkillId;
 
-    public static int GetShopID(int itemId) => GetMetadata(itemId).ShopId;
+    public static int GetShopId(int itemId) => GetMetadata(itemId).ShopId;
 
     public static bool IsSellablle(int itemId) => GetMetadata(itemId).Sellable;
 

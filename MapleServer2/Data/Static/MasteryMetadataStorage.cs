@@ -29,7 +29,7 @@ public static class MasteryMetadataStorage
         return Masteries.GetValueOrDefault(type);
     }
 
-    public static int GetGradeFromXP(MasteryType type, long xp)
+    public static int GetGradeFromXp(MasteryType type, long xp)
     {
         return GetMastery((int) type).Grades.Count(x => x.Value <= xp);
     }

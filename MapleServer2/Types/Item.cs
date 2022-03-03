@@ -225,11 +225,11 @@ public class Item
         IsCustomScore = ItemMetadataStorage.GetIsCustomScore(Id);
         Gender = ItemMetadataStorage.GetGender(Id);
         FileName = ItemMetadataStorage.GetFileName(Id);
-        SkillId = ItemMetadataStorage.GetSkillID(Id);
+        SkillId = ItemMetadataStorage.GetSkillId(Id);
         RecommendJobs = ItemMetadataStorage.GetRecommendJobs(Id);
         Function = ItemMetadataStorage.GetFunction(Id);
         Tag = ItemMetadataStorage.GetTag(Id);
-        ShopId = ItemMetadataStorage.GetShopID(Id);
+        ShopId = ItemMetadataStorage.GetShopId(Id);
         RemainingTrades = ItemMetadataStorage.GetTradeableCount(Id);
         TransferType = ItemMetadataStorage.GetTransferType(Id);
         RepackageCount = ItemMetadataStorage.GetRepackageCount(Id);

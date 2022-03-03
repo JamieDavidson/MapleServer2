@@ -211,7 +211,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
         session.Player.Inventory.ConsumeItem(session, voucher.Uid, 1);
 
         GameEventUserValue dailyMatches = GameEventHelper.GetUserValue(session.Player, rpsEvent.Id,
-            TimeInfo.Tomorrow(), GameEventUserValueType.RPSDailyMatches);
+            TimeInfo.Tomorrow(), GameEventUserValueType.RpsDailyMatches);
         int.TryParse(dailyMatches.EventValue, out int dailyMatchCount);
 
         dailyMatchCount++;
@@ -231,7 +231,7 @@ public class RockPaperScissorsHandler : GamePacketHandler
         }
 
         GameEventUserValue rewardsAccumulatedValue = GameEventHelper.GetUserValue(session.Player, rpsEvent.Id,
-            TimeInfo.Tomorrow(), GameEventUserValueType.RPSRewardsClaimed);
+            TimeInfo.Tomorrow(), GameEventUserValueType.RpsRewardsClaimed);
         List<string> rewardsClaimedStrings = rewardsAccumulatedValue.EventValue.Split(",").ToList();
         foreach (string rewardString in rewardsClaimedStrings)
         {

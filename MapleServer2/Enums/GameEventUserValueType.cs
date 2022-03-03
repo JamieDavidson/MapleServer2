@@ -15,6 +15,6 @@ public enum GameEventUserValueType
     MapleopolyTotalTrips = 802, // unsure
 
     // Rock Paper Scissors Event
-    RPSDailyMatches = 1800,
-    RPSRewardsClaimed = 1801,
+    RpsDailyMatches = 1800,
+    RpsRewardsClaimed = 1801,
 }

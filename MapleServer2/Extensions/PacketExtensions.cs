@@ -5,7 +5,7 @@ namespace MapleServer2.Extensions;
 
 public static class PacketExtensions
 {
-    private const int INT_SIZE = 4;
+    private const int IntSize = 4;
 
     // Write data deflated using Zlib
     public static PacketWriter WriteDeflated(this PacketWriter pWriter, byte[] data, int offset, int length)
@@ -44,7 +44,7 @@ public static class PacketExtensions
         // We need to seek backwards to write the deflated size since we can't know them beforehand.
         int endIndex = pWriter.Length;
         pWriter.Seek(startIndex);
-        pWriter.WriteInt(endIndex - startIndex - INT_SIZE);
+        pWriter.WriteInt(endIndex - startIndex - IntSize);
         pWriter.Seek(endIndex);
 
         return pWriter;
