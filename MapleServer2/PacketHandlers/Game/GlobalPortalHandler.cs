@@ -46,7 +46,7 @@ public class GlobalPortalHandler : GamePacketHandler
         switch (globalEvent.Events[selectionIndex])
         {
             case GlobalEventType.OxQuiz:
-                map = Map.MapleOXQuiz;
+                map = Map.MapleOxQuiz;
                 break;
             case GlobalEventType.TrapMaster:
                 map = Map.TrapMaster;
