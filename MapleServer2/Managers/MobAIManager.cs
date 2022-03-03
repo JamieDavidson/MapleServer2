@@ -2,6 +2,7 @@
 using System.Xml.Schema;
 using Maple2Storage.Enums;
 using MapleServer2.Enums;
+using MapleServer2.Types;
 using NLog;
 
 namespace MapleServer2.Managers;
