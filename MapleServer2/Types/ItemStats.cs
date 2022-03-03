@@ -451,9 +451,9 @@ public class ItemStats
 
     private void GetGemSockets(ItemSlot itemSlot, int rarity)
     {
-        if (itemSlot != ItemSlot.EA &&
-            itemSlot != ItemSlot.RI &&
-            itemSlot != ItemSlot.PD)
+        if (itemSlot != ItemSlot.Earring &&
+            itemSlot != ItemSlot.Ring &&
+            itemSlot != ItemSlot.Pendant)
         {
             return;
         }

@@ -4,13 +4,13 @@ public enum SkillType
 {
     Active = 0,
     Passive = 1,
-    GM = 3
+    Gm = 3
 }
 public enum SkillSubType
 {
     None = 0,
     Status = 2,
-    GM = 5,
+    Gm = 5,
     Global = 6
 }
 public enum BuffType

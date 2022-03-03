@@ -113,7 +113,7 @@ public class CharacterManagementHandler : LoginPacketHandler
 
             switch (type)
             {
-                case ItemSlot.HR: // Hair
+                case ItemSlot.Hair: // Hair
                     // Hair Length/Position
                     float backLength = packet.ReadFloat();
                     CoordF backPositionCoord = packet.Read<CoordF>();
@@ -126,7 +126,7 @@ public class CharacterManagementHandler : LoginPacketHandler
                         continue;
                     }
 
-                    newCharacter.Inventory.Cosmetics.Add(ItemSlot.HR, new(id)
+                    newCharacter.Inventory.Cosmetics.Add(ItemSlot.Hair, new(id)
                     {
                         Color = equipColor,
                         HairData = new(backLength, frontLength, backPositionCoord, backPositionRotation, frontPositionCoord, frontPositionRotation),
@@ -134,20 +134,20 @@ public class CharacterManagementHandler : LoginPacketHandler
                         IsEquipped = true
                     });
                     break;
-                case ItemSlot.FA: // Face
+                case ItemSlot.Face: // Face
                     if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
                     {
                         continue;
                     }
 
-                    newCharacter.Inventory.Cosmetics.Add(ItemSlot.FA, new(id)
+                    newCharacter.Inventory.Cosmetics.Add(ItemSlot.Face, new(id)
                     {
                         Color = equipColor,
                         IsTemplate = false,
                         IsEquipped = true
                     });
                     break;
-                case ItemSlot.FD: // Face Decoration
+                case ItemSlot.FaceDecoration: // Face Decoration
                     byte[] faceDecoration = packet.ReadBytes(16); // Face decoration position
 
                     if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
@@ -155,7 +155,7 @@ public class CharacterManagementHandler : LoginPacketHandler
                         continue;
                     }
 
-                    newCharacter.Inventory.Cosmetics.Add(ItemSlot.FD, new(id)
+                    newCharacter.Inventory.Cosmetics.Add(ItemSlot.FaceDecoration, new(id)
                     {
                         Color = equipColor,
                         FaceDecorationData = faceDecoration,
@@ -163,52 +163,52 @@ public class CharacterManagementHandler : LoginPacketHandler
                         IsEquipped = true
                     });
                     break;
-                case ItemSlot.CL: // Clothes
+                case ItemSlot.Clothes: // Clothes
                     if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
                     {
                         continue;
                     }
 
-                    newCharacter.Inventory.Cosmetics.Add(ItemSlot.CL, new(id)
+                    newCharacter.Inventory.Cosmetics.Add(ItemSlot.Clothes, new(id)
                     {
                         Color = equipColor,
                         IsTemplate = false,
                         IsEquipped = true
                     });
                     break;
-                case ItemSlot.PA: // Pants
+                case ItemSlot.Pants: // Pants
                     if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
                     {
                         continue;
                     }
 
-                    newCharacter.Inventory.Cosmetics.Add(ItemSlot.PA, new(id)
+                    newCharacter.Inventory.Cosmetics.Add(ItemSlot.Pants, new(id)
                     {
                         Color = equipColor,
                         IsTemplate = false,
                         IsEquipped = true
                     });
                     break;
-                case ItemSlot.SH: // Shoes
+                case ItemSlot.Shoes: // Shoes
                     if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
                     {
                         continue;
                     }
 
-                    newCharacter.Inventory.Cosmetics.Add(ItemSlot.SH, new(id)
+                    newCharacter.Inventory.Cosmetics.Add(ItemSlot.Shoes, new(id)
                     {
                         Color = equipColor,
                         IsTemplate = false,
                         IsEquipped = true
                     });
                     break;
-                case ItemSlot.ER: // Ear
+                case ItemSlot.Ear: // Ear
                     if (!DefaultItemsMetadataStorage.IsValid((int) job, id))
                     {
                         continue;
                     }
 
-                    newCharacter.Inventory.Cosmetics.Add(ItemSlot.ER, new(id)
+                    newCharacter.Inventory.Cosmetics.Add(ItemSlot.Ear, new(id)
                     {
                         Color = equipColor,
                         IsTemplate = false,

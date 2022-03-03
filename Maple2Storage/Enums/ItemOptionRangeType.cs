@@ -2,8 +2,8 @@
 
 public enum ItemOptionRangeType
 {
-    itemoptionvariation_acc,
-    itemoptionvariation_armor,
-    itemoptionvariation_pet,
-    itemoptionvariation_weapon
+    ItemOptionVariationAcc,
+    ItemOptionVariationArmor,
+    ItemOptionVariationPet,
+    ItemOptionVariationWeapon
 }

@@ -60,10 +60,10 @@ public static class ItemPacketHelper
             pWriter.WriteUnicodeString(item.Id.ToString());
             switch (item.GemSlot)
             {
-                case GemSlot.PET:
+                case GemSlot.PetSkin:
                     pWriter.WriteInt(item.PetSkinBadgeId);
                     break;
-                case GemSlot.TRANS:
+                case GemSlot.TransparencyBadge:
                     pWriter.WriteBytes(item.TransparencyBadgeBools);
                     break;
             }
@@ -108,10 +108,10 @@ public static class ItemPacketHelper
         // Positioning Data
         switch (item.ItemSlot)
         {
-            case ItemSlot.CP:
+            case ItemSlot.Cap:
                 pWriter.Write(item.HatData);
                 break;
-            case ItemSlot.HR:
+            case ItemSlot.Hair:
                 pWriter.Write(item.HairData.BackLength);
                 pWriter.Write(item.HairData.BackPositionCoord);
                 pWriter.Write(item.HairData.BackPositionRotation);
@@ -119,7 +119,7 @@ public static class ItemPacketHelper
                 pWriter.Write(item.HairData.FrontPositionCoord);
                 pWriter.Write(item.HairData.FrontPositionRotation);
                 break;
-            case ItemSlot.FD:
+            case ItemSlot.FaceDecoration:
                 pWriter.WriteBytes(item.FaceDecorationData);
                 break;
         }

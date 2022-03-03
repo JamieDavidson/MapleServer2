@@ -90,16 +90,16 @@ public class ItemParser : Exporter<List<ItemMetadata>>
             {
                 switch (metadata.Slot)
                 {
-                    case ItemSlot.CL or ItemSlot.PA:
+                    case ItemSlot.Clothes or ItemSlot.Pants:
                         metadata.IsDress = true;
                         break;
-                    case ItemSlot.RH or ItemSlot.LH:
+                    case ItemSlot.RightHand or ItemSlot.LeftHand:
                         metadata.IsTwoHand = true;
                         break;
                 }
             }
 
-            if (metadata.Slot is ItemSlot.HR)
+            if (metadata.Slot is ItemSlot.Hair)
             {
                 ParseHair(firstSlot, metadata);
             }

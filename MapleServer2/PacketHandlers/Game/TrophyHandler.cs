@@ -79,23 +79,23 @@ public class TrophyHandler : GamePacketHandler
         {
             // this cases don't require any handling.
             case RewardType.None:
-            case RewardType.itemcoloring:
-            case RewardType.beauty_hair:
-            case RewardType.skillPoint:
-            case RewardType.beauty_makeup:
-            case RewardType.shop_build:
-            case RewardType.shop_weapon:
-            case RewardType.dynamicaction:
-            case RewardType.etc:
-            case RewardType.beauty_skin:
-            case RewardType.statPoint:
-            case RewardType.shop_ride:
+            case RewardType.ItemColoring:
+            case RewardType.BeautyHair:
+            case RewardType.SkillPoint:
+            case RewardType.BeautyMakeup:
+            case RewardType.ShopBuild:
+            case RewardType.ShopWeapon:
+            case RewardType.DynamicAction:
+            case RewardType.Etc:
+            case RewardType.BeautySkin:
+            case RewardType.StatPoint:
+            case RewardType.ShopRide:
             default:
                 break;
-            case RewardType.item:
+            case RewardType.Item:
                 session.Player.Inventory.AddItem(session, new(grade.RewardCode, grade.RewardValue), true);
                 break;
-            case RewardType.title:
+            case RewardType.Title:
                 session.Player.Titles.Add(grade.RewardCode);
                 session.Send(UserEnvPacket.AddTitle(grade.RewardCode));
                 break;

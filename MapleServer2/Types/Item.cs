@@ -92,7 +92,7 @@ public class Item
         Level = ItemMetadataStorage.GetLevel(id);
         ItemSlot = ItemMetadataStorage.GetSlot(id);
         IsTemplate = ItemMetadataStorage.GetIsTemplate(id);
-        if (GemSlot == GemSlot.TRANS)
+        if (GemSlot == GemSlot.TransparencyBadge)
         {
             TransparencyBadgeBools = new byte[10];
         }
@@ -196,17 +196,17 @@ public class Item
 
     public static bool IsWeapon(ItemSlot slot)
     {
-        return slot is ItemSlot.RH or ItemSlot.LH or ItemSlot.OH;
+        return slot is ItemSlot.RightHand or ItemSlot.LeftHand or ItemSlot.OffHand;
     }
 
     public static bool IsAccessory(ItemSlot slot)
     {
-        return slot is ItemSlot.FH or ItemSlot.EA or ItemSlot.PD or ItemSlot.RI or ItemSlot.BE;
+        return slot is ItemSlot.FaceAccessory or ItemSlot.Earring or ItemSlot.Pendant or ItemSlot.Ring or ItemSlot.Belt;
     }
 
     public static bool IsArmor(ItemSlot slot)
     {
-        return slot is ItemSlot.CP or ItemSlot.CL or ItemSlot.PA or ItemSlot.GL or ItemSlot.SH or ItemSlot.MT;
+        return slot is ItemSlot.Cap or ItemSlot.Clothes or ItemSlot.Pants or ItemSlot.Gloves or ItemSlot.Shoes or ItemSlot.Mantle;
     }
 
     public static bool IsPet(int itemId)

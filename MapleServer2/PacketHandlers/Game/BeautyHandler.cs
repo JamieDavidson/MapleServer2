@@ -173,7 +173,7 @@ public class BeautyHandler : GamePacketHandler
 
         Item beautyItem = session.Player.GetEquippedItem(beautyItemUid);
 
-        if (beautyItem.ItemSlot == ItemSlot.CP)
+        if (beautyItem.ItemSlot == ItemSlot.Cap)
         {
             HatData hatData = packet.Read<HatData>();
             beautyItem.HatData = hatData;
@@ -257,7 +257,7 @@ public class BeautyHandler : GamePacketHandler
         Dictionary<ItemSlot, Item> cosmetics = session.Player.Inventory.Cosmetics;
 
         //Remove old hair
-        if (cosmetics.Remove(ItemSlot.HR, out Item previousHair))
+        if (cosmetics.Remove(ItemSlot.Hair, out Item previousHair))
         {
             previousHair.Slot = -1;
             session.Player.HairInventory.RandomHair = previousHair; // store the previous hair
@@ -265,9 +265,9 @@ public class BeautyHandler : GamePacketHandler
             session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, previousHair));
         }
 
-        cosmetics[ItemSlot.HR] = newHair;
+        cosmetics[ItemSlot.Hair] = newHair;
 
-        session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.Player.FieldPlayer, newHair, ItemSlot.HR));
+        session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.Player.FieldPlayer, newHair, ItemSlot.Hair));
         session.Send(BeautyPacket.RandomHairOption(previousHair, newHair));
     }
 
@@ -280,16 +280,16 @@ public class BeautyHandler : GamePacketHandler
             Player player = session.Player;
             Dictionary<ItemSlot, Item> cosmetics = player.Inventory.Cosmetics;
             //Remove current hair
-            if (cosmetics.Remove(ItemSlot.HR, out Item newHair))
+            if (cosmetics.Remove(ItemSlot.Hair, out Item newHair))
             {
                 newHair.Slot = -1;
                 DatabaseManager.Items.Delete(newHair.Uid);
                 session.FieldManager.BroadcastPacket(EquipmentPacket.UnequipItem(session.Player.FieldPlayer, newHair));
             }
 
-            cosmetics[ItemSlot.HR] = player.HairInventory.RandomHair; // apply the previous hair
+            cosmetics[ItemSlot.Hair] = player.HairInventory.RandomHair; // apply the previous hair
 
-            session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.Player.FieldPlayer, player.HairInventory.RandomHair, ItemSlot.HR));
+            session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.Player.FieldPlayer, player.HairInventory.RandomHair, ItemSlot.Hair));
 
             Item voucher = new(20300246); // Chic Salon Voucher
             player.Inventory.AddItem(session, voucher, true);
@@ -309,7 +309,7 @@ public class BeautyHandler : GamePacketHandler
         long hairUid = packet.ReadLong();
 
         Item hair = session.Player.Inventory.Cosmetics.FirstOrDefault(x => x.Value.Uid == hairUid).Value;
-        if (hair == null || hair.ItemSlot != ItemSlot.HR)
+        if (hair == null || hair.ItemSlot != ItemSlot.Hair)
         {
             return;
         }
@@ -436,7 +436,7 @@ public class BeautyHandler : GamePacketHandler
                 return;
             }
 
-            if (item.ItemSlot == ItemSlot.CP)
+            if (item.ItemSlot == ItemSlot.Cap)
             {
                 hatData[i] = packet.Read<HatData>();
                 item.HatData = hatData[i];
@@ -491,7 +491,7 @@ public class BeautyHandler : GamePacketHandler
         // equip & update new item
         switch (itemSlot)
         {
-            case ItemSlot.HR:
+            case ItemSlot.Hair:
                 float backLength = BitConverter.ToSingle(packet.ReadBytes(4), 0);
                 CoordF backPositionCoord = packet.Read<CoordF>();
                 CoordF backPositionRotation = packet.Read<CoordF>();
@@ -505,12 +505,12 @@ public class BeautyHandler : GamePacketHandler
 
                 session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.Player.FieldPlayer, beautyItem, itemSlot));
                 break;
-            case ItemSlot.FA:
+            case ItemSlot.Face:
                 cosmetics[itemSlot] = beautyItem;
 
                 session.FieldManager.BroadcastPacket(EquipmentPacket.EquipItem(session.Player.FieldPlayer, beautyItem, itemSlot));
                 break;
-            case ItemSlot.FD:
+            case ItemSlot.FaceDecoration:
                 byte[] faceDecorationPosition = packet.ReadBytes(16);
 
                 beautyItem.FaceDecorationData = faceDecorationPosition;

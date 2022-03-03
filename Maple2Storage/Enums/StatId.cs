@@ -116,29 +116,29 @@ public enum SpecialStatId : short
     CraftingExp = 76,
 
     //techs
-    TECH = 77, //level 1 skill
-    TECH_2 = 78, //2nd level 1 skill
-    TECH_10 = 79, //lv 10 skill
-    TECH_13 = 80, //lv 13 skill
-    TECH_19 = 81, // lv 16 skill
-    TECH_22 = 82, // lv 19 skill
-    TECH_3 = 83, // lv 22 skill
-    TECH_25 = 84, // lv 25 skill
-    TECH_28 = 85, // lv 28 skill
-    TECH_31 = 86, // lv 31 skill
-    TECH_34 = 87, // lv 34 skill
-    TECH_37 = 88, // lv 37 skill
-    TECH_40 = 89, // lv 40 skill
-    TECH_43 = 90, // lv 43 skill
+    Tech = 77, //level 1 skill
+    Tech2 = 78, //2nd level 1 skill
+    Tech10 = 79, //lv 10 skill
+    Tech13 = 80, //lv 13 skill
+    Tech19 = 81, // lv 16 skill
+    Tech22 = 82, // lv 19 skill
+    Tech3 = 83, // lv 22 skill
+    Tech25 = 84, // lv 25 skill
+    Tech28 = 85, // lv 28 skill
+    Tech31 = 86, // lv 31 skill
+    Tech34 = 87, // lv 34 skill
+    Tech37 = 88, // lv 37 skill
+    Tech40 = 89, // lv 40 skill
+    Tech43 = 90, // lv 43 skill
 
-    OXQuizExp = 91,
+    OxQuizExp = 91,
     TrapMasterExp = 92,
     SoleSurvivorExp = 93,
     CrazyRunnerExp = 94,
     LudiEscapeExp = 95,
     SpringBeachExp = 96,
     DanceDanceExp = 97,
-    OXMovementSpeed = 98,
+    OxMovementSpeed = 98,
     TrapMasterMovementSpeed = 99,
     SoleSurvivorMovementSpeed = 100,
     CrazyRunnerMovementSpeed = 101,

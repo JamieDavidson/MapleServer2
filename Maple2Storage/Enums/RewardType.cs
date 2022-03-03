@@ -3,17 +3,17 @@
 public enum RewardType : byte
 {
     None = 0x0,
-    itemcoloring = 0x1,
-    shop_ride = 0x2,
-    title = 0x3,
-    beauty_hair = 0x4,
-    statPoint = 0x5,
-    skillPoint = 0x6,
-    beauty_makeup = 0x7,
-    shop_build = 0x8,
-    item = 0x9,
-    shop_weapon = 0xa,
-    dynamicaction = 0xb,
-    etc = 0xc,
-    beauty_skin = 0xd
+    ItemColoring = 0x1,
+    ShopRide = 0x2,
+    Title = 0x3,
+    BeautyHair = 0x4,
+    StatPoint = 0x5,
+    SkillPoint = 0x6,
+    BeautyMakeup = 0x7,
+    ShopBuild = 0x8,
+    Item = 0x9,
+    ShopWeapon = 0xa,
+    DynamicAction = 0xb,
+    Etc = 0xc,
+    BeautySkin = 0xd
 }

@@ -23,41 +23,41 @@ public static class ItemOptionRangeStorage
 
     public static Dictionary<StatId, List<ParserStat>> GetAccessoryRanges()
     {
-        return NormalRange[ItemOptionRangeType.itemoptionvariation_acc];
+        return NormalRange[ItemOptionRangeType.ItemOptionVariationAcc];
     }
 
     public static Dictionary<StatId, List<ParserStat>> GetArmorRanges()
     {
-        return NormalRange[ItemOptionRangeType.itemoptionvariation_armor];
+        return NormalRange[ItemOptionRangeType.ItemOptionVariationArmor];
     }
 
     public static Dictionary<StatId, List<ParserStat>> GetPetRanges()
     {
-        return NormalRange[ItemOptionRangeType.itemoptionvariation_pet];
+        return NormalRange[ItemOptionRangeType.ItemOptionVariationPet];
     }
 
     public static Dictionary<StatId, List<ParserStat>> GetWeaponRanges()
     {
-        return NormalRange[ItemOptionRangeType.itemoptionvariation_weapon];
+        return NormalRange[ItemOptionRangeType.ItemOptionVariationWeapon];
     }
 
     public static Dictionary<SpecialStatId, List<ParserSpecialStat>> GetAccessorySpecialRanges()
     {
-        return SpecialRange[ItemOptionRangeType.itemoptionvariation_acc];
+        return SpecialRange[ItemOptionRangeType.ItemOptionVariationAcc];
     }
 
     public static Dictionary<SpecialStatId, List<ParserSpecialStat>> GetArmorSpecialRanges()
     {
-        return SpecialRange[ItemOptionRangeType.itemoptionvariation_armor];
+        return SpecialRange[ItemOptionRangeType.ItemOptionVariationArmor];
     }
 
     public static Dictionary<SpecialStatId, List<ParserSpecialStat>> GetPetSpecialRanges()
     {
-        return SpecialRange[ItemOptionRangeType.itemoptionvariation_pet];
+        return SpecialRange[ItemOptionRangeType.ItemOptionVariationPet];
     }
 
     public static Dictionary<SpecialStatId, List<ParserSpecialStat>> GetWeaponSpecialRanges()
     {
-        return SpecialRange[ItemOptionRangeType.itemoptionvariation_weapon];
+        return SpecialRange[ItemOptionRangeType.ItemOptionVariationWeapon];
     }
 }

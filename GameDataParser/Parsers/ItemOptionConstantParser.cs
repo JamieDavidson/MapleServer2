@@ -214,7 +214,7 @@ public class ItemOptionConstantParser : Exporter<List<ItemOptionConstantMetadata
                             constant.SpecialStats.Add(new(SpecialStatId.DropRate, float.Parse(node.Attributes[item.Name].Value), 0));
                             break;
                         case "improve_massive_ox_exp_rate_base":
-                            constant.SpecialStats.Add(new(SpecialStatId.OXQuizExp, float.Parse(node.Attributes[item.Name].Value), 0));
+                            constant.SpecialStats.Add(new(SpecialStatId.OxQuizExp, float.Parse(node.Attributes[item.Name].Value), 0));
                             break;
                         case "improve_massive_finalsurvival_exp_rate_base":
                             constant.SpecialStats.Add(new(SpecialStatId.SoleSurvivorExp, float.Parse(node.Attributes[item.Name].Value), 0));
@@ -235,7 +235,7 @@ public class ItemOptionConstantParser : Exporter<List<ItemOptionConstantMetadata
                             constant.SpecialStats.Add(new(SpecialStatId.DanceDanceExp, float.Parse(node.Attributes[item.Name].Value), 0));
                             break;
                         case "improve_massive_ox_msp_value_base":
-                            constant.SpecialStats.Add(new(SpecialStatId.OXMovementSpeed, 0, int.Parse(node.Attributes[item.Name].Value)));
+                            constant.SpecialStats.Add(new(SpecialStatId.OxMovementSpeed, 0, int.Parse(node.Attributes[item.Name].Value)));
                             break;
                         case "improve_massive_finalsurvival_msp_value_base":
                             constant.SpecialStats.Add(new(SpecialStatId.SoleSurvivorMovementSpeed, 0, int.Parse(node.Attributes[item.Name].Value)));

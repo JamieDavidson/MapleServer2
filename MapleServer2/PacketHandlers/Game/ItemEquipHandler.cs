@@ -79,7 +79,7 @@ public class ItemEquipHandler : GamePacketHandler
         // Handle unequipping off-hand when equipping two-handed weapons
         if (item.IsDress || item.IsTwoHand)
         {
-            if (equippedInventory.Remove(item.IsDress ? ItemSlot.PA : ItemSlot.LH, out Item prevItem2))
+            if (equippedInventory.Remove(item.IsDress ? ItemSlot.Pants : ItemSlot.LeftHand, out Item prevItem2))
             {
                 prevItem2.Slot = -1;
                 if (prevItem == null)
@@ -94,9 +94,9 @@ public class ItemEquipHandler : GamePacketHandler
 
         // Handle unequipping dresses when equipping pants
         // Handle unequipping two-handed main-hands when equipping off-hand weapons
-        if (item.ItemSlot is ItemSlot.PA or ItemSlot.LH)
+        if (item.ItemSlot is ItemSlot.Pants or ItemSlot.LeftHand)
         {
-            ItemSlot prevItemSlot = item.ItemSlot == ItemSlot.PA ? ItemSlot.CL : ItemSlot.RH;
+            ItemSlot prevItemSlot = item.ItemSlot == ItemSlot.Pants ? ItemSlot.Clothes : ItemSlot.RightHand;
             if (equippedInventory.ContainsKey(prevItemSlot))
             {
                 if (equippedInventory[prevItemSlot] != null && equippedInventory[prevItemSlot].IsDress)

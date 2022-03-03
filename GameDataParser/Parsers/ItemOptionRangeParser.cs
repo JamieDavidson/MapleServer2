@@ -25,16 +25,16 @@ public class ItemOptionRangeParser : Exporter<List<ItemOptionRangeMetadata>>
                 switch (filename)
                 {
                     case "itemoptionvariation_acc":
-                        metadata.RangeType = ItemOptionRangeType.itemoptionvariation_acc;
+                        metadata.RangeType = ItemOptionRangeType.ItemOptionVariationAcc;
                         break;
                     case "itemoptionvariation_armor":
-                        metadata.RangeType = ItemOptionRangeType.itemoptionvariation_armor;
+                        metadata.RangeType = ItemOptionRangeType.ItemOptionVariationArmor;
                         break;
                     case "itemoptionvariation_pet":
-                        metadata.RangeType = ItemOptionRangeType.itemoptionvariation_pet;
+                        metadata.RangeType = ItemOptionRangeType.ItemOptionVariationPet;
                         break;
                     case "itemoptionvariation_weapon":
-                        metadata.RangeType = ItemOptionRangeType.itemoptionvariation_weapon;
+                        metadata.RangeType = ItemOptionRangeType.ItemOptionVariationWeapon;
                         break;
                 }
 
@@ -177,7 +177,7 @@ public class ItemOptionRangeParser : Exporter<List<ItemOptionRangeMetadata>>
                         metadata.SpecialStats[SpecialStatId.AllyRecovery] = ParseSpecialValues(SpecialStatId.AllyRecovery, node, true);
                         break;
                     case "improve_massive_ox_expRate":
-                        metadata.SpecialStats[SpecialStatId.OXQuizExp] = ParseSpecialValues(SpecialStatId.OXQuizExp, node, true);
+                        metadata.SpecialStats[SpecialStatId.OxQuizExp] = ParseSpecialValues(SpecialStatId.OxQuizExp, node, true);
                         break;
                     case "improve_massive_trapmaster_expRate":
                         metadata.SpecialStats[SpecialStatId.TrapMasterExp] = ParseSpecialValues(SpecialStatId.TrapMasterExp, node, true);
@@ -198,7 +198,7 @@ public class ItemOptionRangeParser : Exporter<List<ItemOptionRangeMetadata>>
                         metadata.SpecialStats[SpecialStatId.DanceDanceExp] = ParseSpecialValues(SpecialStatId.DanceDanceExp, node, true);
                         break;
                     case "improve_massive_ox_mspValue":
-                        metadata.SpecialStats[SpecialStatId.OXMovementSpeed] = ParseSpecialValues(SpecialStatId.OXMovementSpeed, node, false);
+                        metadata.SpecialStats[SpecialStatId.OxMovementSpeed] = ParseSpecialValues(SpecialStatId.OxMovementSpeed, node, false);
                         break;
                     case "improve_massive_trapmaster_mspValue":
                         metadata.SpecialStats[SpecialStatId.TrapMasterMovementSpeed] = ParseSpecialValues(SpecialStatId.TrapMasterMovementSpeed, node, false);

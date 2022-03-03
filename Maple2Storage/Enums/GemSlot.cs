@@ -4,30 +4,17 @@ namespace Maple2Storage.Enums;
 
 public enum GemSlot : byte
 {
-    [Description("None")]
-    NONE = 0,
-    [Description("Transparency Badge")]
-    TRANS = 1,
-    [Description("Damage Font")]
-    DAMAGE = 2,
-    [Description("Chat Bubble")]
-    CHAT = 3,
-    [Description("Name Tag")]
-    NAME = 4,
-    [Description("Tombstone Style")]
-    TOMBSTONE = 5,
-    [Description("Swim Tube")]
-    SWIM = 6,
-    [Description("Buddy Badge")]
-    BUDDY = 7,
-    [Description("Fishing Accessories")]
-    FISHING = 8,
-    [Description("Auto-Gathering Badge")]
-    GATHER = 9,
-    [Description("Effects Badge")]
-    EFFECT = 10,
-    [Description("Pet Skin")]
-    PET = 11,
-    [Description("Meta")]
-    META = 12
+    None = 0,
+    TransparencyBadge = 1,
+    DamageFont = 2,
+    ChatBubble = 3,
+    NameTag = 4,
+    TombstoneStyle = 5,
+    SwimTube = 6,
+    BuddyBadge = 7,
+    FishingAccessories = 8,
+    AutoGatheringBadge = 9,
+    EffectsBadge = 10,
+    PetSkin = 11,
+    Meta = 12
 }

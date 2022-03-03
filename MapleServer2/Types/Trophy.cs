@@ -82,10 +82,10 @@ public class Trophy
             // Add stat points and skill points
             switch (GradeCondition.RewardType)
             {
-                case RewardType.statPoint:
+                case RewardType.StatPoint:
                     player.AddStatPoint(GradeCondition.RewardValue, OtherStatsIndex.Trophy);
                     break;
-                case RewardType.skillPoint:
+                case RewardType.SkillPoint:
                     // TODO: Add skill points
                     break;
             }
@@ -129,7 +129,7 @@ public class Trophy
     {
         return type switch
         {
-            RewardType.item or RewardType.title => true,
+            RewardType.Item or RewardType.Title => true,
             _ => false
         };
     }
