@@ -90,7 +90,7 @@ public static class CharacterListPacket
         pWriter.WriteUnicodeString(player.ProfileUrl);
         pWriter.WriteLong();
 
-        WriteEquipsAndCosmetics(pWriter, player);
+        WriteEquipsAndCosmetics(pWriter, player.Inventory);
 
         WriteBadges(pWriter, player);
 
@@ -220,14 +220,14 @@ public static class CharacterListPacket
         pWriter.WriteItem(item);
     }
 
-    public static void WriteEquipsAndCosmetics(PacketWriter pWriter, Player player)
+    public static void WriteEquipsAndCosmetics(PacketWriter pWriter, IInventory inventory)
     {
-        pWriter.WriteByte((byte) (player.Inventory.Equips.Count + player.Inventory.Cosmetics.Count));
-        foreach ((ItemSlot slot, Item equip) in player.Inventory.Equips)
+        pWriter.WriteByte((byte) (inventory.Equips.Count + inventory.Cosmetics.Count));
+        foreach ((ItemSlot slot, Item equip) in inventory.Equips)
         {
             WriteEquip(slot, equip, pWriter);
         }
-        foreach ((ItemSlot slot, Item equip) in player.Inventory.Cosmetics)
+        foreach ((ItemSlot slot, Item equip) in inventory.Cosmetics)
         {
             WriteEquip(slot, equip, pWriter);
         }

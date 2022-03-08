@@ -79,7 +79,7 @@ public static class FieldPlayerPacket
         if (appearance)
         {
             PacketWriter appearanceBuffer = new();
-            CharacterListPacket.WriteEquipsAndCosmetics(appearanceBuffer, player);
+            CharacterListPacket.WriteEquipsAndCosmetics(appearanceBuffer, player.Inventory);
 
             appearanceBuffer.WriteByte(1);
             appearanceBuffer.WriteLong();

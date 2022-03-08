@@ -67,7 +67,7 @@ public class CharacterInfoPacket
         pWriter.WriteBytes(characterBuffer.ToArray());
 
         PacketWriter appearanceBuffer = new();
-        CharacterListPacket.WriteEquipsAndCosmetics(appearanceBuffer, player);
+        CharacterListPacket.WriteEquipsAndCosmetics(appearanceBuffer, player.Inventory);
 
         appearanceBuffer.WriteByte(1);
         appearanceBuffer.WriteLong();
